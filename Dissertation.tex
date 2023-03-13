@@ -6,6 +6,7 @@
 
 \usepackage{Bath-CS-Dissertation}
 \usepackage{lmodern}
+\usepackage{float}
 
 \title{\bf $\langle$Dissertation Title$\rangle$}
 \author{Louie Middle}
@@ -20,7 +21,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
-\hypersetup{pageanchor=false}
+\hypersetup{pageanchor=false}	
 
 % Set this to the language you want to use in your code listings (if any)
 \lstset{language=Java,breaklines,breakatwhitespace,basicstyle=\small}
@@ -105,6 +106,8 @@ The interest in the IPL is clear to see, thus increasing the desire to use moder
 
 \section{Project Plan}
 
+TODO: This can be removed
+
 There are 26 weeks from Friday the 4th November until the final deadline of Friday the 5th May. 
 The individual project is 24 credits out of a total 60 credits for the year, meaning 40\% of my time can be used for the project. 
 This is 10.4 weeks. 
@@ -120,7 +123,7 @@ I have split my project into 3 main sections:
 The buffer time can be used for any road bumps, or sections that need it. 
 See Gantt chart for overview of plan in figure \ref{fig:gantt_chart}.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Gantt Chart.png}
     \caption{Gantt Chart For Project}
@@ -128,6 +131,8 @@ See Gantt chart for overview of plan in figure \ref{fig:gantt_chart}.
 \end{figure}
 
 \section{Resources Required}
+
+TODO: This section should be removed or amended. I think get some data from just one year, or all years and compare to test Horvat and Job.
 
 In order to train any machine learning model an appropriate amount of data for training and testing. 
 Because it is not beneficial to use data that is too old \citep{horvat2020}, a recent season's worth of data would be good, saving some data for testing. 
@@ -198,11 +203,40 @@ Another section, just for good measure. You can reference a table, figure or equ
 
 \section{Existing Machine Learning in Sport}
 
-\citet{horvat2020} literature review of machine learning in sport for score prediction showed that including too many seasons worth of data for training models reduces the quality of results. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Horvat&Job_Figure2.png}
+    \caption{Number of papers using a particular ML algorithm group \citep{horvat2020}}
+    \label{fig:NoPapers}
+\end{figure}
+
+TODO: Could be worth putting the one with publication year in to show uptick in research? But not necessary right now.
+
+Figure \ref{fig:NoPapers} from \citet{horvat2020}'s literature review of machine learning in sport for score prediction shows what current methods are currently used in the field as of May 2020. 
+As you can see, neural networks have a large research output, followed by other popular methods such as regression, SVMs, regression, decision trees, and gradient boosting with k-NN being the least used. 
+It is important to note, that just because a large body of research has been carried out with certain methods, it does not necessarily mean they are the best. 
+
+\citet{horvat2020} also showed that including too many seasons worth of data for training models reduces the quality of results. 
 To those with a basic knowledge of cricket and sport this is not surprising given that in just a few years, many things related to team composition and tactics can change. 
 The best prediction results were achieved by researchers who used data from a single season and a data segmentation evaluation method. 
 When using data from a single season, most of the data is used for training and a small portion for testing. 
 Some researchers used the same data set for training and testing yielding unrealistically accurate results.
+
+\section{Existing Machine Learning in Cricket}
+
+\citet{KampakisStylianos2015} used Naïve Bayes, logistic regression, random forests and gradient boosted decision trees to predict the outcome of English County 20 over Cricket Matches from 2009 - 2014. 
+The performance of each algorithm was assessed using one year's data as the training data set and the following year's data for testing. 
+Each model was tested over these seasons and achieved an accuracy of 62.4\% for Naïve Bayes, 60.1\% for logistic regression, 55.6\% for random forests and 57.2\% for decision trees.
+
+\subsection{Existing Machine Learning in the Indian Premier League}
+
+\citet{Saikia2012} have used Artificial Neural Network models to predict the performance of bowlers based on their performance in the first three seasons of the IPL. 
+When the predicted results were validated with the players performances in the fourth season, the model had an accuracy of 71.43\%.
+
+\section{Research with similar goals}
+
+The Singlearity-PA model \citep{silver2021baseball} wanted to attempt to solve one of the most fundamental questions in baseball:	 How can we	predict the outcome of a batter	vs. pitcher plate appearance (PA)? 
+This is similar to my goal with cricket:  To predict the outcome of batter vs bowler for an over.
 
 The Singlearity-PA model \citep{silver2021baseball} was able to accurately predict the results of a batter versus pitcher plate appearance using a neural-network based AI model. 
 The details of the model used are vague, however the network was able to take in 87 inputs and then output probabilities for each of the 21 possible outcomes of a plate appearance (PA) in baseball. 
@@ -219,21 +253,6 @@ Extending Singlearity-PA with Markov chains improved more complicated strategies
 Similarly, in cricket the batting lineup and choice of bowler at different points in a game have a large impact on the score. 
 In the example provided, Singlearity-PA's predicted runs scored for an optimal lineup was 6.7\% better than the actual lineup in the 2019 National League All-Star game. 
 It is important not to compare baseball and cricket too closely, but the techniques used by Silver and Huffman could potentially work well in Cricket.
-
-\subsection{Gradient Boosting Methods}
-
- TODO: Talk about XGBoost in sport
-
-\section{Existing Machine Learning in Cricket}
-
-\citet{KampakisStylianos2015} used Naïve Bayes, logistic regression, random forests and gradient boosted decision trees to predict the outcome of English County 20 over Cricket Matches from 2009 - 2014. 
-The performance of each algorithm was assessed using one year's data as the training data set and the following year's data for testing. 
-Each model was tested over these seasons and achieved an accuracy of 62.4\% for Naïve Bayes, 60.1\% for logistic regression, 55.6\% for random forests and 57.2\% for decision trees.
-
-\subsection{Existing Machine Learning in the Indian Premier League}
-
-\citet{Saikia2012} have used Artificial Neural Network models to predict the performance of bowlers based on their performance in the first three seasons of the IPL. 
-When the predicted results were validated with the players performances in the fourth season, the model had an accuracy of 71.43\%.
 
 \section{Drawbacks of Existing Methods}
 
