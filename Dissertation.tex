@@ -267,15 +267,56 @@ Furthermore, certain inputs exist where very little similar training data might 
 In such cases, the uncertainty in a models output should be much greater. 
 Yet, existing models will still provide a prediction the same as it would for inputs where there was a large amount of training data.
 
+ TODO: talk about \citep{Blumberg2020}.
+
 \section{Gaussian Processes in Sport}
 
 TODO: Talk about Gaussian processes in sport
+
+\chapter{Background}
+
+\section{Gaussian Processes for Regression}
+
+\subsection{The Standard Linear Model}
+
+First, lets review the standard linear regression model with Gaussian noise
+
+\begin{equation}
+    \centering
+    {f(\textbf{x}) = \textbf{x}^T\textbf{w}, \quad y = f(\textbf{x}) + \epsilon}
+\end{equation}
+
+where $\textbf{x}$ is the input vector, $\textbf{w}$ is a vector of weights of the linear model, $f$ is the function value, and $y$ is the observed target value.
+It is often assumed that the observed values differ from the function values by some noise, often treated as an independent, identically distributed Gaussian distribution, with zero mean and variance $\sigma^2_{n}$.
+
+\begin{equation}
+    \centering
+    \epsilon \sim \mathcal{N}(0, \sigma^2_{n})
+\end{equation}
+
+This noise assumption together with the model gives rise to the likelihood, the probability density of the observations given the parameters, which is factored over cases in the training set to give
+
+\begin{equation}
+    \centering
+    TODO: Add equations from textbook ....
+\end{equation}
+
+\section{Gaussian Processes for Classification}
+
+Gaussian processes are a supervised learning technique. 
+A Gaussian process is a generalisation of the gaussian probability distribution. 
+Both classification and regression can be seen as function approximation problems. 
+Unfortunately, the solution of classification problems using Gaussian processes is tougher than regression problems. 
+For regression problems, the likelihood is often assumed to be Gaussian. 
+A Gaussian process prior combined with a Gaussian likelihood gives a posterior Gaussian process over functions, where everything remains analytically tractable. 
+For classification models, the Gaussian likelihood is inappropriate; a different likelihood such as a Bernoulli likelihood must be used.
+
+\citep{RasmussenWilliams2006}
 
 \section{Data Association with Gaussian Processes}
 
 \citep{Kaiser2018}
 \citep{Lui2020}
-\citep{Blumberg2020}
 
 \subsection{Summary}
 
