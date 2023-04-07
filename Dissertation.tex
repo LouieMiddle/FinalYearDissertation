@@ -7,6 +7,12 @@
 \usepackage{Bath-CS-Dissertation}
 \usepackage{lmodern}
 \usepackage{float}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
 
 \title{\bf $\langle$Dissertation Title$\rangle$}
 \author{Louie Middle}
@@ -140,63 +146,6 @@ Because it is not beneficial to use data that is too old \citep{horvat2020}, a r
 Training machine learning models may also require appropriate computing power depending on the models used and size of the data set. 
 This could potentially be achieved with the University of Bath's Hex cluster.
 
-\section[Short Section Title]{Another Section With a Long Title and Whose Title Is Abbreviated in the Table of Contents}
-
-%-------------------------------------------------------------------------------
-\begin{table}[htb]
-\caption{An example table}
-\bigskip
-\begin{center}
-\label{Example-Table}
-\begin{tabular}{|l|l|}
-\hline
-Items & Values \\
-\hline
-\hline
-Item 1 & Value 1 \\
-Item 2 & Value 2 \\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
-
-Another section, just for good measure. You can reference a table, figure or equation using \verb|\ref|, just like this reference to Table \ref{Example-Table}.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Example Lists}
-
-%-------------------------------------------------------------------------------
-\subsection{Enumerated}
-
-\begin{enumerate}
-\item Example enumerated list:
-  \begin{itemize}
-  \item a nested enumerated list item;
-  \item and another one.
-  \end{itemize}
-\item Second item in the list.
-\end{enumerate}
-
-%-------------------------------------------------------------------------------
-\subsection{Itemised}
-
-\begin{itemize}
-\item Example itemised list.
-  \begin{itemize}
-  \item A nested itemised list item.
-  \end{itemize}
-\item Second item in the list.
-\end{itemize}
-
-%-------------------------------------------------------------------------------
-\subsection{Description}
-
-\begin{description}
-\item[Item 1]First item in the list.
-\item[Item 2]Second item in the list.
-\end{description}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Literature and Technology Survey}
@@ -275,7 +224,7 @@ TODO: Talk about Gaussian processes in sport
 
 \chapter{Background}
 
-\section{Gaussian Processes for Regression}
+\section{Gaussian Processes}
 
 \subsection{The Standard Linear Model}
 
@@ -298,10 +247,64 @@ This noise assumption together with the model gives rise to the likelihood, the 
 
 \begin{equation}
     \centering
-    TODO: Add equations from textbook ....
+    p(\textbf{y} | X, \textbf{w}) = \prod_{i=1}^n = p(y_{i} | \textbf{x}_{i}, \textbf{w}) =  \prod_{i=1}^n \frac{1}{\sqrt{2\pi}\sigma_{n}} exp(-\frac{(y_{i} - \textbf{x}_{i}^T \textbf{w})^2}{2 \sigma_{n}^2})
+    TODO: Can do the rest later
 \end{equation}
 
-\section{Gaussian Processes for Classification}
+TODO: This section might not be necessary, but might be good to show understanding....
+
+\subsection{Function-space View}
+
+\begin{definition}[Gaussian Process]
+A Gaussian process is a collection of random variables, any finite number of which have a joint Gaussian distribution. 
+\end{definition}
+
+A Gaussian process is completely specified by its mean function, $m(\textbf{x})$, and its co-variance function $k(\textbf{x}, \textbf{x}')$.
+A mean function and covariance function can be defined for a real process $f(x)$ as 
+
+\begin{equation}
+	\begin{aligned}
+		\centering
+		m(\textbf{x}) &= \mathbb{E}[f(\textbf{x})],\\
+		k(\textbf{x}, \textbf{x}') &= \mathbb{E}[(f(\textbf{x}) - m(\textbf{x}))(f(\textbf{x}') - m(\textbf{x}'))],
+	\end{aligned}
+\end{equation}
+
+where we will write the Gaussian process as 
+
+\begin{equation}
+	\centering
+	f(\textbf{x}) \sim GP(m(\textbf{x}), k(\textbf{x}, \textbf{x}')).
+\end{equation}
+
+The covariance function, also called a kernel, specifies the covariance between pairs of random variables. It is the covariance functions which encode the assumptions about the underlying function. 
+
+\subsection{Kernels}
+
+Kernels are crucial in encoding the assumptions about the function a Gaussian process should estimate. 
+It is a measure of similarity of different points in the observed data and of new points to be predicted. 
+For example, a natural assumption is to assume the closer two points lie, the more similar their function values should be. 
+Furthermore, when prediciting test points, training points close to it are probably more informative than those further away. 
+However, it should be noted, that this need not be the case. 
+For example, consider a sinusoidal wave where two points which are multiple wavelengths apart should have similar function values.
+A kernel that only depends on the distance between two points is called \emph{stationary}.
+Conversely, kernels that do depend on two points position in the input space are called \emph{non-stationary}.
+
+A common kernel and one used throughout this project is the squared exponential (SE) covariance function (also known as the radial basis function, RBF). 
+This is defined by
+
+\begin{equation}
+	\centering
+	k(\textbf{x}, \textbf{x}') = exp(-\frac{1}{2} |\textbf{x}_{p} - \textbf{x}_{q}|^2).
+	\label{eq:SquaredExponentialKernel}
+\end{equation}
+
+Kernels have characteristic length scales which informally can be thought of as roughly the distance you have to move in input space before the function value will change significantly. 
+For eq \ref{eq:SquaredExponentialKernel} the length-scale is one. 
+By replacing $\textbf{x}_{p} - \textbf{x}_{q}$ with $\textbf{x}_{p} - \textbf{x}_{q} / l$ for some positive constant $l$ we can change the characteristic length-scale of the process.
+Choice of such parameters will be discussed more later.
+
+\subsection{Gaussian Processes for Classification}
 
 Gaussian processes are a supervised learning technique. 
 A Gaussian process is a generalisation of the gaussian probability distribution. 
@@ -493,6 +496,63 @@ This is the chapter in which you review the outcomes, and critique the outcomes 
 %%
 
 This is the chapter in which you review the major achievements in the light of your original objectives, critique the process, critique your own learning and identify possible future work.
+
+\section[Short Section Title]{Another Section With a Long Title and Whose Title Is Abbreviated in the Table of Contents}
+
+%-------------------------------------------------------------------------------
+\begin{table}[htb]
+\caption{An example table}
+\bigskip
+\begin{center}
+\label{Example-Table}
+\begin{tabular}{|l|l|}
+\hline
+Items & Values \\
+\hline
+\hline
+Item 1 & Value 1 \\
+Item 2 & Value 2 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+Another section, just for good measure. You can reference a table, figure or equation using \verb|\ref|, just like this reference to Table \ref{Example-Table}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Example Lists}
+
+%-------------------------------------------------------------------------------
+\subsection{Enumerated}
+
+\begin{enumerate}
+\item Example enumerated list:
+  \begin{itemize}
+  \item a nested enumerated list item;
+  \item and another one.
+  \end{itemize}
+\item Second item in the list.
+\end{enumerate}
+
+%-------------------------------------------------------------------------------
+\subsection{Itemised}
+
+\begin{itemize}
+\item Example itemised list.
+  \begin{itemize}
+  \item A nested itemised list item.
+  \end{itemize}
+\item Second item in the list.
+\end{itemize}
+
+%-------------------------------------------------------------------------------
+\subsection{Description}
+
+\begin{description}
+\item[Item 1]First item in the list.
+\item[Item 2]Second item in the list.
+\end{description}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
