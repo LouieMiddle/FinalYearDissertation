@@ -65,9 +65,12 @@ $\rangle$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\addcontentsline{toc}{chapter}{Acknowledgements}
 \chapter*{Acknowledgements}
 
-Add any acknowledgements here.
+I would like to acknowledge my supervisor Adam Hartshorne.
+I would like to acknowledge my partner Hoi Ching Leung.
+I would like to acknowledge my parents.
 
 \newpage
 \setcounter{page}{1}
@@ -226,7 +229,22 @@ TODO: Talk about Gaussian processes in sport
 
 \section{Gaussian Processes}
 
-\subsection{The Standard Linear Model}
+TODO: Put cholesky decomposition and KL divergence in the appendix
+
+This following section introduces Gaussian processes and the following section then explains how to extend their application to solve data association problems. 
+This project is mostly concerned with using Gaussian processes for classification, but a background on using Gaussian processes for regression is provided first as a basis to their extension to classification tasks.
+
+Gaussian processes are a supervised learning technique, where we start with a training data set $\mathcal{D}$ of $n$ observations, $\mathcal{D} = (\textbf{x}_{i}, y_{i} | i = 1, ..., n)$ where $\textbf{x}$ denotes and input vector (covariates) of dimension $D$ and $y$ denotes a scalar output or target. 
+The column vector inputs for all $n$ cases are aggregated in the $D x n$ design matrix $X$ and the targets collected in the vector $\textbf{y}$, such that $\mathcal{D} = (X, \textbf{y})$.
+
+\subsection{Gaussian Processes for Regression}
+
+\subsubsection{Weight Space View}
+
+TODO: This section might not be necessary, but might be good to show understanding....
+
+One can think of a Gaussian process as defining a distribution over functions and inference taking place directly in the space of functions. 
+Although this view is appealing, it is difficult to grasp on first attempt, and so we will start with reviewing the \emph{weight-space view}.
 
 First, lets review the standard linear regression model with Gaussian noise
 
@@ -236,7 +254,7 @@ First, lets review the standard linear regression model with Gaussian noise
 \end{equation}
 
 where $\textbf{x}$ is the input vector, $\textbf{w}$ is a vector of weights of the linear model, $f$ is the function value, and $y$ is the observed target value.
-It is often assumed that the observed values differ from the function values by some noise, often treated as an independent, identically distributed Gaussian distribution, with zero mean and variance $\sigma^2_{n}$.
+It is often assumed that the observed values differ from the function values by some noise, which we will treat as an independent, identically distributed Gaussian distribution, with zero mean and variance $\sigma^2_{n}$.
 
 \begin{equation}
     \centering
@@ -251,15 +269,57 @@ This noise assumption together with the model gives rise to the likelihood, the 
     TODO: Can do the rest later
 \end{equation}
 
-TODO: This section might not be necessary, but might be good to show understanding....
+We put a zero mean Gaussian prior with covariance matrix $\Sigma_{p}$ on the weights 
 
-\subsection{Function-space View}
+\begin{equation}
+    \centering
+    \textbf{w} \sim \mathcal{N}(0, \Sigma_{p})
+\end{equation}
+
+Inference is based on the posterior distribution over the weights computed by Baye's rule, given by
+
+\begin{equation}
+	\centering
+	P(\textbf{w} | \textbf{y}, X)  = \frac{p(\textbf{y} | X, \textbf{w})p(\textbf{w})}{p(\textbf{y} | X)}
+\end{equation}
+
+Note that prior $p(\textbf{w})$ neglects the conditioning on $X$, as it is independent of the inputs. The normalising constant $p(\textbf{y} | X)$, also know as the marginal likelihood is independent of the weights and is given by
+
+\begin{equation}
+	\centering
+	P(\textbf{y} | X)  = \int p(\textbf{y} | X, \textbf{w})p(\textbf{w}) d\textbf{w}
+\end{equation}
+
+TODO: Finish this later when you can ask Adam about it....
+
+Since the number of obervations is finite and the function $f$ lives in an infinite dimensional function space, the estimation of $f$ is uncertain and base on prior assumptions about its structure.
+Gaussian processes are a non-parametric regression model. 
+\emph{Non-parametric models} are not based on insights about the concrete structure of the function to be modelled, but instead make assumptions about the function itself, such as its smoothness or differentiability. 
+Instead of modeling a distribution of parameter values, a non-parametric model tries to find a distribution $p(f*)$ of probable functions that represents the function $f$ to be estimated.
+
+\citep{Yi2019} TODO: This has good explanations of stuff
+
+To make predictions we average over all possible parameter values, weighted by their posterior probability.
+Thus the predictive distribution for $f_{*} \triangleq f(\textbf{x}_{*})$ at $\textbf{x}_{*}$ is given by averaging the output of all possible linear models w.r.t the Gaussian posterior
+
+\begin{equation}
+	\begin{aligned}
+		\centering 
+		p(f_{*} | \textbf{x}_{*}, X, \textbf{y}) &= \int p(f_{*} | \textbf{x}_{*}, \textbf{w})p(\textbf{w} | X, \textbf{y}) d\textbf{w}\\
+		&= \mathcal{N}(\frac{1}{\sigma_{n}^2} \textbf{x}_{*}^T A^{-1} X \textbf{y}, \enskip \textbf{x}_{*}^T A^{-1} \textbf{x}_{*}).
+	\end{aligned}
+\end{equation}
+
+The predictive distribution is again Gaussian.
+
+\subsubsection{Function-space View}
 
 \begin{definition}[Gaussian Process]
 A Gaussian process is a collection of random variables, any finite number of which have a joint Gaussian distribution. 
 \end{definition}
 
 A Gaussian process is completely specified by its mean function, $m(\textbf{x})$, and its co-variance function $k(\textbf{x}, \textbf{x}')$.
+Usually the mean function will be taken to be zero, but this need not be the case.
 A mean function and covariance function can be defined for a real process $f(x)$ as 
 
 \begin{equation}
@@ -304,25 +364,58 @@ For eq \ref{eq:SquaredExponentialKernel} the length-scale is one.
 By replacing $\textbf{x}_{p} - \textbf{x}_{q}$ with $\textbf{x}_{p} - \textbf{x}_{q} / l$ for some positive constant $l$ we can change the characteristic length-scale of the process.
 Choice of such parameters will be discussed more later.
 
-TODO: Need to talk about how mean function is zero and why....
-
 \begin{figure}[H]
-   	 \begin{minipage}[t]{0.45\textwidth}
+   	 \begin{minipage}[t]{0.3\textwidth}
 	 	\includegraphics[width=\linewidth]{RBF_sigma_1_lengthscale_1.png}
-	    	\caption{SE kernel with sigma=1 and length-scale=1 \citep{Kaiser2016}}
+	    	\caption{SE kernel with $\sigma=1$ and $l=1$ \citep{Kaiser2017}}
 	    	\label{fig:SEKernSig1Length1}
 	\end{minipage}
 	\hfill
-	\begin{minipage}[t]{0.45\textwidth}
+	\begin{minipage}[t]{0.3\textwidth}
+	 	\includegraphics[width=\linewidth]{RBF_sigma_1_lengthscale_1.png}
+	    	\caption{SE kernel with $\sigma=\sqrt{2}$ and $l=1$ \citep{Kaiser2017}}
+	    	\label{fig:SEKernSigRoot2Length1}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.3\textwidth}
 	 	\includegraphics[width=\linewidth]{RBF_sigma_1_lengthscale_025.png}
-	    	\caption{SE kernel with sigma=1 and length-scale=0.25 \citep{Kaiser2016}}
+	    	\caption{SE kernel with $\sigma=1$ and $l=0.25$ \citep{Kaiser2017}}
 	    	\label{fig:SEKernSig1Length0.25}
 	\end{minipage}
 \end{figure}
 
+Figure \ref{fig:SEKernSig1Length1}, figure \ref{fig:SEKernSigRoot2Length1} and figure \ref{fig:SEKernSig1Length0.25} compare sample functions drawn from Gaussian processes with SE kernels with different hyperparameters. 
+
+\subsection{Predictions and Posterior}
+
+The joint distribution of the training outputs, $\textbf{f}$, and the test outputs $\textbf{f}_{*}$ according to the prior is 
+
+\begin{equation}
+	\centering
+	\begin{bmatrix}
+		\textbf{f} \\
+		\textbf{f}_{*}
+	\end{bmatrix}
+	\sim \mathcal{N} \left( 0,
+	\begin{bmatrix}
+		K(X, X) + \sigma_{n}^2I & K(X, X_{*}) \\
+		K(X_{*},  X) & K(X_{*},  X_{*})
+	\end{bmatrix} \right) .
+	\label{eq:JointPriorDist}
+\end{equation}
+
+If there are $n$ training points and $n_{*}$ test points then $K(X, X_{*})$ denotes the $n x n_{*}$ matrix of covariances evaluated at all pairs of training and test points, and similarly for $K(X, X)$, $K(X_{*},  X)$ and $K(X_{*},  X_{*})$.
+
+In order to use Gaussian processes for regression, it is necessary to combine observations with a Gaussian process prior $f \sim GP(0, K)$. 
+The distribution is obtained by integrating over all possible latent function values $f$ and therefore taking all possible functions into account. This is called the \emph{marginilisation of $f$}. 
+
+The joint prior in equation \ref{eq:JointPriorDist} may be conditioned on the observations through $p(\textbf{f}_{*} | \textbf{y}) = \frac{p(\textbf{f}_{*},  \textbf{y})}{p(\textbf{y})}$ which enforces that the joint prior agrees with the observations $\textbf{y}$.
+The posterior ... TODO: How does he make the following jumps?
+
+\citep{Griffiths2023}
+
 \subsection{Gaussian Processes for Classification}
 
-Gaussian processes are a supervised learning technique. 
 A Gaussian process is a generalisation of the gaussian probability distribution. 
 Both classification and regression can be seen as function approximation problems. 
 Unfortunately, the solution of classification problems using Gaussian processes is tougher than regression problems. 
@@ -332,10 +425,29 @@ For classification models, the Gaussian likelihood is inappropriate; a different
 
 \citep{RasmussenWilliams2006}
 
+\subsection{Sparse Gaussian Processes}
+
+TODO: Write about sparse GPs
+
 \section{Data Association with Gaussian Processes}
+
+\subsection{Data Association}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{data_association_problem.png}
+    \caption{A data association problem consisting of two generating processes, one of which is a signl we wish to recover and one is an uncorrelated noise process \citep{Kaiser2018}}
+    \label{fig:DataAssocProblem}
+\end{figure}
+
+A \emph{data association problem} is one where we consider the data to have been generated by a mixture of processes and we are interested in factorising the data into these components. For example, as described by \citet{Kaiser2018}, figure \ref{fig:DataAssocProblem} could represent faulty sensor data, where sensor readings are disturbed by uncorrelated and asymettric noise. Standard machine learning approaches can pollute any models, where the model starts to explain the noise instead of the underlying signal. 
+
+TODO: explain why the cricket problem is a data association problem.
 
 \citep{Kaiser2018}
 \citep{Lui2020}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Summary}
 
@@ -465,20 +577,20 @@ These layers allow the GP to handle large datasets efficiently and effectively.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Requirements}
+\chapter{Results}
 
 If you are doing a primarily software development project, this is the chapter in which you review the requirements decisions and critique the requirements process.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Design}
+\chapter{Discussion}
 
 This is the chapter in which you review your design decisions at various
 levels and critique the design process.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Implementation and Testing}
+\chapter{Conclusion}
 
 This is the chapter in which you review the implementation and testing decisions and issues, and critique these processes.
 
@@ -499,13 +611,13 @@ Code listings are produced using the package `listings'.  This has many useful o
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Results}
+\chapter{Future Work}
 
 This is the chapter in which you review the outcomes, and critique the outcomes process. You may include user evaluation here too.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Conclusions}
+\chapter{Personal Experiences}
 
 %%
 %% Now we are back to the standard project contents that you should include
@@ -585,11 +697,11 @@ Another section, just for good measure. You can reference a table, figure or equ
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Design Diagrams}
+\chapter{Mathematical Background}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{User Documentation}
+\chapter{Design Diagrams}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
