@@ -10,11 +10,16 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 
-\title{\bf $\langle$Dissertation Title$\rangle$}
+\algblock{Input}{EndInput}
+
+
+\title{\bf Applying Gaussian Processes in the Sport of Cricket}
 \author{Louie Middle}
 \date{Bachelor of Science in Computer Science\\ 
                                  % E.g.: Bachelor of Science in Computer Science
@@ -42,7 +47,7 @@
 \consultation{0}
 \newpage
 
-\declaration{$\langle$Dissertation Title$\rangle$}{Louie Middle}
+\declaration{Applying Gaussian Processes in the Sport of Cricket}{Louie Middle}
 \newpage
 
 \hypersetup{pageanchor=true}
@@ -61,6 +66,9 @@ $\rangle$
 \newpage
 
 \listoftables
+\newpage
+
+\listofalgorithms
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -227,14 +235,29 @@ TODO: Talk about Gaussian processes in sport
 
 \chapter{Background}
 
+In this chapter I will cover the requisite background for Gaussian processes and gradient boosting, the two key methods used in this project.
+
 \section{Gaussian Processes}
+
+\citep{Griffiths2023}
+
+\citep{RasmussenWilliams2006}
+
+\citep{Kaiser2017}
+
+\citep{Yi2019} TODO: This has good explanations of stuff
 
 TODO: Put cholesky decomposition and KL divergence in the appendix
 
-This following section introduces Gaussian processes and the following section then explains how to extend their application to solve data association problems. 
-This project is mostly concerned with using Gaussian processes for classification, but a background on using Gaussian processes for regression is provided first as a basis to their extension to classification tasks.
+This section introduces Gaussian processes and the following section then explains how to extend their application to solve data association problems. 
+This project is mostly concerned with using Gaussian processes for classification, but a background on using Gaussian processes for regression is provided first as a basis before their extension to classification tasks. 
+As Gaussian processes are not computationally cheap sparse approximations were used in this project and are also reviewed in this section.
 
-Gaussian processes are a supervised learning technique, where we start with a training data set $\mathcal{D}$ of $n$ observations, $\mathcal{D} = (\textbf{x}_{i}, y_{i} | i = 1, ..., n)$ where $\textbf{x}$ denotes and input vector (covariates) of dimension $D$ and $y$ denotes a scalar output or target. 
+Gaussian processes are a non-parametric regression model. 
+\emph{Non-parametric models} are not based on insights about the concrete structure of the function to be modelled, but instead make assumptions about the function itself, such as its smoothness or differentiability. 
+Instead of modeling a distribution of parameter values, a non-parametric model tries to find a distribution $p(f*)$ of probable functions that represents the function $f$ to be estimated.
+
+In addition, Gaussian processes are a supervised learning technique, where we start with a training data set $\mathcal{D}$ of $n$ observations, $\mathcal{D} = (\textbf{x}_{i}, y_{i} | i = 1, ..., n)$ where $\textbf{x}$ denotes an input vector (covariates) of dimension $D$ and $y$ denotes an output or target. 
 The column vector inputs for all $n$ cases are aggregated in the $D x n$ design matrix $X$ and the targets collected in the vector $\textbf{y}$, such that $\mathcal{D} = (X, \textbf{y})$.
 
 \subsection{Gaussian Processes for Regression}
@@ -290,14 +313,9 @@ Note that prior $p(\textbf{w})$ neglects the conditioning on $X$, as it is indep
 	P(\textbf{y} | X)  = \int p(\textbf{y} | X, \textbf{w})p(\textbf{w}) d\textbf{w}
 \end{equation}
 
+Since the number of obervations is finite and the function $f$ lives in an infinite dimensional function space, the estimation of $f$ is uncertain and based on prior assumptions about its structure.
+
 TODO: Finish this later when you can ask Adam about it....
-
-Since the number of obervations is finite and the function $f$ lives in an infinite dimensional function space, the estimation of $f$ is uncertain and base on prior assumptions about its structure.
-Gaussian processes are a non-parametric regression model. 
-\emph{Non-parametric models} are not based on insights about the concrete structure of the function to be modelled, but instead make assumptions about the function itself, such as its smoothness or differentiability. 
-Instead of modeling a distribution of parameter values, a non-parametric model tries to find a distribution $p(f*)$ of probable functions that represents the function $f$ to be estimated.
-
-\citep{Yi2019} TODO: This has good explanations of stuff
 
 To make predictions we average over all possible parameter values, weighted by their posterior probability.
 Thus the predictive distribution for $f_{*} \triangleq f(\textbf{x}_{*})$ at $\textbf{x}_{*}$ is given by averaging the output of all possible linear models w.r.t the Gaussian posterior
@@ -318,8 +336,13 @@ The predictive distribution is again Gaussian.
 A Gaussian process is a collection of random variables, any finite number of which have a joint Gaussian distribution. 
 \end{definition}
 
+Gaussian processes are a generalisation of the Gaussian distribution to function spaces. 
+A multivariate Gaussian $\textbf{x} \sim \mathcal{N} (\boldsymbol{\mu}, \boldsymbol{\Sigma})$ describes a distribution over the finitely many elements in the vector $\textbf{x}$. 
+Every element of $\textbf{x}$ is normally distributed. 
+For two points in $\textbf{x}$, $x_{i}$ and $x_{j}$, their covariance is given by $cov[x_{i}, x_{j}] = \Sigma_{ij}$.
+
 A Gaussian process is completely specified by its mean function, $m(\textbf{x})$, and its co-variance function $k(\textbf{x}, \textbf{x}')$.
-Usually the mean function will be taken to be zero, but this need not be the case.
+Usually the mean function is assumed to be constant zero, but this need not be the case.
 A mean function and covariance function can be defined for a real process $f(x)$ as 
 
 \begin{equation}
@@ -337,9 +360,9 @@ where we will write the Gaussian process as
 	f(\textbf{x}) \sim GP(m(\textbf{x}), k(\textbf{x}, \textbf{x}')).
 \end{equation}
 
-The covariance function, also called a kernel, specifies the covariance between pairs of random variables. It is the covariance functions which encode the assumptions about the underlying function. 
+The covariance function, also called a kernel, specifies the covariance between pairs of random variables. It is the covariance functions which encode the assumptions about the underlying function (see section \ref{sec:Kernels}).
 
-\subsection{Kernels}
+\subsection{Kernels} \label{sec:Kernels}
 
 Kernels are crucial in encoding the assumptions about the function a Gaussian process should estimate. 
 It is a measure of similarity of different points in the observed data and of new points to be predicted. 
@@ -355,7 +378,7 @@ This is defined by
 
 \begin{equation}
 	\centering
-	k(\textbf{x}, \textbf{x}') = exp(-\frac{1}{2} |\textbf{x}_{p} - \textbf{x}_{q}|^2).
+	cov(f(\textbf{x}), f(\textbf{x}')) = k(\textbf{x}, \textbf{x}') = exp(-\frac{1}{2} |\textbf{x}_{p} - \textbf{x}_{q}|^2).
 	\label{eq:SquaredExponentialKernel}
 \end{equation}
 
@@ -363,6 +386,8 @@ Kernels have characteristic length scales which informally can be thought of as 
 For eq \ref{eq:SquaredExponentialKernel} the length-scale is one. 
 By replacing $\textbf{x}_{p} - \textbf{x}_{q}$ with $\textbf{x}_{p} - \textbf{x}_{q} / l$ for some positive constant $l$ we can change the characteristic length-scale of the process.
 Choice of such parameters will be discussed more later.
+
+TODO: Explain $\sigma$ !!!
 
 \begin{figure}[H]
    	 \begin{minipage}[t]{0.3\textwidth}
@@ -385,15 +410,20 @@ Choice of such parameters will be discussed more later.
 \end{figure}
 
 Figure \ref{fig:SEKernSig1Length1}, figure \ref{fig:SEKernSigRoot2Length1} and figure \ref{fig:SEKernSig1Length0.25} compare sample functions drawn from Gaussian processes with SE kernels with different hyperparameters. 
+Since the mean function $m(x)$ is assumed to be constant zero, the kernel specifies the prior assumptions about the function.
+The SE kernel describes arbritrary smooth functions. The hyperparameters $l$ and $\sigma$ of the kernel describe the dynamic range in the $x$ and $y$ directions respectively.
 
 \subsection{Predictions and Posterior}
 
-The joint distribution of the training outputs, $\textbf{f}$, and the test outputs $\textbf{f}_{*}$ according to the prior is 
+In order to use Gaussian processes for regression, it is necessary to combine observations with a Gaussian process prior $f \sim GP(0, K)$. 
+The distribution is obtained by integrating over all possible latent function values $f$ and therefore taking all possible functions into account. This is called the \emph{marginilisation of $f$}. 
+
+The joint distribution of the training outputs, $\textbf{y}$, and the test outputs $\textbf{f}_{*}$ according to the prior is 
 
 \begin{equation}
 	\centering
 	\begin{bmatrix}
-		\textbf{f} \\
+		\textbf{y} \\
 		\textbf{f}_{*}
 	\end{bmatrix}
 	\sim \mathcal{N} \left( 0,
@@ -406,13 +436,62 @@ The joint distribution of the training outputs, $\textbf{f}$, and the test outpu
 
 If there are $n$ training points and $n_{*}$ test points then $K(X, X_{*})$ denotes the $n x n_{*}$ matrix of covariances evaluated at all pairs of training and test points, and similarly for $K(X, X)$, $K(X_{*},  X)$ and $K(X_{*},  X_{*})$.
 
-In order to use Gaussian processes for regression, it is necessary to combine observations with a Gaussian process prior $f \sim GP(0, K)$. 
-The distribution is obtained by integrating over all possible latent function values $f$ and therefore taking all possible functions into account. This is called the \emph{marginilisation of $f$}. 
+Using this we arrive at the key predicitve equations for Gaussian process regression
 
-The joint prior in equation \ref{eq:JointPriorDist} may be conditioned on the observations through $p(\textbf{f}_{*} | \textbf{y}) = \frac{p(\textbf{f}_{*},  \textbf{y})}{p(\textbf{y})}$ which enforces that the joint prior agrees with the observations $\textbf{y}$.
-The posterior ... TODO: How does he make the following jumps?
+\begin{equation}
+	\textbf{f}_{*} | X, \textbf{y}, X_{*} \sim \mathcal{N}(\overline{\textbf{f}}_{*}, cov(\textbf{f}_{*}))
+\end{equation}
+\begin{equation}
+	\overline{\textbf{f}}_{*} \triangleq \mathbb{E}[\textbf{f}_{*} | X, \textbf{y}, X_{*}] = K(X, X_{*})[K(X, X) +  \sigma_{n}^2I]^-1 \textbf{y}
+	\label{eq:MeanFunc}
+\end{equation}
+\begin{equation}
+	cov(\textbf{f}_{*}) = K(X_{*}, X_{*}) - K(X_{*}, X)[K(X, X) +  \sigma_{n}^2I]^-1 K(X, X_{*})
+	\label{eq:CovarianceFunc}
+\end{equation}
 
-\citep{Griffiths2023}
+Eq. \ref{eq:MeanFunc} and eq. \ref{eq:CovarianceFunc} represent the mean function and the covariance function of the Gaussian posterior process respectively. 
+
+From here forwards, a compact form of $K(X, X)$ and $K(X_{*}, X_{*})$ etc. will be introduced where $K = K(X, X)$ and $K_{*} = K(X, X_{*})$.
+
+Computing $[K + \sigma_{n}^2I]^-1$ costs $O(N^3)$, but can be done as a preprocessing step since it is independent of the test points. 
+After this, each single test point costs $O(N)$. 
+To predict its variance it is still necessary to perform matrix multiplication which costs $O(N^2)$.
+
+\subsubsection{Marginal Likelihood}
+
+The \emph{marginal likelihood} is the marginalisation over the function values $\textbf{f}$. 
+By observing that $\textbf{y} \sim \mathcal{N} (0, K + \sigma_{n}^2I)$ yields the log marginal likelihood
+
+\begin{equation}
+	\label{eq:LogMargLik}
+	\centering
+	\log p(\textbf{y} | X) = -\frac{1}{2}\textbf{y}^T(K +  \sigma_{n}^2I)^-1\textbf{y} - -\frac{1}{2}log|K +  \sigma_{n}^2I| - \frac{n}{2}log2\pi.
+\end{equation}
+
+With this, we can create an algorithm for Gaussian process regression, which is given in alg. \ref{alg:GPR}. The matrix inversion required by eq. \ref{eq:MeanFunc} and \ref{eq:CovarianceFunc} uses Cholesky factorisation, explained in section \ref{sec:CholFac}. 
+
+\begin{algorithm}
+	\caption{Algorithm for Gaussian process regression}
+	\label{alg:GPR}
+	\begin{algorithmic}[1]
+		\Require $X$ (inputs), \textbf{y} (targets), $k$ (covariance function), $\sigma_{n}^2$ (noise level), $X_{*}$ (test input)	
+		\State $L \gets cholesky(K +\sigma_{n}^2I)$
+		\State $\boldsymbol{\alpha} \gets L^T \setminus (L \setminus \textbf{y})$ \Comment{eq. \ref{eq:MeanFunc}}
+		\State $\overline{f}_{*} \gets \textbf{k}_{*}^T \boldsymbol{\alpha}$ \Comment{eq. \ref{eq:MeanFunc}}
+		\State $\textbf{v} \gets L \setminus \textbf{k}_{*}$ \Comment{eq. \ref{eq:CovarianceFunc}}
+		\State $\mathbb{V}[f_{*}] \gets k(X_{*}, X_{*}) - \textbf{v}^T\textbf{v}$ \Comment{eq. \ref{eq:CovarianceFunc}}
+		\State $\log p(\textbf{y} | X) \gets -\frac{1}{2} \textbf{y}^T \boldsymbol{\alpha} - \Sigma_{i} \log L_{ii} - \frac{n}{2} \log2\pi$ \Comment{eq. \ref{eq:LogMargLik}}
+		\State \textbf{return}: $\overline{f}_{*}$ (mean), $\mathbb{V}[f_{*}]$ (variance), $\log p(\textbf{y} | X)$ (log marginal likelihood)
+	\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Loss Function}
+
+For practical applications, we are forced to make a decision how to act - we need a point prediction. 
+To achieve this, we need a \emph{loss function} $\mathcal{L}(y_{true}, y_{guess})$ which specifies the loss incurred by guessing the value $y_{guess}$ when the true value is $y_{true}$. 
+
+TODO: Loss functions...
 
 \subsection{Gaussian Processes for Classification}
 
@@ -422,8 +501,6 @@ Unfortunately, the solution of classification problems using Gaussian processes 
 For regression problems, the likelihood is often assumed to be Gaussian. 
 A Gaussian process prior combined with a Gaussian likelihood gives a posterior Gaussian process over functions, where everything remains analytically tractable. 
 For classification models, the Gaussian likelihood is inappropriate; a different likelihood such as a Bernoulli likelihood must be used.
-
-\citep{RasmussenWilliams2006}
 
 \subsection{Sparse Gaussian Processes}
 
@@ -442,157 +519,33 @@ TODO: Write about sparse GPs
 
 A \emph{data association problem} is one where we consider the data to have been generated by a mixture of processes and we are interested in factorising the data into these components. For example, as described by \citet{Kaiser2018}, figure \ref{fig:DataAssocProblem} could represent faulty sensor data, where sensor readings are disturbed by uncorrelated and asymettric noise. Standard machine learning approaches can pollute any models, where the model starts to explain the noise instead of the underlying signal. 
 
-TODO: explain why the cricket problem is a data association problem.
+The cricket dataset could be deemed a data association problem....
 
 \citep{Kaiser2018}
 \citep{Lui2020}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Gradient Boosting}
 
-\subsection{Summary}
-
-A GP is a probabilistic model used for regression and classification tasks in machine learning. 
-It models the relationship between inputs and outputs as a random process and makes predictions by modeling the distribution of outputs given the inputs.
-
-First, two kernel objects "pred\_kernel" and "assign\_kernel" are created using the "KERNEL.kern" function. 
-These kernels define the covariance function used in the GP model. 
-The input dimension, lengthscales, variance, and ARD (Automatic Relevance Determination) flag are set using the "input\_dim", "lengthscales", "variance", and "ARD" arguments, respectively.
-
-The centroids "Z" and "Z\_assign" of the input data "Xtrain" are computed using the k-means clustering algorithm "kmeans", where "num\_ind" is the number of inducing points.
-
-Two GP layers "pred\_layer" and "assign\_layer" are created using the "SVGP\_Layer" class. 
-The "pred\_layer" uses the "pred\_kernel" and the "Z" centroids, while the "assign\_layer" uses the "assign\_kernel" and the "Z\_assign" centroids. 
-The number of inducing points and outputs is set using the "num\_inducing" and "num\_outputs" arguments.
-
-A Gaussian likelihood object "lik" is created using the "Gaussian" class. 
-This likelihood object defines the probability distribution over the outputs.
-
-Finally, a sparse Multi-output Gaussian Process (SMGP) model is created using the "SMGP" class.
-The "likelihood" argument is set to "lik", and the "pred\_layer" and "assign\_layer" arguments are set to "pred\_layer" and "assign\_layer" respectively. 
-The number of output dimensions "K", the number of Monte Carlo samples "num\_samples", and the number of data points "num\_data" are also specified.
-
-\subsection{Covariance Function}
-
-The covariance function, also known as the kernel function, is a key component in Gaussian Process (GP) models. 
-It defines the covariance or similarity between the input points. 
-The covariance function models the assumptions about the underlying function that generates the data.
-
-The covariance function takes two inputs, x and x', and returns the covariance between the two inputs. 
-This can be interpreted as the degree of similarity between the two inputs. 
-The choice of the covariance function determines the type of GP model and its flexibility in fitting the data. 
-Common choices for covariance functions include radial basis functions, polynomial functions, and the squared exponential function.
-
-The covariance function can be parameterized by several hyperparameters, such as the lengthscales, which determine the smoothness of the function, and the variance, which determines the magnitude of the output. 
-These hyperparameters can be learned during the training process.
-
-In summary, the covariance function in a GP model determines the similarity between the inputs, and is a critical component in defining the assumptions about the underlying function and its flexibility in fitting the data.
-
-\subsection{GP Layers}
-
-TODO: This section can potentially never be mentioned, as now using GPFlow SVGP which isn't called `layer`.
-
-In Gaussian Process (GP) models, layers can be used to define the structure of the model and simplify the modeling process. 
-A layer in a GP model typically consists of a set of inducing points, which are used to make predictions about the output. 
-The choice of inducing points and the number of inducing points can greatly affect the accuracy and computational efficiency of the GP model.
-
-Layers can be used to model different aspects of the data, such as the mean function and the covariance function. 
-The mean function can be modeled as a linear combination of the inputs, while the covariance function can be defined by a radial basis function or a polynomial function.
-
-Layers can also be used to define hierarchical GP models, where different levels of the hierarchy are modeled by different layers. 
-This allows the model to capture complex dependencies between the inputs and outputs.
-
-In summary, layers in GP models provide a flexible and powerful way to define the structure of the model and make predictions about the output. 
-They can be used to model different aspects of the data, and can help simplify the modeling process while improving the accuracy and computational efficiency of the model.
-
-\subsection{Inducing Points}
-
-In the code you provided, the inducing points are calculated using the k-means clustering method. 
-This is because k-means clustering is a commonly used method for selecting a fixed set of representative points that summarize the structure of the data.
-
-The purpose of the inducing points in a Gaussian Process (GP) model is to provide a compact representation of the model that can be used to make predictions about the output. 
-The inducing points are typically chosen to be a small subset of the inputs, and the model is defined in terms of the inducing points rather than the inputs themselves. 
-This results in a more computationally efficient model that can be trained and used to make predictions faster.
-
-By using the k-means clustering method to calculate the inducing points, the model can take advantage of the structure of the data. 
-The k-means algorithm clusters the data into a set of k clusters, where each cluster is represented by its centroid. 
-These centroids can be used as the inducing points in the GP model.
-
-In summary, the use of k-means clustering to calculate the inducing points in a GP model is an efficient way to summarize the structure of the data and reduce the dimensionality of the model, while still maintaining its ability to make accurate predictions about the output.
-
-\subsection{Gaussian Likelihood}
-
-TODO: Will need to add a Bernoulli / Multinomial likelihood section?
-
-In a Gaussian Process (GP) model, the likelihood of the data is the probability of observing the data given the model parameters. 
-The Gaussian likelihood is a commonly used likelihood function for GP models, and it assumes that the output data is normally distributed.
-
-The Gaussian likelihood is calculated as follows:
-
-Define the mean function, $\mu(x)$, and the covariance function, $K(x, x')$, for the GP model. 
-These functions define the structure of the model and determine how the inputs x and outputs y are related.
-
-Calculate the predicted mean, $\mu$, and the predicted covariance, $\Sigma$, of the output data given the inputs and the model parameters. 
-This can be done using the mean function and the covariance function.
-
-Calculate the likelihood of the data, $p(y|x, \mu, \Sigma)$, using the predicted mean and covariance. 
-The likelihood is given by:
-
-\begin{equation}
-    \centering
-    p(y|x, \mu, \Sigma) = (2\pi)^(-n/2) * det(\Sigma)^(-1/2) * exp(-1/2 * (y - \mu)^T * \Sigma^(-1) * (y - \mu))
-\end{equation}
-
-where $n$ is the number of data points, $y$ is the vector of observed outputs, and $det(\Sigma)$ and $\Sigma^(-1)$ are the determinant and inverse of the covariance matrix $\Sigma$.
-
-The Gaussian likelihood for the entire data-set is then given by the product of the likelihoods of individual data points:
-
-\begin{equation}
-    \centering
-    p(y|x) = \Pi_i p(y_i|x_i, \mu, \Sigma) 
-\end{equation}
-
-In summary, the Gaussian likelihood is calculated by defining the mean function and the covariance function for the GP model, calculating the predicted mean and covariance of the output data, and evaluating the likelihood of the data given the predicted mean and covariance. 
-The Gaussian likelihood provides a way to assess the fit of the model to the data, and it is used to determine the optimal values of the model parameters that maximize the likelihood.
-
-\subsection{Prediction and Assignment Layers}
-
-The pred and assign layers in the code you posted are used in a Sparse Variational Gaussian Process (SVGP) model. 
-SVGP is a type of GP model that is used to handle large datasets, where computing the covariance matrix of all data points is computationally infeasible.
-
-The main idea behind SVGP is to use a smaller number of inducing points to represent the covariance structure of the entire dataset. 
-The pred and assign layers in the code represent two separate models for predicting the outputs of the GP.
-
-The pred layer is used for prediction, i.e., to make predictions for new inputs. 
-This layer models the covariance between the inducing points and the input points. 
-The inducing points are obtained using a clustering method, such as k-means, and they are used to represent the entire dataset.
-
-The assign layer is used to assign each data point to the closest inducing point, based on the similarity between the data points and the inducing points. 
-This layer models the covariance between the data points and the inducing points, and it allows the GP to capture the relationship between the data points and the inducing points.
-
-In summary, the pred and assign layers are used to make predictions and assign data points to the closest inducing points in a SVGP model, respectively. 
-These layers allow the GP to handle large datasets efficiently and effectively.
+TODO: Describe XGBoost
 
 %% NOTE Replace the following with chapters that are appropriate for your
 %%      style of project.  It is unlikely these will fit your project perfectly.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Results}
+\chapter{Method}
 
-If you are doing a primarily software development project, this is the chapter in which you review the requirements decisions and critique the requirements process.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Results}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Discussion}
 
-This is the chapter in which you review your design decisions at various
-levels and critique the design process.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusion}
-
-This is the chapter in which you review the implementation and testing decisions and issues, and critique these processes.
 
 Code can be output inline using \verb@\lstinline|some code|@.  For example, this code is inline: \lstinline|public static int example = 0;| (we have used the character \verb@|@ as a delimiter, but any non-reserved character not in the code text can be used.)
 
@@ -613,17 +566,9 @@ Code listings are produced using the package `listings'.  This has many useful o
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Future Work}
 
-This is the chapter in which you review the outcomes, and critique the outcomes process. You may include user evaluation here too.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Personal Experiences}
-
-%%
-%% Now we are back to the standard project contents that you should include
-%%
-
-This is the chapter in which you review the major achievements in the light of your original objectives, critique the process, critique your own learning and identify possible future work.
 
 \section[Short Section Title]{Another Section With a Long Title and Whose Title Is Abbreviated in the Table of Contents}
 
@@ -698,6 +643,8 @@ Another section, just for good measure. You can reference a table, figure or equ
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Mathematical Background}
+
+\section{Cholesky Factorisation} \label{sec:CholFac}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
