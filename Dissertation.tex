@@ -92,8 +92,8 @@ Over the last few decades the amount of data driven techniques to improve the ou
 The multi-billion pound market of cricket is no exception. 
 There is a strong incentive to improve the techniques used to better the results of teams. 
 This study aims to investigate the possibility of predicting the outcome of a bowler batter match-up in cricket using modern machine learning techniques and how this could then aid cricket bowling choices and team selection. 
-The main training and testing data will be the 2022 Indian Premier League (IPL) season (TODO: Change)
-The hope is that using knowledge of bowler pitch trajectories and batter shot trajectories gathered from modern ball tracking will add another layer of granularity in addition to simply considering the resultant runs scored of each delivery. 
+The main training and testing data will be the last 10 years of the Indian Premier League (IPL).
+The hope is that using knowledge of bowler pitch trajectories and batter shot trajectories gathered from modern ball tracking will add another layer of granularity in addition to simply considering the resultant runs scored off each delivery. 
 Furthermore, building a model which can incorporate pitch, atmospheric and ground conditions could further improve any models. 
 
 \section{Moneyball}
@@ -114,16 +114,16 @@ Grahams data suggested Salah would pair especially well with Roberto Firmino, wh
 Expected goals turned to real goals in the 2017-2018 season, with Salah scoring 32 goals and Firmino scoring 15. 
 The combination of Klopp and his intuitive knowledge, mixed with the likes of Grahams data-driven knowledge, has led to Liverpool having fantastic recent success winning the 2018-2019 UEFA Champions League and the 2019-2020 English Premier League.
 
-\section{Indian Premier League}
+\section{Indian Premier League} \label{sec:IPL}
 
-The Indian Premier League (IPL) is a professional cricket league based on the Twenty20 format. 
+Throughout this project a base level of knowledge of cricket is assumed. See chapter \ref{chap:CrickBackground} for an introduction to the game, its rules, and some cricket vocabulary. 
+
+The Indian Premier League (IPL) is a professional cricket league based on the Twenty20 format, see section \ref{sec:T20Cricket}. 
 As reported by \citet{ESPNcricinfo2018}, Star Sports invested \$2.55 billion for exclusive broadcasting rights for the 2018 IPL season. 
 This season saw a 29\% increment in the number of viewers, through both digital streaming and television. 
 The interest in the IPL is clear to see, thus increasing the desire to use modern techniques to improve results.
 
 \section{Project Plan}
-
-TODO: This can be removed
 
 There are 26 weeks from Friday the 4th November until the final deadline of Friday the 5th May. 
 The individual project is 24 credits out of a total 60 credits for the year, meaning 40\% of my time can be used for the project. 
@@ -148,8 +148,6 @@ See Gantt chart for overview of plan in figure \ref{fig:gantt_chart}.
 \end{figure}
 
 \section{Resources Required}
-
-TODO: This section should be removed or amended. I think get some data from just one year, or all years and compare to test Horvat and Job.
 
 In order to train any machine learning model an appropriate amount of data for training and testing. 
 Because it is not beneficial to use data that is too old \citep{horvat2020}, a recent season's worth of data would be good, saving some data for testing. 
@@ -639,6 +637,237 @@ Another section, just for good measure. You can reference a table, figure or equ
 %% Use the appendix for major chunks of detailed work, such as these. Tailor
 %% these to your own requirements
 %%
+
+\chapter{Cricket Background} \label{chap:CrickBackground}
+
+TODO: Reference here in the main report for those with limited cricket knowledge.
+
+Whilst knowledge of cricket is useful to understand this project, I do not deem it necessary to appreciate the project and its applications.
+Any key ideas around cricket, T20 and IPL beyond the laws of the game are introduced in the main report.
+Despite this, I present a brief introduction to the game and its laws for those unfamiliar with the sport.
+Certain aspects of cricket have been introduced in limited detail, such as fielding and umpiring as they are unnecessary to understand in detail for this project.
+
+\section{A Brief Overview of Cricket}
+
+Cricket is a bat and ball game played between two teams of eleven players. 
+It is played on a field, the centre of which is a pitch with wickets at each end comprising two bails balanced on three stumps. 
+At the edge of the field is a boundary rope, see section \ref{sec:Boundaries}. 
+The batting side scores runs by hitting the ball bowled at one of the wickets and then running between the wickets, or scoring a boundary.
+The fielding side tries to prevent this, by getting the ball to either wicket and dismissing the batters so they are "out", see section \ref{sec:Dismissals}.
+Which side bats/fields first is determined before the match starts through a coin toss between both team captains.
+When ten batters have been dismissed, the innings ends and the teams swap sides (the fielding side bat, and the batting side field).
+The game is referreed by two umpires.
+In the case of international or professional cricket, there is typically an additional 3rd umpire off the field for video or technology assisted reviews.
+
+\section{T20 Cricket} \label{sec:T20Cricket}
+
+There are varying formats of cricket and the focus in this project is the T20 format (20 over cricket) that is played in the IPL, see section \ref{sec:IPL}. 
+T20 cricket gives the first side 20 overs to score as many runs as they can, or until they have used all 10 of their wickets.
+The teams then swap roles and the opposing team attempt to "chase" the total runs plus one scored by the first team. 
+If they manage to do so they win the match, but if they get all out before the target total, or use all 20 overs before reaching the target, they lose.
+On the rare case a T20 game finishes with both sides scoring the same number of runs, a tie breaker "super over" is played.
+In a super over, each team nominates three batsmen and one bowler to play a one-over-per-side "mini-match".
+If the Super Over also ends up in a tie, it is repeated until the tie is broken.
+An \emph{over} is a set of 6 fair deliveries (so not wides and no balls, see section \ref{sec:Overs}) for the batting team to score.
+
+TODO: Explain that T20 crickets goal is typically to reduce the runs scored vs taking wickets. 
+Do this in the main report, again with a brief intro to 20 over cricket. 
+
+\section{Laws and Gameplay}
+
+\subsection{Playing Field}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Cricket_Field.png}
+    \caption{A typical cricket field \citep{cricketWiki}}
+    \label{fig:CricketField}
+\end{figure}
+
+A cricket field as mentioned, comprises a central pitch with wickets at both ends of the pitch. 
+A wicket is three stumps, with two bails balanced on top. 
+See figure \ref{fig:CricketField} for a visual representation.
+The boundary surrounds the edge of the field and typically the field is oval in shape.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Cricket_Pitch.png}
+    \caption{A typical cricket pitch \citep{cricketWiki}}
+    \label{fig:CricketPitch}
+\end{figure}
+
+Figure \ref{fig:CricketPitch} shows a cricket pitch including the location of the wickets and the creases.
+As illustrated, the pitch is marked at each end with four white painted lines: a bowling crease, a popping crease and two return creases.
+
+\subsection{Runs}
+
+Runs are scored through either boundaries, or batsmen running between the creases.
+For the latter, the batter on strike attempts to score runs by hitting the ball whilst simultaneously not getting out. 
+To score runs, after the batsmen strikes the ball there needs to be enough time for the batsmen at both ends to run to the other end of the wicket.
+If the fielding team get the ball to the wickets before the batsmen they could be \emph{run out}, see section \ref{sec:Dismissals}.
+To register a run, both runners must touch the ground behind the popping crease with either their bats or their bodies (the batters carry their bats as they run). 
+Each completed run increments the score of both the team and the striker.
+Infinitely many runs can be scored off one delivery this way, with the batsmen running back and forth between the wickets.
+Typically the maxmimum runs scored this way would be three, but it is possible to score more if there are misfields.
+
+\subsubsection{Boundaries} \label{sec:Boundaries}
+
+A boundary is scored when the ball is hit by the batsmen all the way to the boundary rope.
+Four runs are scored if the ball touches the ground at all prior to crossing the rope. 
+If the ball is hit all the way over the boundary rope before touching the ground this is six runs. 
+In T20 cricket the batsmen will typically aim to score boundaries, as they have the maximum return of runs.
+
+\subsubsection{Extras}
+
+Additional runs can be gained by the batting team as extras due to errors made by the fielding team. 
+This is achieved in four ways: no-balls, wides, byes, and leg byes. 
+A no ball occurs if the bowler bowls an illegal delivery, most commonly by overstepping the crease, but can also be called by an umpire for dangerous bowling.
+In T20 cricket and IPL, no balls award the batting team a \emph{free hit}, a delivery in which they can only be dismissed via run out, hit the ball twice and obstructing the field (see section \ref{sec:Dismissals}).
+A wide has occured if the bowler bowls so that the ball is out of reach of the batter.
+Both a wide and a no ball have to be re-bowled and award the batting team one run.
+Byes are any runs the batters achieve without hitting the ball, typically when the ball has been missed by the wicket keeper.
+Leg byes are any runs the batters achieve when the ball hits their body, but not their bat.
+
+\subsection{Overs} \label{sec:Overs}
+
+An over is 6 fair deliveries (not including wides and no balls etc.).
+A bowler can not bowl 2 overs in a row and at the end of an over the bowling end on the pitch changes. 
+Despite this, typically bowlers will bowl in \emph{spells}, where they will bowl alternate overs from the same end.
+In T20 cricket a bowler can bowl a maximum of 4 overs, meaning a minimum of 5 bowlers must be used. 
+Typically a bowler might bowl two 2 over spells, however sometimes spinners in the middle of an innings might bowl all of their 4 overs in one spell.
+Unlike bowlers, the batsmen do not change ends at the end of each over. 
+
+\subsection{Dismissals} \label{sec:Dismissals}
+
+There are nine ways a batter can be dismissed in cricket. 
+The most common include being bowled, caught, leg before wicket (lbw), run out and stumped. 
+Less common dismissals include hit wicket, hit the ball twice, obstructing the field, and timed out. 
+For the purpose of this project I will only explain the most common dismissals. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Leg_before_wicket.jpg}
+    \caption{A clear example of leg before wicket (lbw) \citep{lbwWiki}}
+    \label{fig:lbw}
+\end{figure}
+
+\subsubsection{Bowled}
+
+Being bowled is when the batter misses the delivery and the ball hits the stumps and takes the bails off the wickets.
+If the bails do not come off the wickets, the batter is not out, though this is very rare.
+
+\subsubsection{Caught}
+
+Being caught is when the batter strikes the ball in the air and a fielder catches this before the ball touches the ground.
+If the ball touches the ground at any stage (even in the fielders hands) it is not out.
+
+\subsubsection{Leg Before Wicket (lbw)}
+
+Leg before wicket is a more complicated dimissal type.
+Following an appeal by the fielding side, the umpire may rule a batter out lbw if the ball would have struck the wicket but was instead intercepted by any part of the batter's body (except the hand holding the bat). 
+The umpire's decision will depend on a number of criteria, including where the ball pitched, whether the ball hit in line with the wickets, the ball's expected future trajectory after hitting the batsman, and whether the batter was attempting to hit the ball.
+Without explaining the finer details of lbw, a clear example of lbw is illustrated in figure \ref{fig:lbw}. 
+Further information on lbw can be found on \citet{lbwWiki}.
+
+\subsubsection{Run Out}
+
+A run out usually occurs when the batters are attempting to run between the wickets.
+The fielding team must successfully get the ball to one wicket and take the bails off with the ball (or their hands with the ball in them) before a batter has crossed the crease line near the wicket. 
+The incomplete run the batters were attempting does not count.
+
+\subsubsection{Stumped}
+
+Lastly, being stumped involves the wicket-keeper catching the ball after the delivery and taking the bails of the stumps with the ball (or their hands with the ball in them) while the batsman is out of his ground (the batsman leaves his ground when he has moved down the pitch beyond the popping crease, usually in an attempt to hit the ball).
+A batter can only be stumped off a fair delivery (not a no ball or a wide).
+It is a special case of being run out and can only be performed by the fielding wicket keeper.
+
+\subsection{Basic Gameplay Example}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Cricket_Delivery.png}
+    \caption{An example of a ball being bowled and the components in play \citep{cricketWiki}}
+    \label{fig:Delivery}
+\end{figure}
+
+Figure \ref{fig:Delivery} shows a cricket delivery in play. 
+The two batters (3 and 8; wearing yellow) have taken position at each end of the pitch (6). 
+Three members of the fielding team (4, 10 and 11; wearing dark blue) are in shot. 
+The bowler (4) is bowling the ball (5) from his end of the pitch to the batter (8) at the other end who is called the "striker". 
+The other batter (3) at the bowling end is called the "non-striker". 
+The wicket-keeper (10) is positioned behind the striker's wicket (9).
+
+The bowler (4) intends to dimiss the batsmen, or to prevent the striker (8) from scoring runs. 
+By using his bat, the striker (8) intends to defend his wicket and hit the ball away from the pitch in order to score runs.
+
+\subsection{Player Roles}
+
+Typically players are selected to perform a specialised role.
+
+\subsubsection{Bowlers}
+
+As mentioned a minimum of five bowlers are required to bowl in a T20 match.  
+Therefore, team selectors will typically choose 5-6 bowlers for the team for a given match.
+A bowler is someone specialised for bowling in one of two main ways: Seam (pace) bowling, or spin bowling.
+Seam bowlers typically use techniques such as \emph{swing} or \emph{seam} paired with a higher bowling speed (generally anywhere from 70 - 95 mph) to try and get wickets or reduce the runs scored.
+However, in T20 cricket, seam bowlers will typically use a wider variety of delivery types, including slower balls, yorkers, bouncers, slower ball bouncers, wide yorkers, cross seam and more, to make prediciting their bowling more difficult and reduce the runs scored. 
+Spin bowlers come in two main varieties: off spinners or leg spinners, and this essentially means what way they spin the ball. 
+To spin the ball means to get the ball the ball to move dramatically in one direction after its bounce, by spinning it on release from the bowlers hand.
+Due to trying to spin the ball, spinners will typically bowl at a slower speed than pace bowlers (generally 45 - 65 mph).
+Like pace bowlers, a spin bowler in T20 cricket will use a variety of delivery types to try and reduce the runs scored from the opposing team.
+
+\subsubsection{Batters}
+
+The other main role is that of a batter.
+A batters job is to score runs for their team.
+In T20 cricket batters are generally specialised to score boundaries due to the short format, rather than be particularly good at protecting their wicket and staying in bat for many hours.
+
+\subsubsection{Wicket Keepers}
+
+The wicket keeper is a specialist fielder who stands behind the stumps to field the ball after it has been bowled.
+In the modern game, they are expected to also be reasonably good batsmen regardless of their wicket keeping skill.
+
+\subsubsection{All Rounders}
+
+All rounders are a special player who are good at both batting and bowling.
+All rounders are valued players, as they can provide the role of both a batter and bowler whilst only taking up one space on the teamsheet.
+
+\subsubsection{Captain}
+
+The last specialist role I will cover is that of the captain. 
+The captain performs their captain duties as a batter, bowler, wicket keeper, or all rounder, while taking on additional captains duties.
+The captain decides who will bowl each over and where each fielder will be positioned. 
+While decisions are often collaborative, the captain has the final say.
+Captains in cricket typically shoulder more responsibility on the outcome of a cricket match than captains in other sports, given their level of responsibilty.
+
+\section{Data Association and Cricket}
+
+The cricket dataset could be deemed a data association problem. 
+We can say that each outcome (runs scored) of a cricket delivery is generated by a different process. 
+Each of these processes are noisy, as cricket has stochastic outcomes. 
+
+For example, in cricket a seam delivery at the top of off stump is generally considered to be a good ball. 
+This knowledge is gathered through anecdotal experience of humans observing many cricket matches and in turn many cricket deliveries.
+However, it is still entirely possible that a good delivery be hit for a maximum of 6 runs. 
+
+Furthermore, a cricket delivery being a good ball is not a simple relationship. 
+For example, lets take a high level look at a seam bowlers length of delivery in IPL cricket (the "pitchY" feature in the dataset).
+A good short ball (also known as a bouncer) from a quick bowler is one that reaches the batsmen at shoulder or above height. 
+Anything slighly fuller will be at the batsmens chest, which is considered a poor ball, as it is far easier for the batsmen to get over and hit for boundaries.
+Equally, slightly fuller again puts the ball back in a good length, as it is around the top of the stumps. 
+Slighly fuller however, is once again deemed poor, as it is at a full length for the batsmen to step forward and drive or slog for runs. 
+Yet, once again, slighly fuller is a good length again, as a yorker, a ball right at a batsmens feet is considered a very difficult ball to play against. 
+Similar examples can be made with the width of a ball, its swing, its spin, and many other features.
+
+Equally, a "good" or "bad" ball is obviously subjective depending on the match state and what the bowling team is trying to achieve. 
+Typically in an IPL match, the goal of the bowling team is to reduce the oppositions runs scored. 
+The best balls for this requirement, are not the same as the best balls to take a wicket. 
+Equally, there is an idea in cricket of "setting a batsmen up". 
+This idea is having the previous deliveries set the batsmen up to get out to the next ball. 
+For example, a short ball to throw the batsmen off, followed by a yorker right at the stumps. 
+
+From theses examples, it is clear that the game of cricket has many nuances and challenges for modelling with machine learning techniques. 
+Data association techniques however, provide a framework to attempt to seperate some of the differences in how runs are scored in cricket, and model the overlap in the varying outcomes.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
