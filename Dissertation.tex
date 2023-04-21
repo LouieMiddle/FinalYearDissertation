@@ -281,73 +281,73 @@ The column vector inputs for all $n$ cases are aggregated in the $D x n$ design 
 
 \subsection{Gaussian Processes for Regression}
 
-\subsubsection{Weight Space View}
+%\subsubsection{Weight Space View}
 
-TODO: This section might not be necessary, but might be good to show understanding....
+%TODO: This section might not be necessary, but might be good to show understanding....
 
-One can think of a Gaussian process as defining a distribution over functions and inference taking place directly in the space of functions. 
-Although this view is appealing, it is difficult to grasp on first attempt, and so we will start with reviewing the \emph{weight-space view}.
+%One can think of a Gaussian process as defining a distribution over functions and inference taking place directly in the space of functions. 
+%Although this view is appealing, it is difficult to grasp on first attempt, and so we will start with reviewing the \emph{weight-space view}.
+%
+%First, lets review the standard linear regression model with Gaussian noise
 
-First, lets review the standard linear regression model with Gaussian noise
+%\begin{equation}
+%    \centering
+%    {f(\textbf{x}) = \textbf{x}^T\textbf{w}, \quad y = f(\textbf{x}) + \epsilon}
+%\end{equation}
 
-\begin{equation}
-    \centering
-    {f(\textbf{x}) = \textbf{x}^T\textbf{w}, \quad y = f(\textbf{x}) + \epsilon}
-\end{equation}
+%where $\textbf{x}$ is the input vector, $\textbf{w}$ is a vector of weights of the linear model, $f$ is the function value, and $y$ is the observed target value.
+%It is often assumed that the observed values differ from the function values by some noise, which we will treat as an independent, identically distributed Gaussian distribution, with zero mean and variance $\sigma^2_{n}$.
 
-where $\textbf{x}$ is the input vector, $\textbf{w}$ is a vector of weights of the linear model, $f$ is the function value, and $y$ is the observed target value.
-It is often assumed that the observed values differ from the function values by some noise, which we will treat as an independent, identically distributed Gaussian distribution, with zero mean and variance $\sigma^2_{n}$.
+%\begin{equation}
+%    \centering
+%    \epsilon \sim \mathcal{N}(0, \sigma^2_{n})
+%\end{equation}
 
-\begin{equation}
-    \centering
-    \epsilon \sim \mathcal{N}(0, \sigma^2_{n})
-\end{equation}
+%This noise assumption together with the model gives rise to the likelihood, the probability density of the observations given the parameters, which is factored over cases in the training set to give
 
-This noise assumption together with the model gives rise to the likelihood, the probability density of the observations given the parameters, which is factored over cases in the training set to give
+%\begin{equation}
+%    \centering
+%    p(\textbf{y} | X, \textbf{w}) = \prod_{i=1}^n = p(y_{i} | \textbf{x}_{i}, \textbf{w}) =  \prod_{i=1}^n \frac{1}{\sqrt{2\pi}\sigma_{n}} exp(-\frac{(y_{i} - \textbf{x}_{i}^T \textbf{w})^2}{2 \sigma_{n}^2})
+%    TODO: Can do the rest later
+%\end{equation}
 
-\begin{equation}
-    \centering
-    p(\textbf{y} | X, \textbf{w}) = \prod_{i=1}^n = p(y_{i} | \textbf{x}_{i}, \textbf{w}) =  \prod_{i=1}^n \frac{1}{\sqrt{2\pi}\sigma_{n}} exp(-\frac{(y_{i} - \textbf{x}_{i}^T \textbf{w})^2}{2 \sigma_{n}^2})
-    TODO: Can do the rest later
-\end{equation}
-
-We put a zero mean Gaussian prior with covariance matrix $\Sigma_{p}$ on the weights 
-
-\begin{equation}
-    \centering
-    \textbf{w} \sim \mathcal{N}(0, \Sigma_{p})
-\end{equation}
-
-Inference is based on the posterior distribution over the weights computed by Baye's rule, given by
-
-\begin{equation}
-	\centering
-	P(\textbf{w} | \textbf{y}, X)  = \frac{p(\textbf{y} | X, \textbf{w})p(\textbf{w})}{p(\textbf{y} | X)}
-\end{equation}
-
-Note that prior $p(\textbf{w})$ neglects the conditioning on $X$, as it is independent of the inputs. The normalising constant $p(\textbf{y} | X)$, also know as the marginal likelihood is independent of the weights and is given by
-
-\begin{equation}
-	\centering
-	P(\textbf{y} | X)  = \int p(\textbf{y} | X, \textbf{w})p(\textbf{w}) d\textbf{w}
-\end{equation}
-
-Since the number of obervations is finite and the function $f$ lives in an infinite dimensional function space, the estimation of $f$ is uncertain and based on prior assumptions about its structure.
-
-TODO: Finish this later when you can ask Adam about it....
-
-To make predictions we average over all possible parameter values, weighted by their posterior probability.
-Thus the predictive distribution for $f_{*} \triangleq f(\textbf{x}_{*})$ at $\textbf{x}_{*}$ is given by averaging the output of all possible linear models w.r.t the Gaussian posterior
-
-\begin{equation}
-	\begin{aligned}
-		\centering 
-		p(f_{*} | \textbf{x}_{*}, X, \textbf{y}) &= \int p(f_{*} | \textbf{x}_{*}, \textbf{w})p(\textbf{w} | X, \textbf{y}) d\textbf{w}\\
-		&= \mathcal{N}(\frac{1}{\sigma_{n}^2} \textbf{x}_{*}^T A^{-1} X \textbf{y}, \enskip \textbf{x}_{*}^T A^{-1} \textbf{x}_{*}).
-	\end{aligned}
-\end{equation}
-
-The predictive distribution is again Gaussian.
+%We put a zero mean Gaussian prior with covariance matrix $\Sigma_{p}$ on the weights 
+%
+%\begin{equation}
+%    \centering
+%    \textbf{w} \sim \mathcal{N}(0, \Sigma_{p})
+%\end{equation}
+%
+%Inference is based on the posterior distribution over the weights computed by Baye's rule, given by
+%
+%\begin{equation}
+%	\centering
+%	P(\textbf{w} | \textbf{y}, X)  = \frac{p(\textbf{y} | X, \textbf{w})p(\textbf{w})}{p(\textbf{y} | X)}
+%\end{equation}
+%
+%Note that prior $p(\textbf{w})$ neglects the conditioning on $X$, as it is independent of the inputs. The normalising constant $p(\textbf{y} | X)$, also know as the marginal likelihood is independent of the weights and is given by
+%
+%\begin{equation}
+%	\centering
+%	P(\textbf{y} | X)  = \int p(\textbf{y} | X, \textbf{w})p(\textbf{w}) d\textbf{w}
+%\end{equation}
+%
+%Since the number of obervations is finite and the function $f$ lives in an infinite dimensional function space, the estimation of $f$ is uncertain and based on prior assumptions about its structure.
+%
+%TODO: Finish this later when you can ask Adam about it....
+%
+%To make predictions we average over all possible parameter values, weighted by their posterior probability.
+%Thus the predictive distribution for $f_{*} \triangleq f(\textbf{x}_{*})$ at $\textbf{x}_{*}$ is given by averaging the output of all possible linear models w.r.t the Gaussian posterior
+%
+%\begin{equation}
+%	\begin{aligned}
+%		\centering 
+%		p(f_{*} | \textbf{x}_{*}, X, \textbf{y}) &= \int p(f_{*} | \textbf{x}_{*}, \textbf{w})p(\textbf{w} | X, \textbf{y}) d\textbf{w}\\
+%		&= \mathcal{N}(\frac{1}{\sigma_{n}^2} \textbf{x}_{*}^T A^{-1} X \textbf{y}, \enskip \textbf{x}_{*}^T A^{-1} \textbf{x}_{*}).
+%	\end{aligned}
+%\end{equation}
+%
+%The predictive distribution is again Gaussian.
 
 \subsubsection{Function-space View}
 
@@ -586,6 +586,10 @@ TODO: Describe XGBoost
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Method}
 
+\section{Many Gaussian Processes}
+
+\section{XGBoost}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Results}
@@ -612,14 +616,6 @@ public static void main() {
 \end{lstlisting}
 
 Code listings are produced using the package `listings'.  This has many useful options, so have a look at the package documentation for further ideas.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Future Work}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Personal Experiences}
 
 \section[Short Section Title]{Another Section With a Long Title and Whose Title Is Abbreviated in the Table of Contents}
 
@@ -895,6 +891,8 @@ Captains in cricket typically shoulder more responsibility on the outcome of a c
 \chapter{Mathematical Background}
 
 \section{Cholesky Factorisation} \label{sec:CholFac}
+
+\section{Kullback–Leibler Divergence} \label{sec:KLDiv}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
