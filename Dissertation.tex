@@ -524,8 +524,18 @@ For classification models, the Gaussian likelihood is inappropriate; a different
 \subsection{Sparse Variational Gaussian Processes}
 
 A major drawback on Gaussian processes is their $O(N^3)$ complexity when inversing the covariance matrix $K$.
-An approach to reduce this complexity is \emph{Sparse Variational Gaussian Processes} \citep{Hensman2014}.
-Spare approximations of GPs are a method of approximating a GP using a $M < N$ set of \emph{inducing points} that can represent the entire dataset, rather than $X$ itself.
+An approach to reduce this complexity is \emph{Sparse Variational Gaussian Processes} (SVGP) \citep{Hensman2014}.
+Spare approximations of GPs are a method of approximating a GP using a $M < N$ set of \emph{inducing points} $\textbf{Z}$ and \emph{inducing variables} $\textbf{u}$ that can represent the entire dataset, rather than $X$ itself. 
+This approach can work well for datasets with high levels of redundancy, but also introduces the problem of choosing the subset.
+
+Using inducing points we arrive at the Nystr{\"o}m approximation
+
+\begin{equation}
+	K_{NN} \approx K_{NM} K_{MM}^-1 K_{MN},
+\end{equation}
+
+where $K_{NM} = K(\textbf{X}, \textbf{Z})$ and $K_{MM} = K(\textbf{Z}, \textbf{Z})$.
+The SVGP complexity now costs $O(NM^2)$ instead of $O(N^3)$.
 
 \section{Data Association}
 
@@ -569,11 +579,15 @@ Data association techniques however, provide a framework to attempt to seperate 
 
 \subsection{Data Association with Gaussian Processes}
 
-\citep{Kaiser2018}
+The data association with Gaussian processes model introduced by \citet{Kaiser2018} assumes there exists $K$ independent functions.
+The assignment of the $n^{th}$ data point to a function is specificed by the indicator vector $\textbf{a}_{n} \in {0, 1}^K$ which has exactly one non-zero entry.
+The assignment probabilities of outputs is calculated with a softmax function and multinomial distribution. 
 
 \subsection{Modulated Scalable Gaussian Processes}
 
-\citep{Lui2020}
+\citet{Lui2020} proposed a similar method with a tighter ELBO.
+\citet{Kaiser2018} keeps the latent variables $\textbf{W}$ by approximating $\log p(\textbf{y}, \textbf{W}$ rather than the interested $\log p(y)$.
+\citet{Lui2020} directly approximates $\log p(y)$ by marginalising all the latent variables out.
 
 \section{Gradient Boosting}
 
@@ -916,7 +930,7 @@ Captains in cricket typically shoulder more responsibility on the outcome of a c
 \section{File: yourCodeFile.java}
 \lstinputlisting[basicstyle=\scriptsize]{yourCodeFile.java}
 \end{multicols}
-\end{landscape}
+\end{landscape}	
 
 %STOP IGNORING WORDS
 %TC:endignore 
