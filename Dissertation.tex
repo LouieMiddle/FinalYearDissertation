@@ -7,8 +7,18 @@
 \usepackage{Bath-CS-Dissertation}
 \usepackage{lmodern}
 \usepackage{float}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
-\title{\bf $\langle$Dissertation Title$\rangle$}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\algblock{Input}{EndInput}
+
+\title{\bf The Application of Gaussian Processes in Cricket}
 \author{Louie Middle}
 \date{Bachelor of Science in Computer Science\\ 
                                  % E.g.: Bachelor of Science in Computer Science
@@ -36,7 +46,7 @@
 \consultation{0}
 \newpage
 
-\declaration{$\langle$Dissertation Title$\rangle$}{Louie Middle}
+\declaration{The Application of Gaussian Processes in Cricket}{Louie Middle}
 \newpage
 
 \hypersetup{pageanchor=true}
@@ -57,11 +67,23 @@ $\rangle$
 \listoftables
 \newpage
 
+\listofalgorithms
+\newpage
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\addcontentsline{toc}{chapter}{Acknowledgements}
 \chapter*{Acknowledgements}
 
-Add any acknowledgements here.
+I would like to acknowledge my supervisor Adam Hartshorne for his support and advice throughout the development of this project.  
+In addition, my partner Hoi Ching Leung has provided much personal support for me throughout this challenging final year.
+Lastly, I would like to thank my parents, for who without I would not have had the amazing oppurtunities in life that I've had, including University and the chance to work on this project.
+
+\newpage
+
+\addcontentsline{toc}{chapter}{Glossary}
+\chapter*{Glossary}
+TODO: Write a glossary of terms
 
 \newpage
 \setcounter{page}{1}
@@ -75,36 +97,63 @@ Over the last few decades the amount of data driven techniques to improve the ou
 The multi-billion pound market of cricket is no exception. 
 There is a strong incentive to improve the techniques used to better the results of teams. 
 This study aims to investigate the possibility of predicting the outcome of a bowler batter match-up in cricket using modern machine learning techniques and how this could then aid cricket bowling choices and team selection. 
-The main training and testing data will be the last 10 years of the Indian Premier League (IPL).
+The main training and testing data used will be the last 10 years of the Indian Premier League (IPL).
 The hope is that using knowledge of bowler pitch trajectories and batter shot trajectories gathered from modern ball tracking will add another layer of granularity in addition to simply considering the resultant runs scored off each delivery. 
 Furthermore, building a model which can incorporate pitch, atmospheric and ground conditions could further improve any models. 
 
 \section{Moneyball}
 
-The release of Moneyball \citep{Moneyball2004}, was a big driver in the increased use of statistical driven techniques in Baseball player selection and scouting techniques. 
+The release of the book Moneyball \citep{Moneyball2004}, was a big driver in the increased use of statistical driven techniques in Baseball player selection and scouting techniques. 
 Pioneered by the likes of Bill James and Sabermetrics, Moneyball has entered baseball's lexicon; teams that value Sabermetrics are often said to be playing "Moneyball".  
 One of the notable benefits of a Moneyball approach is in reducing player salaries, whilst maintaining high performance. 
 Notable recent Moneyball successes include the Tampa Bays, whose entire 2019 roster was around 63\% of the total budget of the \$40 million the Houston Astros were spending on Gerrit Cole's contract. 
 It was reported that the Rays spending totalled \$648,000 per victory, compared to the Astros \$1.54 million per win.
-Despite this large difference pay, the Rays still had a successful season and finished second in the American League East \citep{Fox2019}.
+Despite this large difference in pay, the Rays still had a successful season and finished second in the American League East \citep{Fox2019}.
 
 Similar successes can be found in other sports, such as association football (or soccer). 
 In 2010 Liverpool F.C. were purchased by Boston Red Sox owner John W. Henry. 
-With the Red Sox, Henry hired Sabermetrics pioneer Bill James and their Moneyball approach saw the team win the World Series in 2004, 2007, 2013 and 2018. 
-With Liverpool, Henry hired University of Cambridge PhD Ian Graham in 2012 as head of analysis and J\"urgen Klopp as Manager in 2015 \citep{Liverpool2022}. 
+During this time with the Red Sox, Henry hired Sabermetrics pioneer Bill James and their Moneyball approach saw the team win the World Series in 2004, 2007, 2013 and 2018. 
+Attempting to replicate these results with Liverpool, Henry hired University of Cambridge PhD Ian Graham in 2012 as head of analysis and J\"urgen Klopp as Manager in 2015 \citep{Liverpool2022}. 
 Graham influenced the signings of key players, such as Mohammed Salah, Philippe Coutinho and Naby Ke\"ita. 
-Grahams data suggested Salah would pair especially well with Roberto Firmino, who creates more expected goals than nearly anyone else in his position \citep{Liverpool2019}. 
+Graham's data suggested Salah would pair especially well with Roberto Firmino, who creates more expected goals than nearly anyone else in his position \citep{Liverpool2019}. 
 Expected goals turned to real goals in the 2017-2018 season, with Salah scoring 32 goals and Firmino scoring 15. 
-The combination of Klopp and his intuitive knowledge, mixed with the likes of Grahams data-driven knowledge, has led to Liverpool having fantastic recent success winning the 2018-2019 UEFA Champions League and the 2019-2020 English Premier League.
+The combination of Klopp and his intuitive knowledge, paired with the likes of Grahams data-driven knowledge, has led to Liverpool having fantastic recent success winning the 2018-2019 UEFA Champions League and the 2019-2020 English Premier League.
 
-\section{Indian Premier League} \label{sec:IPL}
+\section{T20 Cricket} \label{sec:T20Cricket}
 
-Throughout this project a base level of knowledge of cricket is assumed. See chapter \ref{chap:CrickBackground} for an introduction to the game, its rules, and some cricket vocabulary. 
+Whilst knowledge of cricket is useful to understand this project, it is not necessary to appreciate the project and its applications.
+Despite this, I present a brief introduction to the game and its laws for those unfamiliar with the sport in chapter \ref{chap:CrickBackground}.
 
-The Indian Premier League (IPL) is a professional cricket league based on the Twenty20 format, see section \ref{sec:T20Cricket}. 
+Whilst there are varying formats of cricket, the focus in this project is the T20 format (20 over cricket) that is played in the IPL.
+T20 cricket gives the first team 20 overs to score as many runs as possible, or until they have used all 10 of their wickets.
+The teams then swap roles and the opposing team attempt to "chase" the total runs plus one scored by the first team. 
+If they manage to do so they win the match, but if all their batters get out before the target total, or use all 20 overs before reaching the target, they lose.
+
+Longer formats of the game such as 40/50 over one day matches and four/five day matches have different tactics compared to T20 cricket.
+Due to T20s shorter nature, a bowling team's goal is generally to minimise the runs the batting team can score, in addition to the traditional goal of taking wickets.
+Typically, once a batter settles into their innings they attempt to score more boundaries to maximise the runs scored in the short playing period.
+Furthermore, some "power hitters" are selected for their specialism in scoring boundaries (see \ref{sec:Boundaries}) at the end of an innings, with no "settling in" period that is afforded to batters in longer formats or at the start of a T20 innings.
+Whilst this style of play is more risky as the chances of misplaying increase, it is generally more beneficial to score as many runs as possible in the short time T20 cricket allots.
+In general T20 batters protect their wicket less than those in other formats and play a riskier, high run scoring style of play.
+\citet{Irvine2017} and the general consensus of the cricket community is that this high boundary scoring carries a greater importance than scoring singles (see \ref{sec:Runs}). 
+\citet{Irvine2017} found that the higher the number of singles scored was detrimental to a batting team's chances of success.
+
+Due to the batters desire to score boundaries in T20, bowlers might adopt different strategies to reduce the batters ability to score boundaries. 
+This is often done through bowling a wider variety of deliveries and aiming for dot balls (see \ref{sec:Runs}) or singles.
+Consequently, this should reduce the runs the batters score and increase the chance of taking a wicket due to the batter needing to play a wider variety of shots to score runs, which increases the chance of them making a mistake.
+In general, T20 bowling attacks often assess the ways to reduce the number of boundaries the opposing team can score.
+\citet{Irvine2017} found that increased number of dot balls led to a higher chance of winning for the bowling team. 
+
+It is therefore key for bowling attacks to reduce the number of boundaries scored and increase the number of dot balls.
+Therefore, a key objective of this project is to accurately predict which delivery would be most optimal to stop a boundary and cause a dot ball.
+
+\subsection{Indian Premier League} \label{sec:IPL}
+
+The Indian Premier League (IPL) is a professional cricket league based on the T20 format.
 As reported by \citet{ESPNcricinfo2018}, Star Sports invested \$2.55 billion for exclusive broadcasting rights for the 2018 IPL season. 
 This season saw a 29\% increment in the number of viewers, through both digital streaming and television. 
-The interest in the IPL is clear to see, thus increasing the desire to use modern techniques to improve results.
+The interest in the IPL is clear.
+This increases the desire to use modern machine learning techniques to improve results.
 
 \section{Project Plan}
 
@@ -120,8 +169,8 @@ I have split my project into 3 main sections:
     \item Analysis of models and write up (2 weeks)
 \end{enumerate}
 
-The buffer time can be used for any road bumps, or sections that need it. 
-See Gantt chart for overview of plan in figure \ref{fig:gantt_chart}.
+The buffer time can be used for any unforseen challenges, or sections that need it. 
+See a Gantt chart for an overview of the plan in figure \ref{fig:gantt_chart}.
 
 \begin{figure}[H]
     \centering
@@ -133,105 +182,113 @@ See Gantt chart for overview of plan in figure \ref{fig:gantt_chart}.
 \section{Resources Required}
 
 In order to train any machine learning model an appropriate amount of data for training and testing. 
-Because it is not beneficial to use data that is too old \citep{horvat2020}, a recent season's worth of data would be good, saving some data for testing. 
+Because it is not beneficial to use data that is too old \citep{horvat2020}, at least a recent season's worth of data would be good, saving some data for testing. 
 
 Training machine learning models may also require appropriate computing power depending on the models used and size of the data set. 
-This could potentially be achieved with the University of Bath's Hex cluster.
-
-\section[Short Section Title]{Another Section With a Long Title and Whose Title Is Abbreviated in the Table of Contents}
-
-%-------------------------------------------------------------------------------
-\begin{table}[htb]
-\caption{An example table}
-\bigskip
-\begin{center}
-\label{Example-Table}
-\begin{tabular}{|l|l|}
-\hline
-Items & Values \\
-\hline
-\hline
-Item 1 & Value 1 \\
-Item 2 & Value 2 \\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
-
-Another section, just for good measure. You can reference a table, figure or equation using \verb|\ref|, just like this reference to Table \ref{Example-Table}.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Example Lists}
-
-%-------------------------------------------------------------------------------
-\subsection{Enumerated}
-
-\begin{enumerate}
-\item Example enumerated list:
-  \begin{itemize}
-  \item a nested enumerated list item;
-  \item and another one.
-  \end{itemize}
-\item Second item in the list.
-\end{enumerate}
-
-%-------------------------------------------------------------------------------
-\subsection{Itemised}
-
-\begin{itemize}
-\item Example itemised list.
-  \begin{itemize}
-  \item A nested itemised list item.
-  \end{itemize}
-\item Second item in the list.
-\end{itemize}
-
-%-------------------------------------------------------------------------------
-\subsection{Description}
-
-\begin{description}
-\item[Item 1]First item in the list.
-\item[Item 2]Second item in the list.
-\end{description}
-
+This could potentially be achieved with the University of Bath's Hex GPU cluster.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Literature and Technology Survey}
 
-\section{Existing Machine Learning in Sport}
+\section{Existing Machine Learning Research on Sport}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Horvat&Job_Figure2.png}
-    \caption{Number of papers using a particular ML algorithm group \citep{horvat2020}}
+    \caption{Total number of papers using a particular ML algorithm group \citep{horvat2020}}
     \label{fig:NoPapers}
 \end{figure}
 
 TODO: Could be worth putting the one with publication year in to show uptick in research? But not necessary right now.
 
-Figure \ref{fig:NoPapers} from \citet{horvat2020}'s literature review of machine learning in sport for score prediction shows what current methods are currently used in the field as of May 2020. 
-As you can see, neural networks have a large research output, followed by other popular methods such as regression, SVMs, regression, decision trees, and gradient boosting with k-NN being the least used. 
-It is important to note, that just because a large body of research has been carried out with certain methods, it does not necessarily mean they are the best. 
+Figure \ref{fig:NoPapers} from \citet{horvat2020}'s literature review of machine learning in sport for score prediction show the methods that are currently used in the field as of May 2020. 
+As shown in the figure, neural networks have a large research output.
+This is followed by other popular methods such as regression, support vector machines (SVMs), regression, decision trees, and gradient boosting, with k-nearest-neighbours (k-NN) being the least used. 
+It is important to note that whilst a larger body of research has been carried out with certain methods, it does not necessarily mean they are the optimal method.
 
-\citet{horvat2020} also showed that including too many seasons worth of data for training models reduces the quality of results. 
-To those with a basic knowledge of cricket and sport this is not surprising given that in just a few years, many things related to team composition and tactics can change. 
-The best prediction results were achieved by researchers who used data from a single season and a data segmentation evaluation method. 
-When using data from a single season, most of the data is used for training and a small portion for testing. 
-Some researchers used the same data set for training and testing yielding unrealistically accurate results.
+\citet{horvat2020} also showed that including excessive seasons worth of data for training models reduces the quality of results. 
+To those with a basic knowledge of cricket and sport this is not surprising given that in just a few years, many factors relating to team composition and tactics can change. 
+The most accurate results were achieved by researchers who used data from a single season and a data segmentation evaluation method. 
+When using data from a single season, the majority of the data was used for training and a small portion for testing. 
+Some researchers used the same data set for training and testing, yielding unrealistically accurate results.
 
-\section{Existing Machine Learning in Cricket}
+\section{Existing Machine Learning Research on Cricket} \label{sec:CrickSurvey}
 
 \citet{KampakisStylianos2015} used Naïve Bayes, logistic regression, random forests and gradient boosted decision trees to predict the outcome of English County 20 over Cricket Matches from 2009 - 2014. 
 The performance of each algorithm was assessed using one year's data as the training data set and the following year's data for testing. 
 Each model was tested over these seasons and achieved an accuracy of 62.4\% for Naïve Bayes, 60.1\% for logistic regression, 55.6\% for random forests and 57.2\% for decision trees.
 
-\subsection{Existing Machine Learning in the Indian Premier League}
+\begin{table}[H] \label{tab:ResearchCrick}
+	\centering
+	\caption{Research areas in cricket and their percentage of the total research output in cricket \citep{Wickramasinghe2022}}
+	\begin{tabular}{||c c ||} 
+		\hline
+		Research Area & \% of Studies \\ [0.5ex] 
+		\hline\hline
+		Game Outcome Prediction & 35 \\ 
+		\hline
+		Player's Performance Classification & 16 \\
+		\hline
+		Batting Style/Stroke Classification & 9 \\
+		\hline
+		Other & 9 \\
+		\hline
+		Umpire's Decision/Gestures & 6 \\
+		\hline
+		Score Prediction & 5 \\
+		\hline
+		Cricket Commentary/Media & 4 \\
+		\hline
+		Pitch Behaviour Predicition & 4 \\
+		\hline
+		Team Selection/Performance & 3 \\ [1ex] 
+	\hline
+	\end{tabular}
+\end{table}
+
+\citet{Wickramasinghe2022} review of machine learning in cricket from December 2022 classified the current areas of research in cricket. 
+He found that over half of studies aim to predict the outcome of a game, or classify different players performances. 
+The full table of results can be seen in table \ref{tab:ResearchCrick}. 
+From this it is clear to see that there is very little research in predicting batter bowler matchups or the outcome of a single delivery. 
+Instead, most of the focus is on predicting game outcomes or overall player performance.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{ML_techniques_cricket.png}
+    \caption{Total number of publications for each ML technique each year in cricket research \citep{Wickramasinghe2022}}
+    \label{fig:NoPapersCricket}
+\end{figure}
+
+\citet{Wickramasinghe2022} also evaluated the frequently used ML techniques in cricket, as shown in figure \ref{fig:NoPapersCricket}. 
+There is a noticeable lack of deep learning, reinforcement learning or natural language processing techniques.
+Furthermore, techniques such as XGBoost have only recently begun to be adopted, and Gaussian processes have not been used at all.
+Lastly, a clear uptick in the number of publications can be seen over the years, which is also corroborated in sport as whole in \citet{horvat2020}.
+It once again highlights the growing interest in ML in sport.
+
+From \citet{Wickramasinghe2022} work, it is clear that there is a lack of current research in both batter player matchups and use of a wider breadth of ML techniques. 
+Another objective of this project, is to attempt to start research in new areas of cricket, as well as use under-utilised  ML techniques.
+
+\subsection{Existing Machine Learning Research on the Indian Premier League}
 
 \citet{Saikia2012} have used Artificial Neural Network models to predict the performance of bowlers based on their performance in the first three seasons of the IPL. 
 When the predicted results were validated with the players performances in the fourth season, the model had an accuracy of 71.43\%.
 
-\section{Research with similar goals}
+Otherwise, there is generally limited research on the IPL and it is an area ripe for research.
+
+\section{Hawk-Eye and Ball Tracking}
+
+The data-set used in this project contains tracking data from Hawk-Eye systems.
+Hawk-Eye Innovations is a sports technology company, that provides many products, including computer version services.
+In particular there is a focus on ball and player tracking in sports, including cricket.
+In this project the emphasis is placed on the ball tracking.
+Hawk-Eye have a number of cameras at IPL grounds, that the video from is then triangulated and combined to create a three-dimensional representation of the ball's trajectory.
+It has been adopted as an ajudication tool by many governing bodies in cricket and is generally accepted to be accurate.
+Further explanation of the dataset and features used in this project are explained in section \ref{sec:Dataset}.
+
+\section{Research With Similar Goals}
+
+TODO: Need to change this section to match my new goal of just 1 delivery predicition vs an entire over.
 
 The Singlearity-PA model \citep{silver2021baseball} wanted to attempt to solve one of the most fundamental questions in baseball:	 How can we	predict the outcome of a batter	vs. pitcher plate appearance (PA)? 
 This is similar to my goal with cricket:  To predict the outcome of batter vs bowler for an over.
@@ -255,201 +312,515 @@ It is important not to compare baseball and cricket too closely, but the techniq
 \section{Drawbacks of Existing Methods}
 
 Sport outcome predictors are most commonly used by supervised ML methods, typically classification methods or regression methods \citep{horvat2020}. 
-Whilst existing research can achieve impressive results, surprises in sport still happen. For example, the odds of Leicester City winning the Premier League in the 2015/2016 season were 1-5000. 
+Whilst existing research can achieve impressive results, unpredictable outcomes in sport still happen. For example, the odds of Leicester City winning the Premier League in the 2015/2016 season were 1-5000. 
 However, analysis of their performances show their title was absolutely deserved.
+Examples like this illustrate the limitations of current predictions in sport.
 
-This could be explained in that a problem with existing models is that they only output a single value. 
+One explanation is that existing models only output a single value. 
 There is no uncertainty in the output as to how confident the model is in its prediction. 
-This has a problem in that making decisions based on this prediction becomes much more difficult, as decision makers can't be sure how much to trust the prediction. 
-Furthermore, certain inputs exist where very little similar training data might exist. 
+This is problematic in that making decisions based on this prediction becomes much more difficult, as decision makers can't be sure how much to trust the prediction. 
+Furthermore, certain test input data could have very little similar training data to it. 
 In such cases, the uncertainty in a models output should be much greater. 
 Yet, existing models will still provide a prediction the same as it would for inputs where there was a large amount of training data.
+
+ TODO: talk about \citep{Blumberg2020}.
 
 \section{Gaussian Processes in Sport}
 
 TODO: Talk about Gaussian processes in sport
 
-\section{Data Association with Gaussian Processes}
+\chapter{Background}
 
-\citep{Kaiser2018}
-\citep{Lui2020}
-\citep{Blumberg2020}
+This chapter will cover the requisite background for Gaussian processes and gradient boosting, the two key methods used in this project.
 
-\subsection{Summary}
+\section{Gaussian Processes}
 
-A GP is a probabilistic model used for regression and classification tasks in machine learning. 
-It models the relationship between inputs and outputs as a random process and makes predictions by modeling the distribution of outputs given the inputs.
+\citep{Yi2019} TODO: This has good explanations of stuff
 
-First, two kernel objects "pred\_kernel" and "assign\_kernel" are created using the "KERNEL.kern" function. 
-These kernels define the covariance function used in the GP model. 
-The input dimension, lengthscales, variance, and ARD (Automatic Relevance Determination) flag are set using the "input\_dim", "lengthscales", "variance", and "ARD" arguments, respectively.
+\citep{Griffiths2023} TODO: As does this
 
-The centroids "Z" and "Z\_assign" of the input data "Xtrain" are computed using the k-means clustering algorithm "kmeans", where "num\_ind" is the number of inducing points.
+This section introduces Gaussian processes and the following section then explains how to extend their application to solve data association problems. 
+This project is mostly concerned with using Gaussian processes for classification, but a background on using Gaussian processes for regression is provided first as a basis before their extension to classification tasks. 
+As Gaussian processes are not computationally cheap, sparse approximations were used in this project and are also reviewed in this section.
 
-Two GP layers "pred\_layer" and "assign\_layer" are created using the "SVGP\_Layer" class. 
-The "pred\_layer" uses the "pred\_kernel" and the "Z" centroids, while the "assign\_layer" uses the "assign\_kernel" and the "Z\_assign" centroids. 
-The number of inducing points and outputs is set using the "num\_inducing" and "num\_outputs" arguments.
+Gaussian processes are a non-parametric regression model. 
+\emph{Non-parametric models} are not based on insights about the concrete structure of the function to be modelled, but instead make assumptions about the function itself, such as its smoothness or differentiability. 
+Instead of modeling a distribution of parameter values, a non-parametric model tries to find a distribution $p(f*)$ of probable functions that represents the function $f$ to be estimated \citep{Kaiser2017}.
 
-A Gaussian likelihood object "lik" is created using the "Gaussian" class. 
-This likelihood object defines the probability distribution over the outputs.
+In addition, Gaussian processes are a supervised learning technique. 
+It starts with a training data set $\mathcal{D}$ of $n$ observations, $\mathcal{D} = (\textbf{x}_{i}, y_{i} | i = 1, ..., n)$.
+$\textbf{x}$ denotes an input vector (covariates) of dimension $D$ and $y$ denotes an output or target. 
+The column vector inputs for all $n$ cases are aggregated in the $D x n$ design matrix $X$ and the targets collected in the vector $\textbf{y}$, such that $\mathcal{D} = (X, \textbf{y})$.
 
-Finally, a sparse Multi-output Gaussian Process (SMGP) model is created using the "SMGP" class.
-The "likelihood" argument is set to "lik", and the "pred\_layer" and "assign\_layer" arguments are set to "pred\_layer" and "assign\_layer" respectively. 
-The number of output dimensions "K", the number of Monte Carlo samples "num\_samples", and the number of data points "num\_data" are also specified.
+\subsection{Gaussian Processes for Regression}
 
-\subsection{Covariance Function}
+%\subsubsection{Weight Space View}
 
-The covariance function, also known as the kernel function, is a key component in Gaussian Process (GP) models. 
-It defines the covariance or similarity between the input points. 
-The covariance function models the assumptions about the underlying function that generates the data.
+%TODO: This section might not be necessary, but might be good to show understanding....
 
-The covariance function takes two inputs, x and x', and returns the covariance between the two inputs. 
-This can be interpreted as the degree of similarity between the two inputs. 
-The choice of the covariance function determines the type of GP model and its flexibility in fitting the data. 
-Common choices for covariance functions include radial basis functions, polynomial functions, and the squared exponential function.
+%One can think of a Gaussian process as defining a distribution over functions and inference taking place directly in the space of functions. 
+%Although this view is appealing, it is difficult to grasp on first attempt, and so we will start with reviewing the \emph{weight-space view}.
+%
+%First, lets review the standard linear regression model with Gaussian noise
 
-The covariance function can be parameterized by several hyperparameters, such as the lengthscales, which determine the smoothness of the function, and the variance, which determines the magnitude of the output. 
-These hyperparameters can be learned during the training process.
+%\begin{equation}
+%    \centering
+%    {f(\textbf{x}) = \textbf{x}^T\textbf{w}, \quad y = f(\textbf{x}) + \epsilon}
+%\end{equation}
 
-In summary, the covariance function in a GP model determines the similarity between the inputs, and is a critical component in defining the assumptions about the underlying function and its flexibility in fitting the data.
+%where $\textbf{x}$ is the input vector, $\textbf{w}$ is a vector of weights of the linear model, $f$ is the function value, and $y$ is the observed target value.
+%It is often assumed that the observed values differ from the function values by some noise, which we will treat as an independent, identically distributed Gaussian distribution, with zero mean and variance $\sigma^2_{n}$.
 
-\subsection{GP Layers}
+%\begin{equation}
+%    \centering
+%    \epsilon \sim \mathcal{N}(0, \sigma^2_{n})
+%\end{equation}
 
-TODO: This section can potentially never be mentioned, as now using GPFlow SVGP which isn't called `layer`.
+%This noise assumption together with the model gives rise to the likelihood, the probability density of the observations given the parameters, which is factored over cases in the training set to give
 
-In Gaussian Process (GP) models, layers can be used to define the structure of the model and simplify the modeling process. 
-A layer in a GP model typically consists of a set of inducing points, which are used to make predictions about the output. 
-The choice of inducing points and the number of inducing points can greatly affect the accuracy and computational efficiency of the GP model.
+%\begin{equation}
+%    \centering
+%    p(\textbf{y} | X, \textbf{w}) = \prod_{i=1}^n = p(y_{i} | \textbf{x}_{i}, \textbf{w}) =  \prod_{i=1}^n \frac{1}{\sqrt{2\pi}\sigma_{n}} exp(-\frac{(y_{i} - \textbf{x}_{i}^T \textbf{w})^2}{2 \sigma_{n}^2})
+%    TODO: Can do the rest later
+%\end{equation}
 
-Layers can be used to model different aspects of the data, such as the mean function and the covariance function. 
-The mean function can be modeled as a linear combination of the inputs, while the covariance function can be defined by a radial basis function or a polynomial function.
+%We put a zero mean Gaussian prior with covariance matrix $\Sigma_{p}$ on the weights 
+%
+%\begin{equation}
+%    \centering
+%    \textbf{w} \sim \mathcal{N}(0, \Sigma_{p})
+%\end{equation}
+%
+%Inference is based on the posterior distribution over the weights computed by Baye's rule, given by
+%
+%\begin{equation}
+%	\centering
+%	P(\textbf{w} | \textbf{y}, X)  = \frac{p(\textbf{y} | X, \textbf{w})p(\textbf{w})}{p(\textbf{y} | X)}
+%\end{equation}
+%
+%Note that prior $p(\textbf{w})$ neglects the conditioning on $X$, as it is independent of the inputs. The normalising constant $p(\textbf{y} | X)$, also know as the marginal likelihood is independent of the weights and is given by
+%
+%\begin{equation}
+%	\centering
+%	P(\textbf{y} | X)  = \int p(\textbf{y} | X, \textbf{w})p(\textbf{w}) d\textbf{w}
+%\end{equation}
+%
+%Since the number of obervations is finite and the function $f$ lives in an infinite dimensional function space, the estimation of $f$ is uncertain and based on prior assumptions about its structure.
+%
+%TODO: Finish this later when you can ask Adam about it....
+%
+%To make predictions we average over all possible parameter values, weighted by their posterior probability.
+%Thus the predictive distribution for $f_{*} \triangleq f(\textbf{x}_{*})$ at $\textbf{x}_{*}$ is given by averaging the output of all possible linear models w.r.t the Gaussian posterior
+%
+%\begin{equation}
+%	\begin{aligned}
+%		\centering 
+%		p(f_{*} | \textbf{x}_{*}, X, \textbf{y}) &= \int p(f_{*} | \textbf{x}_{*}, \textbf{w})p(\textbf{w} | X, \textbf{y}) d\textbf{w}\\
+%		&= \mathcal{N}(\frac{1}{\sigma_{n}^2} \textbf{x}_{*}^T A^{-1} X \textbf{y}, \enskip \textbf{x}_{*}^T A^{-1} \textbf{x}_{*}).
+%	\end{aligned}
+%\end{equation}
+%
+%The predictive distribution is again Gaussian.
 
-Layers can also be used to define hierarchical GP models, where different levels of the hierarchy are modeled by different layers. 
-This allows the model to capture complex dependencies between the inputs and outputs.
+\subsubsection{Function-Space View}
 
-In summary, layers in GP models provide a flexible and powerful way to define the structure of the model and make predictions about the output. 
-They can be used to model different aspects of the data, and can help simplify the modeling process while improving the accuracy and computational efficiency of the model.
+\begin{definition}[Gaussian Process]
+A Gaussian process is a collection of random variables, any finite number of which have a joint Gaussian distribution. 
+\end{definition}
 
-\subsection{Inducing Points}
+Gaussian processes are a generalisation of the Gaussian distribution to function spaces. 
+A multivariate Gaussian $\textbf{x} \sim \mathcal{N} (\boldsymbol{\mu}, \boldsymbol{\Sigma})$ describes a distribution over the finite elements in the vector $\textbf{x}$. 
+Every element of $\textbf{x}$ is normally distributed. 
+For two points in $\textbf{x}$, $x_{i}$ and $x_{j}$, their covariance is given by $cov[x_{i}, x_{j}] = \Sigma_{ij}$.
 
-In the code you provided, the inducing points are calculated using the k-means clustering method. 
-This is because k-means clustering is a commonly used method for selecting a fixed set of representative points that summarize the structure of the data.
-
-The purpose of the inducing points in a Gaussian Process (GP) model is to provide a compact representation of the model that can be used to make predictions about the output. 
-The inducing points are typically chosen to be a small subset of the inputs, and the model is defined in terms of the inducing points rather than the inputs themselves. 
-This results in a more computationally efficient model that can be trained and used to make predictions faster.
-
-By using the k-means clustering method to calculate the inducing points, the model can take advantage of the structure of the data. 
-The k-means algorithm clusters the data into a set of k clusters, where each cluster is represented by its centroid. 
-These centroids can be used as the inducing points in the GP model.
-
-In summary, the use of k-means clustering to calculate the inducing points in a GP model is an efficient way to summarize the structure of the data and reduce the dimensionality of the model, while still maintaining its ability to make accurate predictions about the output.
-
-\subsection{Gaussian Likelihood}
-
-TODO: Will need to add a Bernoulli / Multinomial likelihood section?
-
-In a Gaussian Process (GP) model, the likelihood of the data is the probability of observing the data given the model parameters. 
-The Gaussian likelihood is a commonly used likelihood function for GP models, and it assumes that the output data is normally distributed.
-
-The Gaussian likelihood is calculated as follows:
-
-Define the mean function, $\mu(x)$, and the covariance function, $K(x, x')$, for the GP model. 
-These functions define the structure of the model and determine how the inputs x and outputs y are related.
-
-Calculate the predicted mean, $\mu$, and the predicted covariance, $\Sigma$, of the output data given the inputs and the model parameters. 
-This can be done using the mean function and the covariance function.
-
-Calculate the likelihood of the data, $p(y|x, \mu, \Sigma)$, using the predicted mean and covariance. 
-The likelihood is given by:
+A Gaussian process is completely specified by its mean function, $m(\textbf{x})$, and its co-variance function $k(\textbf{x}, \textbf{x}')$.
+Usually, the mean function is assumed to be constant zero, but this need not be the case.
+A mean function and covariance function can be defined for a real process $f(x)$ as 
 
 \begin{equation}
-    \centering
-    p(y|x, \mu, \Sigma) = (2\pi)^(-n/2) * det(\Sigma)^(-1/2) * exp(-1/2 * (y - \mu)^T * \Sigma^(-1) * (y - \mu))
+	\begin{aligned}
+		\centering
+		m(\textbf{x}) &= \mathbb{E}[f(\textbf{x})],\\
+		k(\textbf{x}, \textbf{x}') &= \mathbb{E}[(f(\textbf{x}) - m(\textbf{x}))(f(\textbf{x}') - m(\textbf{x}'))],
+	\end{aligned}
 \end{equation}
 
-where $n$ is the number of data points, $y$ is the vector of observed outputs, and $det(\Sigma)$ and $\Sigma^(-1)$ are the determinant and inverse of the covariance matrix $\Sigma$.
-
-The Gaussian likelihood for the entire data-set is then given by the product of the likelihoods of individual data points:
+where we will write the Gaussian process as 
 
 \begin{equation}
-    \centering
-    p(y|x) = \Pi_i p(y_i|x_i, \mu, \Sigma) 
+	\centering
+	f(\textbf{x}) \sim GP(m(\textbf{x}), k(\textbf{x}, \textbf{x}')).
 \end{equation}
 
-In summary, the Gaussian likelihood is calculated by defining the mean function and the covariance function for the GP model, calculating the predicted mean and covariance of the output data, and evaluating the likelihood of the data given the predicted mean and covariance. 
-The Gaussian likelihood provides a way to assess the fit of the model to the data, and it is used to determine the optimal values of the model parameters that maximize the likelihood.
+The covariance function, or kernel, specifies the covariance between pairs of random variables. It is the covariance functions which encode the assumptions about the underlying function (see section \ref{sec:Kernels}).
 
-\subsection{Prediction and Assignment Layers}
+\subsection{Kernels} \label{sec:Kernels}
 
-The pred and assign layers in the code you posted are used in a Sparse Variational Gaussian Process (SVGP) model. 
-SVGP is a type of GP model that is used to handle large datasets, where computing the covariance matrix of all data points is computationally infeasible.
+Kernels are crucial in encoding the assumptions about the function a Gaussian process should estimate. 
+It is a measure of similarity of different points in the observed data and of new points to be predicted. 
+For example, a natural assumption is that the closer two points lie, the more similar their function values should be. 
+Furthermore, when prediciting test points, training points close to it are probably more informative than those further away. 
+However, it should be noted this need not be the case. 
+For example, consider a sinusoidal wave where two points which are multiple wavelengths apart should have similar function values \citep{Kaiser2017}.
+A kernel that only depends on the distance between two points is called \emph{stationary}.
+Conversely, kernels that do depend on two points' positions in the input space are called \emph{non-stationary}.
 
-The main idea behind SVGP is to use a smaller number of inducing points to represent the covariance structure of the entire dataset. 
-The pred and assign layers in the code represent two separate models for predicting the outputs of the GP.
+A common kernel and one used throughout this project is the squared exponential (SE) covariance function (also known as the radial basis function, RBF). 
+This is defined by
 
-The pred layer is used for prediction, i.e., to make predictions for new inputs. 
-This layer models the covariance between the inducing points and the input points. 
-The inducing points are obtained using a clustering method, such as k-means, and they are used to represent the entire dataset.
+\begin{equation}
+	\centering
+	cov(f(\textbf{x}), f(\textbf{x}')) = k(\textbf{x}, \textbf{x}') = exp(-\frac{1}{2} |\textbf{x}_{p} - \textbf{x}_{q}|^2).
+	\label{eq:SquaredExponentialKernel}
+\end{equation}
 
-The assign layer is used to assign each data point to the closest inducing point, based on the similarity between the data points and the inducing points. 
-This layer models the covariance between the data points and the inducing points, and it allows the GP to capture the relationship between the data points and the inducing points.
+Kernels have characteristic length scales which informally can be thought of as roughly the distance you have to move in input space before the function value will change significantly. 
+For eq \ref{eq:SquaredExponentialKernel} the length-scale is one. 
+By replacing $\textbf{x}_{p} - \textbf{x}_{q}$ with $\textbf{x}_{p} - \textbf{x}_{q} / l$ for some positive constant $l$ the characteristic length-scale of the process can be changed.
+Choice of such parameters will be discussed more later.
 
-In summary, the pred and assign layers are used to make predictions and assign data points to the closest inducing points in a SVGP model, respectively. 
-These layers allow the GP to handle large datasets efficiently and effectively.
+TODO: Explain $\sigma$ !!!
 
-%% NOTE Replace the following with chapters that are appropriate for your
-%%      style of project.  It is unlikely these will fit your project perfectly.
+\begin{figure}[H]
+   	 \begin{minipage}[t]{0.3\textwidth}
+	 	\includegraphics[width=\linewidth]{RBF_sigma_1_lengthscale_1.png}
+	    	\caption{SE kernel with $\sigma=1$ and $l=1$ \citep{Kaiser2017}}
+	    	\label{fig:SEKernSig1Length1}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.3\textwidth}
+	 	\includegraphics[width=\linewidth]{RBF_sigma_1_lengthscale_1.png}
+	    	\caption{SE kernel with $\sigma=\sqrt{2}$ and $l=1$ \citep{Kaiser2017}}
+	    	\label{fig:SEKernSigRoot2Length1}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.3\textwidth}
+	 	\includegraphics[width=\linewidth]{RBF_sigma_1_lengthscale_025.png}
+	    	\caption{SE kernel with $\sigma=1$ and $l=0.25$ \citep{Kaiser2017}}
+	    	\label{fig:SEKernSig1Length0.25}
+	\end{minipage}
+\end{figure}
+
+Figure \ref{fig:SEKernSig1Length1}, figure \ref{fig:SEKernSigRoot2Length1} and figure \ref{fig:SEKernSig1Length0.25} compare sample functions drawn from Gaussian processes with SE kernels with different hyperparameters. 
+Since the mean function $m(x)$ is assumed to be constant zero, the kernel specifies the prior assumptions about the function.
+The SE kernel describes arbritrary smooth functions. The hyperparameters $l$ and $\sigma$ of the kernel describe the dynamic range in the $x$ and $y$ directions respectively.
+
+\subsection{Predictions and Posterior}
+
+In order to use Gaussian processes for regression, it is necessary to combine observations with a Gaussian process prior $f \sim GP(0, K)$. 
+The distribution is obtained by integrating over all possible latent function values $f$ and therefore taking all possible functions into account. This is called the \emph{marginilisation of $f$}. 
+
+The joint distribution of the training outputs, $\textbf{y}$, and the test outputs $\textbf{f}_{*}$ according to the prior is 
+
+\begin{equation}
+	\centering
+	\begin{bmatrix}
+		\textbf{y} \\
+		\textbf{f}_{*}
+	\end{bmatrix}
+	\sim \mathcal{N} \left( 0,
+	\begin{bmatrix}
+		K(X, X) + \sigma_{n}^2I & K(X, X_{*}) \\
+		K(X_{*},  X) & K(X_{*},  X_{*})
+	\end{bmatrix} \right) .
+	\label{eq:JointPriorDist}
+\end{equation}
+
+If there are $n$ training points and $n_{*}$ test points then $K(X, X_{*})$ denotes the $n x n_{*}$ matrix of covariances evaluated at all pairs of training and test points. 
+This is the same for $K(X, X)$, $K(X_{*},  X)$ and $K(X_{*},  X_{*})$.
+
+This results in the key predicitve equations for Gaussian process regression
+
+\begin{equation}
+	\textbf{f}_{*} | X, \textbf{y}, X_{*} \sim \mathcal{N}(\overline{\textbf{f}}_{*}, cov(\textbf{f}_{*}))
+\end{equation}
+\begin{equation}
+	\overline{\textbf{f}}_{*} \triangleq \mathbb{E}[\textbf{f}_{*} | X, \textbf{y}, X_{*}] = K(X, X_{*})[K(X, X) +  \sigma_{n}^2I]^-1 \textbf{y}
+	\label{eq:MeanFunc}
+\end{equation}
+\begin{equation}
+	cov(\textbf{f}_{*}) = K(X_{*}, X_{*}) - K(X_{*}, X)[K(X, X) +  \sigma_{n}^2I]^-1 K(X, X_{*}).
+	\label{eq:CovarianceFunc}
+\end{equation}
+
+Eq. \ref{eq:MeanFunc} and eq. \ref{eq:CovarianceFunc} represent the mean function and the covariance function of the Gaussian posterior process respectively. 
+
+Accordingly a compact form of $K(X, X)$ and $K(X_{*}, X_{*})$ etc. will be introduced where $K = K(X, X)$ and $K_{*} = K(X, X_{*})$.
+
+Computing $[K + \sigma_{n}^2I]^-1$ costs $O(N^3)$, but it can be done as a preprocessing step since it is independent of the test points. 
+After this, each single test point costs $O(N)$. 
+To predict its variance it is still necessary to perform matrix multiplication which costs $O(N^2)$.
+
+\subsubsection{Marginal Likelihood}
+
+The marginal likelihood is the marginalisation over the function values $\textbf{f}$. 
+Observing that $\textbf{y} \sim \mathcal{N} (0, K + \sigma_{n}^2I)$ yields the log marginal likelihood
+
+\begin{equation}
+	\label{eq:LogMargLik}
+	\centering
+	\log p(\textbf{y} | X) = -\frac{1}{2}\textbf{y}^T(K +  \sigma_{n}^2I)^-1\textbf{y} - -\frac{1}{2}log|K +  \sigma_{n}^2I| - \frac{n}{2}log2\pi.
+\end{equation}
+
+With this, we can create an algorithm for Gaussian process regression, which is given in alg. \ref{alg:GPR}. The matrix inversion required by eq. \ref{eq:MeanFunc} and \ref{eq:CovarianceFunc} uses Cholesky factorisation, explained in section \ref{sec:CholFac}. 
+
+\begin{algorithm}
+	\caption{Algorithm for Gaussian process regression \citep{RasmussenWilliams2006}}
+	\label{alg:GPR}
+	\begin{algorithmic}[1]
+		\Require $X$ (inputs), \textbf{y} (targets), $k$ (covariance function), $\sigma_{n}^2$ (noise level), $X_{*}$ (test input)	
+		\State $L \gets cholesky(K +\sigma_{n}^2I)$
+		\State $\boldsymbol{\alpha} \gets L^T \setminus (L \setminus \textbf{y})$ \Comment{eq. \ref{eq:MeanFunc}}
+		\State $\overline{f}_{*} \gets \textbf{k}_{*}^T \boldsymbol{\alpha}$ \Comment{eq. \ref{eq:MeanFunc}}
+		\State $\textbf{v} \gets L \setminus \textbf{k}_{*}$ \Comment{eq. \ref{eq:CovarianceFunc}}
+		\State $\mathbb{V}[f_{*}] \gets k(X_{*}, X_{*}) - \textbf{v}^T\textbf{v}$ \Comment{eq. \ref{eq:CovarianceFunc}}
+		\State $\log p(\textbf{y} | X) \gets -\frac{1}{2} \textbf{y}^T \boldsymbol{\alpha} - \Sigma_{i} \log L_{ii} - \frac{n}{2} \log2\pi$ \Comment{eq. \ref{eq:LogMargLik}}
+		\State \textbf{return}: $\overline{f}_{*}$ (mean), $\mathbb{V}[f_{*}]$ (variance), $\log p(\textbf{y} | X)$ (log marginal likelihood)
+	\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Loss Function}
+
+For practical applications, there must be a decision on how to act - a point prediction is necessary. 
+To achieve this, we need a loss function $\mathcal{L}(y_{true}, y_{guess})$ which specifies the loss incurred by guessing the value $y_{guess}$ when the true value is $y_{true}$. 
+
+TODO: Loss functions...
+
+\subsection{Gaussian Processes for Classification}
+
+A Gaussian process is a generalisation of the Gaussian probability distribution. 
+Both classification and regression can be seen as function approximation problems. 
+Unfortunately, the solution of classification problems using Gaussian processes is tougher than regression problems. 
+For regression problems, the likelihood is often assumed to be Gaussian. 
+A Gaussian process prior combined with a Gaussian likelihood gives a posterior Gaussian process over functions, where everything remains analytically tractable. 
+For classification models, the Gaussian likelihood is inappropriate; a different likelihood such as a Bernoulli likelihood must be used.
+
+TODO: Explain classification
+
+\subsection{Sparse Variational Gaussian Processes}
+
+A major drawback of Gaussian processes is their $O(N^3)$ complexity when inversing the covariance matrix $K$.
+An approach to reduce this complexity is \emph{Sparse Variational Gaussian Processes} (SVGP) \citep{Hensman2014}.
+Spare approximations of GPs are a method of approximating a GP using a $M < N$ set of \emph{inducing points} $\textbf{Z}$ and \emph{inducing variables} $\textbf{u}$ that can represent the entire dataset, rather than $X$ itself. 
+This approach suits datasets with high levels of redundancy, but also introduces the problem of choosing the subset.
+
+Using inducing points, we arrive at the Nystr{\"o}m approximation
+
+\begin{equation}
+	K_{NN} \approx K_{NM} K_{MM}^-1 K_{MN},
+\end{equation}
+
+where $K_{NM} = K(\textbf{X}, \textbf{Z})$ and $K_{MM} = K(\textbf{Z}, \textbf{Z})$.
+The SVGP complexity now costs $O(NM^2)$ instead of $O(N^3)$.
+
+TODO: Complete this section
+
+\section{Data Association}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{data_association_problem.png}
+    \caption{A data association problem consisting of two generating processes, one of which is a signal to recover and one is an uncorrelated noise process \citep{Kaiser2018}}
+    \label{fig:DataAssocProblem}
+\end{figure}
+
+A \emph{data association problem} is one where we consider the data to have been generated by a mixture of processes and we are interested in factorising the data into these components. 
+For example, as described by \citet{Kaiser2018}, figure \ref{fig:DataAssocProblem} could represent faulty sensor data, where sensor readings are disturbed by uncorrelated and asymettric noise. 
+Standard machine learning approaches can pollute any models, where the model starts to explain the noise instead of the underlying signal. 
+
+\subsection{Data Association and Cricket}
+
+The cricket dataset could be deemed a data association problem, as perhaps we can say that each outcome (runs scored) of a cricket delivery is generated by a different process. 
+Each of these processes are noisy, as cricket has stochastic outcomes. 
+
+For example, in cricket a seam delivery at the top of off stump is generally considered to be a good ball. 
+This knowledge is gathered through anecdotal experience of humans observing many cricket matches and in turn many cricket deliveries.
+However, it is still entirely possible that a good delivery could be hit for a maximum of 6 runs. 
+
+Furthermore, the relationship between a cricket delivery's features and its outcome is not a simple relationship. 
+For example, lets take a high level look at a seam bowlers length of pitch in IPL cricket (the "pitchY" feature in the dataset).
+A good short ball (also known as a bouncer) from a quick bowler is one that reaches the batsmen at shoulder or above height. 
+Any delivery pitching slighly fuller will be at the batsmens chest, which is considered a poor ball, as it is far easier for the batsmen to get over with their bat and hit for boundaries.
+Equally, a slightly fuller pitch again puts the ball back in a good length, as it is around the top of the stumps. 
+Slighly fuller however, is once again deemed poor, as it is at a full length for the batsmen to step forward and drive or slog for runs. 
+Yet, once again, slighly fuller is a good length.
+This is as a yorker, a ball right at a batsmens feet, which is considered a very difficult ball to play against. 
+Therefore it is clear the relationship between the pitch length and the outcome of a delivery is not linear and not simple.
+Similar examples can be made with the width of a ball, its swing, its spin, and many other features.
+
+Equally, a "good" or "bad" ball is subjective depending on the match state and what the bowling team is trying to achieve. 
+Typically in an IPL match the goal of the bowling team is to reduce the oppositions runs scored. 
+The best balls for this requirement are not the same as the best balls to take a wicket. 
+Equally there is an idea in cricket of "setting a batsmen up". 
+This idea refers to having the previous deliveries set the batsmen up to get out on the next ball. 
+For example, a short ball to throw the batsmen off, followed by a yorker right at the stumps. 
+This highlights that there is some relationship between previous deliveries on any future deliveries.
+
+From theses examples, it is clear that the game of cricket has many nuances and challenges for modelling with machine learning techniques. 
+Data association techniques however, provide a framework to attempt to seperate some of the differences in how runs are scored in cricket, and model the overlap in the varying outcomes.
+
+\subsection{Data Association with Gaussian Processes}
+
+The data association with Gaussian processes model introduced by \citet{Kaiser2018} assumes there exists $K$ independent functions.
+The assignment of the $n^{th}$ data point to a function is specificed by the indicator vector $\textbf{a}_{n} \in {0, 1}^K$ which has exactly one non-zero entry.
+The assignment probabilities of outputs is calculated with a softmax function and multinomial distribution. 
+
+\subsection{Modulated Scalable Gaussian Processes}
+
+\citet{Lui2020} proposed a similar method with a tighter evidence lower bound (ELBO).
+\citet{Kaiser2018} keeps the latent variables $\textbf{W}$ by approximating $\log p(\textbf{y}, \textbf{W})$ rather than the interested $\log p(y)$.
+\citet{Lui2020} directly approximates $\log p(y)$ by marginalising all the latent variables out.
+
+\section{Gradient Boosting}
+
+XGBoost is a scalable machine learning gradient boosting library.  
+It is an extremely popular, versatile and state-of-the-art technique.
+For example, among the 29 challenge winning solutions published at Kaggle’s blog during 2015 17 solutions used XGBoost.
+Among these solutions, eight solely used XGBoost to train the model, while most others combined XGBoost with neural nets in ensembles.
+These results demonstrate that XGBoost gives state-of-the-art results on a wide range of problems. 
+Examples of the problems in the winning solutions include: store sales prediction; high energy physics event classification; web text classification; customer behavior prediction; motion detection; ad click through rate prediction; malware classification; product categorization; hazard risk prediction; massive online course dropout rate prediction \citep{Chen2016}.
+
+The versatility and performance of XGBoost and gradient boosting make it a popular choice, yet it hasn't been widely adopted in cricket research (see section \ref{sec:CrickSurvey}).
+For this reason, I wanted to experiment with XGBoost in this project, and use it as a baseline performance compared to solutions with GPs.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Requirements}
+\chapter{Method}
 
-If you are doing a primarily software development project, this is the chapter in which you review the requirements decisions and critique the requirements process.
+\section{Dataset} \label{sec:Dataset}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Design}
+The dataset used is the mens IPL cricket dataset. 
+The dataset is a CSV where each row is a different cricket delivery. 
+Each row contains identifying information of the delivery, such as the match ID, delivery number, the batter, the bowler, and additional Hawk-Eye data.
+For this project, personal information on whose batting or bowling will not be disclosed. 
+Hawk-Eye data includes the bowling style, ball speed, the runs scored (including how many were from the batter or extras), where the ball pitches, where the ball passed the stumps and more.     
 
-This is the chapter in which you review your design decisions at various
-levels and critique the design process.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.49\linewidth]{jos_buttler_0_runs_right_arm_seam_stumps.png}
+    \includegraphics[width=0.49\linewidth]{jos_buttler_0_runs_right_arm_seam_stumps_heat_map.png}
+    \caption{The "StumpsX" and "StumpsY" features of the dataset. This is all the right arm seam deliveries that went for 0 "batterRuns" for one batter.}
+    \label{fig:StumpsXY0Runs}
+\end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Implementation and Testing}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.49\linewidth]{jos_buttler_6_runs_right_arm_seam_stumps.png}
+    \includegraphics[width=0.49\linewidth]{jos_buttler_6_runs_right_arm_seam_stumps_heat_map.png}
+    \caption{The "StumpsX" and "StumpsY" features of the dataset. This is all the right arm seam deliveries that went for 6 "batterRuns" for one batter.}
+    \label{fig:StumpsXY6Runs}
+\end{figure}
 
-This is the chapter in which you review the implementation and testing decisions and issues, and critique these processes.
+TODO: Talk about overlap etc. See DoP.
 
-Code can be output inline using \verb@\lstinline|some code|@.  For example, this code is inline: \lstinline|public static int example = 0;| (we have used the character \verb@|@ as a delimiter, but any non-reserved character not in the code text can be used.)
+\section{Many Gaussian Processes}
 
-Code snippets can be output using the \verb|\begin{lstlisting} ... \end{lstlisting}|
-environment with the code given in the environment. For example, consider listing \ref{Example-Code}, below.
+TODO: Describe implementation and approach to SMGP model
 
-\begin{lstlisting}[breaklines,breakatwhitespace,caption={Example code},label=Example-Code]
-public static void main() {
+\section{XGBoost}
 
-  System.out.println("Hello World");
-
-}
-\end{lstlisting}
-
-Code listings are produced using the package `listings'.  This has many useful options, so have a look at the package documentation for further ideas.
+TODO: Describe implementation and approach to XGBoost model
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Results}
 
-This is the chapter in which you review the outcomes, and critique the outcomes process. You may include user evaluation here too.
+\section{Many Gaussian Processes}
+
+TODO: Write up results once assignment function of SMGP smooth
+
+\section{XGBoost}
+
+TODO: Write up results of Jos Buttler demo from DoP.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Conclusions}
+\chapter{Discussion}
 
-%%
-%% Now we are back to the standard project contents that you should include
-%%
+TODO: Discuss results.
 
-This is the chapter in which you review the major achievements in the light of your original objectives, critique the process, critique your own learning and identify possible future work.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Conclusion}
+
+TODO: Conclude on results and findings. Explain future work (e.g. taking into account that we know the assignments). Furthermore more inputs and use of categorical inputs etc.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Code can be output inline using \verb@\lstinline|some code|@.  For example, this code is inline: \lstinline|public static int example = 0;| (we have used the character \verb@|@ as a delimiter, but any non-reserved character not in the code text can be used.)
+%
+%Code snippets can be output using the \verb|\begin{lstlisting} ... \end{lstlisting}|
+%environment with the code given in the environment. For example, consider listing \ref{Example-Code}, below.
+%
+%\begin{lstlisting}[breaklines,breakatwhitespace,caption={Example code},label=Example-Code]
+%public static void main() {
+%
+%  System.out.println("Hello World");
+%
+%}
+%\end{lstlisting}
+%
+%Code listings are produced using the package `listings'.  This has many useful options, so have a look at the package documentation for further ideas.
+%
+%\section[Short Section Title]{Another Section With a Long Title and Whose Title Is Abbreviated in the Table of Contents}
+%
+%%-------------------------------------------------------------------------------
+%\begin{table}[htb]
+%\caption{An example table}
+%\bigskip
+%\begin{center}
+%\label{Example-Table}
+%\begin{tabular}{|l|l|}
+%\hline
+%Items & Values \\
+%\hline
+%\hline
+%Item 1 & Value 1 \\
+%Item 2 & Value 2 \\
+%\hline
+%\end{tabular}
+%\end{center}
+%\end{table}
+%
+%Another section, just for good measure. You can reference a table, figure or equation using \verb|\ref|, just like this reference to Table \ref{Example-Table}.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Example Lists}
+%
+%%-------------------------------------------------------------------------------
+%\subsection{Enumerated}
+%
+%\begin{enumerate}
+%\item Example enumerated list:
+%  \begin{itemize}
+%  \item a nested enumerated list item;
+%  \item and another one.
+%  \end{itemize}
+%\item Second item in the list.
+%\end{enumerate}
+%
+%%-------------------------------------------------------------------------------
+%\subsection{Itemised}
+%
+%\begin{itemize}
+%\item Example itemised list.
+%  \begin{itemize}
+%  \item A nested itemised list item.
+%  \end{itemize}
+%\item Second item in the list.
+%\end{itemize}
+%
+%%-------------------------------------------------------------------------------
+%\subsection{Description}
+%
+%\begin{description}
+%\item[Item 1]First item in the list.
+%\item[Item 2]Second item in the list.
+%\end{description}
+
+% IGNORE WORDS AFTER HERE
+%TC:ignore 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -464,11 +835,7 @@ This is the chapter in which you review the major achievements in the light of y
 %% these to your own requirements
 %%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Cricket Background} \label{chap:CrickBackground}
-
-TODO: Reference here in the main report for those with limited cricket knowledge.
 
 Whilst knowledge of cricket is useful to understand this project, I do not deem it necessary to appreciate the project and its applications.
 Any key ideas around cricket, T20 and IPL beyond the laws of the game are introduced in the main report.
@@ -498,9 +865,6 @@ In a super over, each team nominates three batsmen and one bowler to play a one-
 If the Super Over also ends up in a tie, it is repeated until the tie is broken.
 An \emph{over} is a set of 6 fair deliveries (so not wides and no balls, see section \ref{sec:Overs}) for the batting team to score.
 
-TODO: Explain that T20 crickets goal is typically to reduce the runs scored vs taking wickets. 
-Do this in the main report, again with a brief intro to 20 over cricket. 
-
 \section{Laws and Gameplay}
 
 \subsection{Playing Field}
@@ -527,7 +891,7 @@ The boundary surrounds the edge of the field and typically the field is oval in 
 Figure \ref{fig:CricketPitch} shows a cricket pitch including the location of the wickets and the creases.
 As illustrated, the pitch is marked at each end with four white painted lines: a bowling crease, a popping crease and two return creases.
 
-\subsection{Runs}
+\subsection{Runs} \label{sec:Runs}
 
 Runs are scored through either boundaries, or batsmen running between the creases.
 For the latter, the batter on strike attempts to score runs by hitting the ball whilst simultaneously not getting out. 
@@ -537,6 +901,8 @@ To register a run, both runners must touch the ground behind the popping crease 
 Each completed run increments the score of both the team and the striker.
 Infinitely many runs can be scored off one delivery this way, with the batsmen running back and forth between the wickets.
 Typically the maxmimum runs scored this way would be three, but it is possible to score more if there are misfields.
+
+TODO:  Explain definition of dot ball and single.
 
 \subsubsection{Boundaries} \label{sec:Boundaries}
 
@@ -570,7 +936,7 @@ Unlike bowlers, the batsmen do not change ends at the end of each over.
 There are nine ways a batter can be dismissed in cricket. 
 The most common include being bowled, caught, leg before wicket (lbw), run out and stumped. 
 Less common dismissals include hit wicket, hit the ball twice, obstructing the field, and timed out. 
-For the purpose of this project I will only explain the most common dismissals. 
+For the purpose of this chapter I will only explain the most common dismissals. 
 
 \begin{figure}[H]
     \centering
@@ -663,47 +1029,22 @@ All rounders are valued players, as they can provide the role of both a batter a
 \subsubsection{Captain}
 
 The last specialist role I will cover is that of the captain. 
-The captain performs their captain duties as a batter, bowler, wicket keeper, or all rounder, while taking on additional captains duties.
+The captain performs their captain duties as a batter, bowler, wicket keeper, or all rounder, while taking on the additional captains duties.
 The captain decides who will bowl each over and where each fielder will be positioned. 
 While decisions are often collaborative, the captain has the final say.
 Captains in cricket typically shoulder more responsibility on the outcome of a cricket match than captains in other sports, given their level of responsibilty.
 
-\section{Data Association and Cricket}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Mathematical Background}
 
-The cricket dataset could be deemed a data association problem. 
-We can say that each outcome (runs scored) of a cricket delivery is generated by a different process. 
-Each of these processes are noisy, as cricket has stochastic outcomes. 
+\section{Cholesky Factorisation} \label{sec:CholFac}
 
-For example, in cricket a seam delivery at the top of off stump is generally considered to be a good ball. 
-This knowledge is gathered through anecdotal experience of humans observing many cricket matches and in turn many cricket deliveries.
-However, it is still entirely possible that a good delivery be hit for a maximum of 6 runs. 
-
-Furthermore, a cricket delivery being a good ball is not a simple relationship. 
-For example, lets take a high level look at a seam bowlers length of delivery in IPL cricket (the "pitchY" feature in the dataset).
-A good short ball (also known as a bouncer) from a quick bowler is one that reaches the batsmen at shoulder or above height. 
-Anything slighly fuller will be at the batsmens chest, which is considered a poor ball, as it is far easier for the batsmen to get over and hit for boundaries.
-Equally, slightly fuller again puts the ball back in a good length, as it is around the top of the stumps. 
-Slighly fuller however, is once again deemed poor, as it is at a full length for the batsmen to step forward and drive or slog for runs. 
-Yet, once again, slighly fuller is a good length again, as a yorker, a ball right at a batsmens feet is considered a very difficult ball to play against. 
-Similar examples can be made with the width of a ball, its swing, its spin, and many other features.
-
-Equally, a "good" or "bad" ball is obviously subjective depending on the match state and what the bowling team is trying to achieve. 
-Typically in an IPL match, the goal of the bowling team is to reduce the oppositions runs scored. 
-The best balls for this requirement, are not the same as the best balls to take a wicket. 
-Equally, there is an idea in cricket of "setting a batsmen up". 
-This idea is having the previous deliveries set the batsmen up to get out to the next ball. 
-For example, a short ball to throw the batsmen off, followed by a yorker right at the stumps. 
-
-From theses examples, it is clear that the game of cricket has many nuances and challenges for modelling with machine learning techniques. 
-Data association techniques however, provide a framework to attempt to seperate some of the differences in how runs are scored in cricket, and model the overlap in the varying outcomes.
+\section{Kullback–Leibler Divergence} \label{sec:KLDiv}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Design Diagrams}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{User Documentation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -723,6 +1064,9 @@ Data association techniques however, provide a framework to attempt to seperate 
 \section{File: yourCodeFile.java}
 \lstinputlisting[basicstyle=\scriptsize]{yourCodeFile.java}
 \end{multicols}
-\end{landscape}
+\end{landscape}	
+
+%STOP IGNORING WORDS
+%TC:endignore 
 
 \end{document}
