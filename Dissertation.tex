@@ -213,7 +213,7 @@ The most accurate results were achieved by researchers who used data from a sing
 When using data from a single season, the majority of the data was used for training and a small portion for testing. 
 Some researchers used the same data set for training and testing, yielding unrealistically accurate results.
 
-\section{Existing Machine Learning Research on Cricket}
+\section{Existing Machine Learning Research on Cricket} \label{sec:CrickSurvey}
 
 \citet{KampakisStylianos2015} used Naïve Bayes, logistic regression, random forests and gradient boosted decision trees to predict the outcome of English County 20 over Cricket Matches from 2009 - 2014. 
 The performance of each algorithm was assessed using one year's data as the training data set and the following year's data for testing. 
@@ -275,6 +275,16 @@ Another objective of this project, is to attempt to start research in new areas 
 When the predicted results were validated with the players performances in the fourth season, the model had an accuracy of 71.43\%.
 
 Otherwise, there is generally limited research on the IPL and it is an area ripe for research.
+
+\section{Hawk-Eye and Ball Tracking}
+
+The data-set used in this project contains tracking data from Hawk-Eye systems.
+Hawk-Eye Innovations is a sports technology company, that provides many products, including computer version services.
+In particular there is a focus on ball and player tracking in sports, including cricket.
+In this project the emphasis is placed on the ball tracking.
+Hawk-Eye have a number of cameras at IPL grounds, that the video from is then triangulated and combined to create a three-dimensional representation of the ball's trajectory.
+It has been adopted as an ajudication tool by many governing bodies in cricket and is generally accepted to be accurate.
+Further explanation of the dataset and features used in this project are explained in section \ref{sec:Dataset}.
 
 \section{Research With Similar Goals}
 
@@ -663,20 +673,45 @@ The assignment probabilities of outputs is calculated with a softmax function an
 
 \section{Gradient Boosting}
 
-TODO: Describe XGBoost
+XGBoost is a scalable machine learning gradient boosting library.  
+It is an extremely popular, versatile and state-of-the-art technique.
+For example, among the 29 challenge winning solutions published at Kaggle’s blog during 2015 17 solutions used XGBoost.
+Among these solutions, eight solely used XGBoost to train the model, while most others combined XGBoost with neural nets in ensembles.
+These results demonstrate that XGBoost gives state-of-the-art results on a wide range of problems. 
+Examples of the problems in the winning solutions include: store sales prediction; high energy physics event classification; web text classification; customer behavior prediction; motion detection; ad click through rate prediction; malware classification; product categorization; hazard risk prediction; massive online course dropout rate prediction \citep{Chen2016}.
 
-%% NOTE Replace the following with chapters that are appropriate for your
-%%      style of project.  It is unlikely these will fit your project perfectly.
+The versatility and performance of XGBoost and gradient boosting make it a popular choice, yet it hasn't been widely adopted in cricket research (see section \ref{sec:CrickSurvey}).
+For this reason, I wanted to experiment with XGBoost in this project, and use it as a baseline performance compared to solutions with GPs.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Method}
 
-\section{Dataset}
+\section{Dataset} \label{sec:Dataset}
 
-TODO: Explain Hawk-Eye and ball tracking.
+The dataset used is the mens IPL cricket dataset. 
+The dataset is a CSV where each row is a different cricket delivery. 
+Each row contains identifying information of the delivery, such as the match ID, delivery number, the batter, the bowler, and additional Hawk-Eye data.
+For this project, personal information on whose batting or bowling will not be disclosed. 
+Hawk-Eye data includes the bowling style, ball speed, the runs scored (including how many were from the batter or extras), where the ball pitches, where the ball passed the stumps and more.     
 
-TODO: Explain dataset (without revealing source)
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.49\linewidth]{jos_buttler_0_runs_right_arm_seam_stumps.png}
+    \includegraphics[width=0.49\linewidth]{jos_buttler_0_runs_right_arm_seam_stumps_heat_map.png}
+    \caption{The "StumpsX" and "StumpsY" features of the dataset. This is all the right arm seam deliveries that went for 0 "batterRuns" for one batter.}
+    \label{fig:StumpsXY0Runs}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.49\linewidth]{jos_buttler_6_runs_right_arm_seam_stumps.png}
+    \includegraphics[width=0.49\linewidth]{jos_buttler_6_runs_right_arm_seam_stumps_heat_map.png}
+    \caption{The "StumpsX" and "StumpsY" features of the dataset. This is all the right arm seam deliveries that went for 6 "batterRuns" for one batter.}
+    \label{fig:StumpsXY6Runs}
+\end{figure}
+
+TODO: Talk about overlap etc. See DoP.
 
 \section{Many Gaussian Processes}
 
