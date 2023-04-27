@@ -95,13 +95,40 @@ TODO: Write a glossary of terms
 
 Over the last few decades the amount of data driven techniques to improve the outcomes of sports games has increased greatly. 
 The multi-billion pound market of cricket is no exception. 
-There is a strong incentive to improve the techniques used to better the results of teams. 
+
+Cricket is a game of fine margins; matches can be decided by a small number of runs.
+Therefore, every insight that can be made as to what is good or bad cricket is extremely valuable.
+For this reason, there is a strong incentive to improve the machine learning techniques used in current sports analytics to improve a teams performance.
+
 This study aims to investigate the possibility of predicting the outcome of a bowler batter match-up in cricket using modern machine learning techniques and how this could then aid cricket bowling choices and team selection. 
 The main training and testing data used will be the last 10 years of the Indian Premier League (IPL).
 The hope is that using knowledge of bowler pitch trajectories and batter shot trajectories gathered from modern ball tracking will add another layer of granularity in addition to simply considering the resultant runs scored off each delivery. 
 Furthermore, building a model which can incorporate pitch, atmospheric and ground conditions could further improve any models. 
 
+\section{Sports Analytics}
+
+TODO: Sports Analytics
+
+Currently in sports analytics and machine learning in generals there is a go to set of machine learning methods that are very popular.
+For example, neural networks are currently popular in machine learning and have a large research output.
+Despite their popularity, all methods have drawbacks.
+For example, take the classic neural network classifier that classifies and image as either a cat or a dog.
+In the case the input is a horse, the model will still attempt to make a prediction as to whether that horse is a cat or a dog.
+This in itself is not a problem, but the model does not give any uncertainty in its response that it most likely not either a cat or a dog. 
+
+To overcome this various methods have been developed such as pseudo monte-carlo sampling. 
+TODO: Fill this paragraph out. 
+This is unsatisfactory however when we know the input will be consistently noisy. 
+For example, when we know our directory of cat and dog images has regular images of horses.
+Any models that can factor in this noise by its construction, is valuable.
+In the case of cricket, we know the game is noisy and so appropriate models should factor in this noise.
+
+A large body of machine learning methods are frequently underappreciated and in certain domains rarely used.
+TODO: Fill this paragraph out.
+
 \section{Moneyball}
+
+TODO: Move to lit review
 
 The release of the book Moneyball \citep{Moneyball2004}, was a big driver in the increased use of statistical driven techniques in Baseball player selection and scouting techniques. 
 Pioneered by the likes of Bill James and Sabermetrics, Moneyball has entered baseball's lexicon; teams that value Sabermetrics are often said to be playing "Moneyball".  
@@ -120,6 +147,8 @@ Expected goals turned to real goals in the 2017-2018 season, with Salah scoring 
 The combination of Klopp and his intuitive knowledge, paired with the likes of Grahams data-driven knowledge, has led to Liverpool having fantastic recent success winning the 2018-2019 UEFA Champions League and the 2019-2020 English Premier League.
 
 \section{T20 Cricket} \label{sec:T20Cricket}
+
+TODO: Move to background
 
 Whilst knowledge of cricket is useful to understand this project, it is not necessary to appreciate the project and its applications.
 Despite this, I present a brief introduction to the game and its laws for those unfamiliar with the sport in chapter \ref{chap:CrickBackground}.
@@ -200,8 +229,6 @@ This could potentially be achieved with the University of Bath's Hex GPU cluster
     \label{fig:NoPapers}
 \end{figure}
 
-TODO: Could be worth putting the one with publication year in to show uptick in research? But not necessary right now.
-
 Figure \ref{fig:NoPapers} from \citet{horvat2020}'s literature review of machine learning in sport for score prediction show the methods that are currently used in the field as of May 2020. 
 As shown in the figure, neural networks have a large research output.
 This is followed by other popular methods such as regression, support vector machines (SVMs), regression, decision trees, and gradient boosting, with k-nearest-neighbours (k-NN) being the least used. 
@@ -278,6 +305,8 @@ Otherwise, there is generally limited research on the IPL and it is an area ripe
 
 \section{Hawk-Eye and Ball Tracking}
 
+TODO: Move to background
+
 The data-set used in this project contains tracking data from Hawk-Eye systems.
 Hawk-Eye Innovations is a sports technology company, that provides many products, including computer version services.
 In particular there is a focus on ball and player tracking in sports, including cricket.
@@ -322,6 +351,12 @@ This is problematic in that making decisions based on this prediction becomes mu
 Furthermore, certain test input data could have very little similar training data to it. 
 In such cases, the uncertainty in a models output should be much greater. 
 Yet, existing models will still provide a prediction the same as it would for inputs where there was a large amount of training data.
+
+Another downside of many commonly used methods is how they discretise the input space. 
+The features gathered by the likes of Hawk-Eye have a rich continuous space.
+By using a neural network or gradient boosting method, these continuous features are being discretised. 
+In reality a model that can incorporate the value of the continuous nature of these inputs would be valuable.
+TODO: Finish this para, potentially some of it might duplicate the introduction
 
  TODO: talk about \citep{Blumberg2020}.
 
@@ -466,20 +501,19 @@ A kernel that only depends on the distance between two points is called \emph{st
 Conversely, kernels that do depend on two points' positions in the input space are called \emph{non-stationary}.
 
 A common kernel and one used throughout this project is the squared exponential (SE) covariance function (also known as the radial basis function, RBF). 
-This is defined by
+For a finite dimensional input space $\mathbb{R}^d$, the SE kernel is defined by
 
 \begin{equation}
 	\centering
-	cov(f(\textbf{x}), f(\textbf{x}')) = k(\textbf{x}, \textbf{x}') = exp(-\frac{1}{2} |\textbf{x}_{p} - \textbf{x}_{q}|^2).
+	cov(f(\textbf{x}), f(\textbf{x}')) = k(\textbf{x}, \textbf{x}') = \sigma_{f}^2 exp(-\frac{1}{2} (\textbf{x} - \textbf{x}')^T \Lambda^{-1} (\textbf{x} - \textbf{x}')).
 	\label{eq:SquaredExponentialKernel}
 \end{equation}
 
 Kernels have characteristic length scales which informally can be thought of as roughly the distance you have to move in input space before the function value will change significantly. 
-For eq \ref{eq:SquaredExponentialKernel} the length-scale is one. 
-By replacing $\textbf{x}_{p} - \textbf{x}_{q}$ with $\textbf{x}_{p} - \textbf{x}_{q} / l$ for some positive constant $l$ the characteristic length-scale of the process can be changed.
-Choice of such parameters will be discussed more later.
-
-TODO: Explain $\sigma$ !!!
+$\Lambda^{-1}  = diag(l_{1}^2, ... , l_{d}^2)$ is a diagonal matrix of the squared length scales $l_{i} \in \mathbb{R}_{>0}$ in each axis.
+The variable $\sigma_{f}^2 \in \mathbb{R}_{>0}$ is the signal variance.
+The signal variance specifies the average distance of function values from the mean value.
+Choices of such free hyperparameters will be discussed more in chapter \ref{chap:Method} including their optimisation. 
 
 \begin{figure}[H]
    	 \begin{minipage}[t]{0.3\textwidth}
@@ -489,7 +523,7 @@ TODO: Explain $\sigma$ !!!
 	\end{minipage}
 	\hfill
 	\begin{minipage}[t]{0.3\textwidth}
-	 	\includegraphics[width=\linewidth]{RBF_sigma_1_lengthscale_1.png}
+	 	\includegraphics[width=\linewidth]{RBF_sigma_root2_lengthscale_1.png}
 	    	\caption{SE kernel with $\sigma=\sqrt{2}$ and $l=1$ \citep{Kaiser2017}}
 	    	\label{fig:SEKernSigRoot2Length1}
 	\end{minipage}
@@ -504,6 +538,8 @@ TODO: Explain $\sigma$ !!!
 Figure \ref{fig:SEKernSig1Length1}, figure \ref{fig:SEKernSigRoot2Length1} and figure \ref{fig:SEKernSig1Length0.25} compare sample functions drawn from Gaussian processes with SE kernels with different hyperparameters. 
 Since the mean function $m(x)$ is assumed to be constant zero, the kernel specifies the prior assumptions about the function.
 The SE kernel describes arbritrary smooth functions. The hyperparameters $l$ and $\sigma$ of the kernel describe the dynamic range in the $x$ and $y$ directions respectively.
+As can be seen in \ref{fig:SEKernSig1Length0.25}, reducing the length scale makes drawn sample functions from the kernel more "wiggly".
+Increasing the signal variance as shown in \ref{fig:SEKernSigRoot2Length1}, increases the range of values the sample function will take.
 
 \subsection{Predictions and Posterior}
 
@@ -546,10 +582,6 @@ This results in the key predicitve equations for Gaussian process regression
 Eq. \ref{eq:MeanFunc} and eq. \ref{eq:CovarianceFunc} represent the mean function and the covariance function of the Gaussian posterior process respectively. 
 
 Accordingly a compact form of $K(X, X)$ and $K(X_{*}, X_{*})$ etc. will be introduced where $K = K(X, X)$ and $K_{*} = K(X, X_{*})$.
-
-Computing $[K + \sigma_{n}^2I]^-1$ costs $O(N^3)$, but it can be done as a preprocessing step since it is independent of the test points. 
-After this, each single test point costs $O(N)$. 
-To predict its variance it is still necessary to perform matrix multiplication which costs $O(N^2)$.
 
 \subsubsection{Marginal Likelihood}
 
@@ -597,9 +629,13 @@ For classification models, the Gaussian likelihood is inappropriate; a different
 
 TODO: Explain classification
 
+TODO: Explain variational GPs
+
 \subsection{Sparse Variational Gaussian Processes}
 
-A major drawback of Gaussian processes is their $O(N^3)$ complexity when inversing the covariance matrix $K$.
+A major drawback of Gaussian processes is their $O(N^3)$ complexity when computing $[K + \sigma_{n}^2I]^-1$ from \ref{alg:GPR}, but it can be done as a preprocessing step since it is independent of the test points. 
+After this, each single test point costs $O(N)$. 
+To predict its variance it is still necessary to perform matrix multiplication which costs $O(N^2)$.
 An approach to reduce this complexity is \emph{Sparse Variational Gaussian Processes} (SVGP) \citep{Hensman2014}.
 Spare approximations of GPs are a method of approximating a GP using a $M < N$ set of \emph{inducing points} $\textbf{Z}$ and \emph{inducing variables} $\textbf{u}$ that can represent the entire dataset, rather than $X$ itself. 
 This approach suits datasets with high levels of redundancy, but also introduces the problem of choosing the subset.
@@ -613,7 +649,17 @@ Using inducing points, we arrive at the Nystr{\"o}m approximation
 where $K_{NM} = K(\textbf{X}, \textbf{Z})$ and $K_{MM} = K(\textbf{Z}, \textbf{Z})$.
 The SVGP complexity now costs $O(NM^2)$ instead of $O(N^3)$.
 
-TODO: Complete this section
+When the inducing points are the real data points, such that $\textbf{Z} = \textbf{X}$ then $K_{NM} = K_{MM} = K_{NN}$ and the bound on the marginal likelihood becomes tight. 
+Therefore, the approximate marginal likelihood equals the real marginal likelihood.
+
+\subsubsection{Choosing the Inducing Points}
+
+When choosing your inducing points you want to use a method that will select $M$ inducing points, that can represent the $N$ real points.
+This can be done in many ways; an obvious example is to select inducing points linearly across the input range. 
+However if your input data is not linearly spaced, then this can misrepresent your data.
+A better method used in this project and used in \citet{Hensman2014} is k-means clustering, which can appropriately find all major regions of the input space so long as there are enough inducing points.
+
+TODO: Maybe visualise this?
 
 \section{Data Association}
 
@@ -685,7 +731,7 @@ For this reason, I wanted to experiment with XGBoost in this project, and use it
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Method}
+\chapter{Method} \label{chap:Method}
 
 \section{Dataset} \label{sec:Dataset}
 
@@ -711,11 +757,14 @@ Hawk-Eye data includes the bowling style, ball speed, the runs scored (including
     \label{fig:StumpsXY6Runs}
 \end{figure}
 
-TODO: Talk about overlap etc. See DoP.
+One noticeable thing is how much the data overlaps for different outcomes. 
+Whilst their most likely is relationships and functions that can describe good and bad balls, it is clear that cricket is very noisy.
 
 \section{Many Gaussian Processes}
 
 TODO: Describe implementation and approach to SMGP model
+
+\citep{GPflow2017}
 
 \section{XGBoost}
 
