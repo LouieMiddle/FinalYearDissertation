@@ -513,6 +513,7 @@ Kernels have characteristic length scales which informally can be thought of as 
 $\Lambda^{-1}  = diag(l_{1}^2, ... , l_{d}^2)$ is a diagonal matrix of the squared length scales $l_{i} \in \mathbb{R}_{>0}$ in each axis.
 The variable $\sigma_{f}^2 \in \mathbb{R}_{>0}$ is the signal variance.
 The signal variance specifies the average distance of function values from the mean value.
+The vector of all hyperparameters in a model is called $\boldsymbol{\theta}$.
 Choices of such free hyperparameters will be discussed more in chapter \ref{chap:Method} including their optimisation. 
 
 \begin{figure}[H]
@@ -611,12 +612,60 @@ With this, we can create an algorithm for Gaussian process regression, which is 
 	\end{algorithmic}
 \end{algorithm}
 
-\subsubsection{Loss Function}
+\subsubsection{Loss Functions}
 
 For practical applications, there must be a decision on how to act - a point prediction is necessary. 
 To achieve this, we need a loss function $\mathcal{L}(y_{true}, y_{guess})$ which specifies the loss incurred by guessing the value $y_{guess}$ when the true value is $y_{true}$. 
+The goal is to then make the point predicition $y_{guess}$ that incurs the smallest loss.
+This can be done by minimising the expected loss or risk by averaging w.r.t. our model what the truth might be.
+Thus the best guess is 
 
-TODO: Loss functions...
+\begin{equation}
+	\centering
+	y_{optimal} | \textbf{x}_{*} = \underset{y_{guess}}{\textrm{argmin}} \, \overset{\sim}{R_{\mathcal{L}}}(y_{guess} | \textbf{x}_{*})
+\end{equation}
+
+where $\overset{\sim}{R_{\mathcal{L}}}$ represents the risk and $\overset{\sim}{R_{\mathcal{L}}}(y_{guess} | \textbf{x}_{*}) = \int \mathcal{L}(y_{*}, y_{guess}) p(y_{*} | x_{*}, \mathcal{D}) dy_{*}$.
+
+\subsubsection{Choosing Hyperparameters}
+
+Up until now, the hyperparameters $\boldsymbol{\theta}$ have been assumed constant.
+If this were the case, GPs would have no training stage. 
+However, knowing the correct hyperparameters is not clear a priori, and such a method of determing the hyperparameters must be used.
+
+The correct way to model uncertainty about the hyperparameters is to give them a prior probability $p(\boldsymbol{\theta})$.
+The prior chosen should be broad to reflect the vagueness of the parameters before training.
+To derive the dependent distributions marginalise the prior to get
+
+\begin{equation}
+	\begin{aligned}
+		\centering
+		p(f) &= \int p(f | \theta) p(\theta) d\theta \\
+		p(y | X) &= p(y | X, \theta) p(\theta) d\theta.
+	\end{aligned}
+\end{equation}
+
+A new distribution can be obtained by combining the prior with the likelihood of the training data observed using Baye's theorem:
+
+\begin{equation}
+	\label{eq:ChooseHyper}
+	\begin{aligned}
+		\centering
+		p(\boldsymbol{\theta} | X, y) &= \frac{p(y | X, \theta) p(\theta)}{p(y | X)} \\
+		&= \frac{p(y | X, \theta) p(\theta)}{\int p(y | X, \theta) p(\theta) d\theta} 
+	\end{aligned}
+\end{equation}
+
+The integration required in the denominator of eq. \ref{eq:ChooseHyper} is very hard in practise as $y$ is a complicated function of $\boldsymbol{\theta}$. 
+Instead, $p(\boldsymbol{\theta} | X, y)$ is maximised to provide an estimate.
+The solution of $p(y | X, \theta)$ you might recognise as the log marginal likelihood in eq. \ref{eq:LogMargLik}. 
+For practical reasons minimising the negative of the log marginal likelihood is easier than maximising it directly.
+Therefore, the estimation of hyperparameters is the solution of the following optimisation problem:
+
+\begin{equation}
+	\centering
+	\boldsymbol{\theta}^* \in \underset{\boldsymbol{\theta}}{\textrm{argmin}} \, -p(y | X, \theta).
+\end{equation}
 
 \subsection{Gaussian Processes for Classification}
 
@@ -716,6 +765,9 @@ The assignment probabilities of outputs is calculated with a softmax function an
 \citet{Lui2020} proposed a similar method with a tighter evidence lower bound (ELBO).
 \citet{Kaiser2018} keeps the latent variables $\textbf{W}$ by approximating $\log p(\textbf{y}, \textbf{W})$ rather than the interested $\log p(y)$.
 \citet{Lui2020} directly approximates $\log p(y)$ by marginalising all the latent variables out.
+
+The scalable mixture of Gausssian processes model developed by \citet{Lui2020} makes use of the reparametisation trick \citep{Maddison2017}.
+TODO: Fill this out.
 
 \section{Gradient Boosting}
 
