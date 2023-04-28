@@ -760,13 +760,21 @@ Hawk-Eye data includes the bowling style, ball speed, the runs scored (including
 One noticeable thing is how much the data overlaps for different outcomes. 
 Whilst their most likely is relationships and functions that can describe good and bad balls, it is clear that cricket is very noisy.
 
-\section{Many Gaussian Processes}
+\section{Mixture of Gaussian Processes}
+
+The implementation to mix gaussian processes was an iteration of the SMGP (scalable modulated Gaussian processes) model developed by \citet{Lui2020}.
+The original model was developed in TensorFlow version one and code copied over from GPFlow version one \citep{GPflow2017}.
+This was then updated to use the latest GPFlow API version two and TensorFlow version two. 
+Following this the code could now be run in eager execution, enabling debugging.
+The code was then extended to enable different likelihoods and multiple inputs.
 
 TODO: Describe implementation and approach to SMGP model
 
-\citep{GPflow2017}
-
 \section{XGBoost}
+
+The XGBoost \citep{Chen2016} model implemented was a modification of the XGFootball model developed by \citet{Blumberg2020}.
+In the code published by Blumberg, there is an implementation of various boosting and decision tree models.
+Rather than train every classifier used by Blumberg, only the XGBoost model was trained on the cricket dataset.
 
 TODO: Describe implementation and approach to XGBoost model
 
@@ -774,7 +782,7 @@ TODO: Describe implementation and approach to XGBoost model
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Results}
 
-\section{Many Gaussian Processes}
+\section{Mixture of Gaussian Processes}
 
 TODO: Write up results once assignment function of SMGP smooth
 
