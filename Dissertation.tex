@@ -18,7 +18,7 @@
 
 \algblock{Input}{EndInput}
 
-\title{\bf The Application of Gaussian Processes in Cricket}
+\title{\bf Cricket Delivery Outcome Prediction using XGBoost and Mixtures of Gaussian Processes: A Comparative Study of Model Performance}
 \author{Louie Middle}
 \date{Bachelor of Science in Computer Science\\ 
                                  % E.g.: Bachelor of Science in Computer Science
@@ -46,11 +46,12 @@
 \consultation{0}
 \newpage
 
-\declaration{The Application of Gaussian Processes in Cricket}{Louie Middle}
+\declaration{Cricket Delivery Outcome Prediction using XGBoost and Mixtures of Gaussian Processes: A Comparative Study of Model Performance}{Louie Middle}
 \newpage
 
 \hypersetup{pageanchor=true}
 
+\addcontentsline{toc}{chapter}{Abstract}
 \abstract
 $\langle$
 The abstract should appear here. 
@@ -61,12 +62,15 @@ $\rangle$
 \tableofcontents
 \newpage
 
+\addcontentsline{toc}{chapter}{List of Figures}
 \listoffigures
 \newpage
 
+\addcontentsline{toc}{chapter}{List of Tables}
 \listoftables
 \newpage
 
+\addcontentsline{toc}{chapter}{List of Algorithms}
 \listofalgorithms
 \newpage
 
@@ -77,7 +81,7 @@ $\rangle$
 
 I would like to acknowledge my supervisor Adam Hartshorne for his support and advice throughout the development of this project.  
 In addition, my partner Hoi Ching Leung has provided much personal support for me throughout this challenging final year.
-Lastly, I would like to thank my parents, for who without I would not have had the amazing oppurtunities in life that I've had, including University and the chance to work on this project.
+Lastly, I would like to thank my parents, for who without I would not have had the amazing oppurtunities in life that I have had, including University and the chance to work on this project.
 
 \newpage
 
@@ -100,89 +104,86 @@ Cricket is a game of fine margins; matches can be decided by a small number of r
 Therefore, every insight that can be made as to what is good or bad cricket is extremely valuable.
 For this reason, there is a strong incentive to improve the machine learning techniques used in current sports analytics to improve a teams performance.
 
-This study aims to investigate the possibility of predicting the outcome of a bowler batter match-up in cricket using modern machine learning techniques and how this could then aid cricket bowling choices and team selection. 
+This study aims to investigate the possibility of predicting the outcome of a cricket delivery using modern machine learning techniques and how this could then aid cricket bowling choices and team selection. 
 The main training and testing data used will be the last 10 years of the Indian Premier League (IPL).
 The hope is that using knowledge of bowler pitch trajectories and batter shot trajectories gathered from modern ball tracking will add another layer of granularity in addition to simply considering the resultant runs scored off each delivery. 
 Furthermore, building a model which can incorporate pitch, atmospheric and ground conditions could further improve any models. 
 
 \section{Sports Analytics}
 
-TODO: Sports Analytics
+Sports analytics is the use of data analysis techniques to gain insights and make decisions related to various aspects of sports, such as player performance, team strategy, and game outcomes. 
+It involves the use of statistical and machine learning techniques to extract meaningful information from large and complex datasets.
 
-Currently in sports analytics and machine learning in generals there is a go to set of machine learning methods that are very popular.
-For example, neural networks are currently popular in machine learning and have a large research output.
-Despite their popularity, all methods have drawbacks.
-For example, take the classic neural network classifier that classifies and image as either a cat or a dog.
-In the case the input is a horse, the model will still attempt to make a prediction as to whether that horse is a cat or a dog.
-This in itself is not a problem, but the model does not give any uncertainty in its response that it most likely not either a cat or a dog. 
+Sports analytics has become an integral part of the decision-making process for many professional teams and organisations. 
+By analyzing data on player performance and team strategies, coaches and managers can make more informed decisions on player recruitment, game tactics, and training regimes.
 
-To overcome this various methods have been developed such as pseudo monte-carlo sampling. 
-TODO: Fill this paragraph out. 
-This is unsatisfactory however when we know the input will be consistently noisy. 
-For example, when we know our directory of cat and dog images has regular images of horses.
-Any models that can factor in this noise by its construction, is valuable.
-In the case of cricket, we know the game is noisy and so appropriate models should factor in this noise.
+\section{Drawbacks of Current Methods in Sports Analytics}
 
-A large body of machine learning methods are frequently underappreciated and in certain domains rarely used.
-TODO: Fill this paragraph out.
+Sport predictors are most commonly using supervised ML methods, typically Neural networks, classification methods or regression methods \citep{horvat2020} (see sections \ref{sec:SportSurvey} and \ref{sec:CrickSurvey}). 
+Whilst existing research can achieve impressive results, unpredictable outcomes in sport still happen. For example, the odds of Leicester City winning the Premier League in the 2015/2016 season were 1-5000. 
+However, analysis of their performances show their title was absolutely deserved.
+Examples like this illustrate the limitations of current predictions in sport.
 
-\section{Moneyball}
+Currently in sports analytics and machine learning in general there is a go to set of methods that are very popular.
+Particularly neural networks and boosting algorithms are currently popular and have a large research output.
+Whilst they have gained popularity for their ability to solve complex problems and deliver accurate predictions, all methods have drawbacks.
 
-TODO: Move to lit review
+\subsection{Overfitting}
 
-The release of the book Moneyball \citep{Moneyball2004}, was a big driver in the increased use of statistical driven techniques in Baseball player selection and scouting techniques. 
-Pioneered by the likes of Bill James and Sabermetrics, Moneyball has entered baseball's lexicon; teams that value Sabermetrics are often said to be playing "Moneyball".  
-One of the notable benefits of a Moneyball approach is in reducing player salaries, whilst maintaining high performance. 
-Notable recent Moneyball successes include the Tampa Bays, whose entire 2019 roster was around 63\% of the total budget of the \$40 million the Houston Astros were spending on Gerrit Cole's contract. 
-It was reported that the Rays spending totalled \$648,000 per victory, compared to the Astros \$1.54 million per win.
-Despite this large difference in pay, the Rays still had a successful season and finished second in the American League East \citep{Fox2019}.
+One significant drawback of neural networks and boosting models is that they can easily overfit the training data, meaning they memorize the data and fail to generalize well to new data. 
+Regularization techniques such as L1 or L2 regularization, dropout, or early stopping can help reduce overfitting, but these methods may not always be sufficient.
 
-Similar successes can be found in other sports, such as association football (or soccer). 
-In 2010 Liverpool F.C. were purchased by Boston Red Sox owner John W. Henry. 
-During this time with the Red Sox, Henry hired Sabermetrics pioneer Bill James and their Moneyball approach saw the team win the World Series in 2004, 2007, 2013 and 2018. 
-Attempting to replicate these results with Liverpool, Henry hired University of Cambridge PhD Ian Graham in 2012 as head of analysis and J\"urgen Klopp as Manager in 2015 \citep{Liverpool2022}. 
-Graham influenced the signings of key players, such as Mohammed Salah, Philippe Coutinho and Naby Ke\"ita. 
-Graham's data suggested Salah would pair especially well with Roberto Firmino, who creates more expected goals than nearly anyone else in his position \citep{Liverpool2019}. 
-Expected goals turned to real goals in the 2017-2018 season, with Salah scoring 32 goals and Firmino scoring 15. 
-The combination of Klopp and his intuitive knowledge, paired with the likes of Grahams data-driven knowledge, has led to Liverpool having fantastic recent success winning the 2018-2019 UEFA Champions League and the 2019-2020 English Premier League.
+\subsection{Discretisation of Continuous Features}
 
-\section{T20 Cricket} \label{sec:T20Cricket}
+TODO:  Talk about how they do this in football.
 
-TODO: Move to background
+Gradient boosting and neural networks, along with other machine learning techniques such as decision trees and random forests, discretize their input space by binning continuous features into intervals or categories. 
+This allows these models to handle continuous variables as categorical variables, simplifying the modeling process. 
+However this is another potential drawback, as this discretization can lead to a loss of information, as the fine-grained details of the continuous variables are lost. 
+This can be particularly problematic for variables with high granularity or subtle variations, where the loss of information can result in reduced accuracy.
 
-Whilst knowledge of cricket is useful to understand this project, it is not necessary to appreciate the project and its applications.
-Despite this, I present a brief introduction to the game and its laws for those unfamiliar with the sport in chapter \ref{chap:CrickBackground}.
+This is the case in cricket, where for example, a perfect yorker \footnotemark{} is a very difficult ball to play against. 
+However, becoming fuller or shorter can turn the ball into a full toss \footnotemark{} or half volley \footnotemark{} respectively, which are both considered easier deliveries to score high runs off of.
+So in the case of binning a feature such as the location of pitch bounces, it wouldn't appropriately represent the realities of this continuous feature.
 
-Whilst there are varying formats of cricket, the focus in this project is the T20 format (20 over cricket) that is played in the IPL.
-T20 cricket gives the first team 20 overs to score as many runs as possible, or until they have used all 10 of their wickets.
-The teams then swap roles and the opposing team attempt to "chase" the total runs plus one scored by the first team. 
-If they manage to do so they win the match, but if all their batters get out before the target total, or use all 20 overs before reaching the target, they lose.
+\footnotetext{In cricket, a yorker is a delivery which hits the cricket pitch around the batsman's feet.}
+\footnotetext{In cricket, a full toss is a delivery which does not pitch before it reaches the batsman.}
+\footnotetext{In cricket, a half volley is a delivery which hits the cricket pitch ahead of a good length, but before the batsman's feet.}
 
-Longer formats of the game such as 40/50 over one day matches and four/five day matches have different tactics compared to T20 cricket.
-Due to T20s shorter nature, a bowling team's goal is generally to minimise the runs the batting team can score, in addition to the traditional goal of taking wickets.
-Typically, once a batter settles into their innings they attempt to score more boundaries to maximise the runs scored in the short playing period.
-Furthermore, some "power hitters" are selected for their specialism in scoring boundaries (see \ref{sec:Boundaries}) at the end of an innings, with no "settling in" period that is afforded to batters in longer formats or at the start of a T20 innings.
-Whilst this style of play is more risky as the chances of misplaying increase, it is generally more beneficial to score as many runs as possible in the short time T20 cricket allots.
-In general T20 batters protect their wicket less than those in other formats and play a riskier, high run scoring style of play.
-\citet{Irvine2017} and the general consensus of the cricket community is that this high boundary scoring carries a greater importance than scoring singles (see \ref{sec:Runs}). 
-\citet{Irvine2017} found that the higher the number of singles scored was detrimental to a batting team's chances of success.
+In addition to discretization, another way to handle continuous variables is by bucketing data into tabular format. 
+This approach involves partitioning continuous variables into distinct ranges or "buckets" and assigning them categorical labels. 
+This method preserves more of the original information compared to discretization, and is particularly useful for variables with high granularity. 
+Bucketing can be applied to different types of variables, including numerical and time-series data, and is commonly used in machine learning models such as decision trees, random forests, and gradient boosting.
 
-Due to the batters desire to score boundaries in T20, bowlers might adopt different strategies to reduce the batters ability to score boundaries. 
-This is often done through bowling a wider variety of deliveries and aiming for dot balls (see \ref{sec:Runs}) or singles.
-Consequently, this should reduce the runs the batters score and increase the chance of taking a wicket due to the batter needing to play a wider variety of shots to score runs, which increases the chance of them making a mistake.
-In general, T20 bowling attacks often assess the ways to reduce the number of boundaries the opposing team can score.
-\citet{Irvine2017} found that increased number of dot balls led to a higher chance of winning for the bowling team. 
+However, bucketing can also be prone to certain issues such as overfitting and bias, particularly when the number of buckets is too large or too small. 
+Furthermore, the choice of bucketing method and the number of buckets can be subjective, and may require experimentation and tuning. 
+Overall, both discretization and bucketing have their advantages and disadvantages, and the choice of method depends on the specific data and modeling needs.
 
-It is therefore key for bowling attacks to reduce the number of boundaries scored and increase the number of dot balls.
-Therefore, a key objective of this project is to accurately predict which delivery would be most optimal to stop a boundary and cause a dot ball.
+\subsection{Limited Data}
 
-\subsection{Indian Premier League} \label{sec:IPL}
+Limited data is another challenge faced by machine learning models. 
+In some cases, obtaining enough data to train a model can be expensive, time-consuming, or simply impossible. 
+This is often the case in sport (and in turn cricket), for various reasons. 
+For example, if attempting to model player performance when a player may have only played a handful of professional matches.
+This issue can be addressed using transfer learning or pseudo Monte Carlo sampling techniques.
 
-The Indian Premier League (IPL) is a professional cricket league based on the T20 format.
-As reported by \citet{ESPNcricinfo2018}, Star Sports invested \$2.55 billion for exclusive broadcasting rights for the 2018 IPL season. 
-This season saw a 29\% increment in the number of viewers, through both digital streaming and television. 
-The interest in the IPL is clear.
-This increases the desire to use modern machine learning techniques to improve results.
+\section{Potential Solutions}
+
+A potential solution is to use an entirely different approach to those that are currently popular in sports analytics, namely Gaussian processes (GPs).
+GPs are particularly effective in handling small datasets and can model complex distributions. 
+One of the main benefits of Gaussian processes is their ability to incorporate uncertainty into the model. 
+This means that instead of providing a single prediction, Gaussian processes can provide a range of possible outcomes along with the associated probabilities. 
+
+Although neural networks and boosting algorithms also attempt to predict with uncertainty, they often rely on heuristic methods to estimate uncertainty, which may not be as accurate as a fully Bayesian approach. 
+In contrast, Gaussian processes are inherently Bayesian, which means they can provide more accurate and reliable estimates of uncertainty.
+
+\subsection{Benefits of Gaussian Processes for Cricket Modeling}
+
+Cricket is a sport that involves many variables, including pitch conditions, weather, player skills, and tactics. 
+These variables can all impact the outcome of a game, and as a result, it can be challenging to model the performance of a cricket team accurately. 
+Additionally, there may be inherent noise in the training data, such as errors in data collection or variations in player performance.
+Furthermore, outputs can constantly overlap the same regions of input space.
+For these reasons, Gaussian processes are an underutilised model choice for cricket because they can handle noisy training data and can provide probabilistic predictions.
 
 \section{Project Plan}
 
@@ -220,7 +221,60 @@ This could potentially be achieved with the University of Bath's Hex GPU cluster
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Literature and Technology Survey}
 
-\section{Existing Machine Learning Research on Sport}
+TODO: Talk about secretive nature of sports analytics (much of it is private).
+
+\section{Moneyball}
+
+The release of the book Moneyball \citep{Moneyball2004} and its subsequent film adaptation, was a big driver in the increased use of statistical driven techniques in Baseball player selection and scouting techniques. 
+Pioneered by the likes of Bill James and Sabermetrics, Moneyball has entered baseball's lexicon; teams that value Sabermetrics are often said to be playing "Moneyball".  
+One of the notable benefits of a Moneyball approach is in reducing player salaries, whilst maintaining high performance. 
+Notable recent Moneyball successes include the Tampa Bays, whose entire 2019 roster was around 63\% of the total budget of the \$40 million the Houston Astros were spending on Gerrit Cole's contract. 
+It was reported that the Rays spending totalled \$648,000 per victory, compared to the Astros \$1.54 million per win.
+Despite this large difference in pay, the Rays still had a successful season and finished second in the American League East \citep{Fox2019}.
+
+Similar successes can be found in other sports, such as association football (or soccer). 
+In 2010 Liverpool F.C. were purchased by Boston Red Sox owner John W. Henry. 
+During this time with the Red Sox, Henry hired Sabermetrics pioneer Bill James and their Moneyball approach saw the team win the World Series in 2004, 2007, 2013 and 2018. 
+Attempting to replicate these results with Liverpool, Henry hired University of Cambridge PhD Ian Graham in 2012 as head of analysis and J\"urgen Klopp as Manager in 2015 \citep{Liverpool2022}. 
+Graham influenced the signings of key players, such as Mohammed Salah, Philippe Coutinho and Naby Ke\"ita. 
+Graham's data suggested Salah would pair especially well with Roberto Firmino, who creates more expected goals than nearly anyone else in his position \citep{Liverpool2019}. 
+Expected goals turned to real goals in the 2017-2018 season, with Salah scoring 32 goals and Firmino scoring 15. 
+The combination of Klopp and his intuitive knowledge, paired with the likes of Grahams data-driven knowledge, has led to Liverpool having fantastic recent success winning the 2018-2019 UEFA Champions League and the 2019-2020 English Premier League.
+
+\section{T20 Cricket} \label{sec:T20Cricket}
+
+Whilst there are varying formats of cricket \footnotemark{}, the focus in this project is the T20 format (20 over cricket) that is played in the IPL.
+T20 cricket gives the first team 20 overs to score as many runs as possible, or until they have used all 10 of their wickets.
+The teams then swap roles and the opposing team attempt to "chase" the total runs plus one scored by the first team. 
+If they manage to do so they win the match, but if all their batters get out before the target total, or use all 20 overs before reaching the target, they lose.
+
+\footnotetext{Whilst knowledge of cricket is useful to understand this project, it is not necessary to appreciate the project and its applications.
+Despite this, I present a brief introduction to the game and its laws for those unfamiliar with the sport in chapter \ref{chap:CrickBackground}.}
+
+Longer formats of the game such as 40/50 over one day matches and four/five day matches have different tactics compared to T20 cricket.
+Due to T20s shorter nature, a bowling team's goal is generally to minimise the runs the batting team can score, in addition to the traditional goal of taking wickets.
+Typically, once a batter settles into their innings they attempt to score more boundaries to maximise the runs scored in the short playing period.
+Furthermore, some "power hitters" are selected for their specialism in scoring boundaries (see \ref{sec:Boundaries}) at the end of an innings, with no "settling in" period that is afforded to batters in longer formats or at the start of a T20 innings.
+Whilst this style of play is more risky as the chances of misplaying increase, it is generally more beneficial to score as many runs as possible in the short time T20 cricket allots.
+In general T20 batters protect their wicket less than those in other formats and play a riskier, high run scoring style of play.
+\citet{Irvine2017} and the general consensus of the cricket community is that this high boundary scoring carries a greater importance than scoring singles (see \ref{sec:Runs}). 
+\citet{Irvine2017} found that the higher the number of singles scored was detrimental to a batting team's chances of success.
+
+Due to the batters desire to score boundaries in T20, bowlers might adopt different strategies to reduce the batters ability to score boundaries. 
+This is often done through bowling a wider variety of deliveries and aiming for dot balls (see \ref{sec:Runs}) or singles.
+Consequently, this should reduce the runs the batters score and increase the chance of taking a wicket due to the batter needing to play a wider variety of shots to score runs, which increases the chance of them making a mistake.
+In general, T20 bowling attacks often assess the ways to reduce the number of boundaries the opposing team can score.
+\citet{Irvine2017} found that increased number of dot balls led to a higher chance of winning for the bowling team. 
+
+\subsection{Indian Premier League} \label{sec:IPL}
+
+The Indian Premier League (IPL) is a professional cricket league based on the T20 format.
+As reported by \citet{ESPNcricinfo2018}, Star Sports invested \$2.55 billion for exclusive broadcasting rights for the 2018 IPL season. 
+This season saw a 29\% increment in the number of viewers, through both digital streaming and television. 
+The interest in the IPL is clear.
+This increases the desire to use modern machine learning techniques to improve results.
+
+\section{Existing Machine Learning Research on Sport} \label{sec:SportSurvey}
 
 \begin{figure}[H]
     \centering
@@ -240,7 +294,15 @@ The most accurate results were achieved by researchers who used data from a sing
 When using data from a single season, the majority of the data was used for training and a small portion for testing. 
 Some researchers used the same data set for training and testing, yielding unrealistically accurate results.
 
+\subsection{XGBoost and Football}
+
+TODO: Talk about \citep{Blumberg2020}.
+
+TODO: Talk about stats bomb.
+
 \section{Existing Machine Learning Research on Cricket} \label{sec:CrickSurvey}
+
+TODO: Talk about CricketSavant, his XGBoost, and then subsequent hiring by CrickVis.
 
 \citet{KampakisStylianos2015} used Naïve Bayes, logistic regression, random forests and gradient boosted decision trees to predict the outcome of English County 20 over Cricket Matches from 2009 - 2014. 
 The performance of each algorithm was assessed using one year's data as the training data set and the following year's data for testing. 
@@ -289,12 +351,9 @@ Instead, most of the focus is on predicting game outcomes or overall player perf
 
 \citet{Wickramasinghe2022} also evaluated the frequently used ML techniques in cricket, as shown in figure \ref{fig:NoPapersCricket}. 
 There is a noticeable lack of deep learning, reinforcement learning or natural language processing techniques.
-Furthermore, techniques such as XGBoost have only recently begun to be adopted, and Gaussian processes have not been used at all.
+Furthermore, better boosting algorithmgs such as XGBoost have only recently begun to be adopted, and Gaussian processes have not been used at all.
 Lastly, a clear uptick in the number of publications can be seen over the years, which is also corroborated in sport as whole in \citet{horvat2020}.
 It once again highlights the growing interest in ML in sport.
-
-From \citet{Wickramasinghe2022} work, it is clear that there is a lack of current research in both batter player matchups and use of a wider breadth of ML techniques. 
-Another objective of this project, is to attempt to start research in new areas of cricket, as well as use under-utilised  ML techniques.
 
 \subsection{Existing Machine Learning Research on the Indian Premier League}
 
@@ -303,24 +362,10 @@ When the predicted results were validated with the players performances in the f
 
 Otherwise, there is generally limited research on the IPL and it is an area ripe for research.
 
-\section{Hawk-Eye and Ball Tracking}
-
-TODO: Move to background
-
-The data-set used in this project contains tracking data from Hawk-Eye systems.
-Hawk-Eye Innovations is a sports technology company, that provides many products, including computer version services.
-In particular there is a focus on ball and player tracking in sports, including cricket.
-In this project the emphasis is placed on the ball tracking.
-Hawk-Eye have a number of cameras at IPL grounds, that the video from is then triangulated and combined to create a three-dimensional representation of the ball's trajectory.
-It has been adopted as an ajudication tool by many governing bodies in cricket and is generally accepted to be accurate.
-Further explanation of the dataset and features used in this project are explained in section \ref{sec:Dataset}.
-
 \section{Research With Similar Goals}
 
-TODO: Need to change this section to match my new goal of just 1 delivery predicition vs an entire over.
-
 The Singlearity-PA model \citep{silver2021baseball} wanted to attempt to solve one of the most fundamental questions in baseball:	 How can we	predict the outcome of a batter	vs. pitcher plate appearance (PA)? 
-This is similar to my goal with cricket:  To predict the outcome of batter vs bowler for an over.
+This is similar to my goal with cricket: To predict the outcome of batter vs bowler.
 
 The Singlearity-PA model \citep{silver2021baseball} was able to accurately predict the results of a batter versus pitcher plate appearance using a neural-network based AI model. 
 The details of the model used are vague, however the network was able to take in 87 inputs and then output probabilities for each of the 21 possible outcomes of a plate appearance (PA) in baseball. 
@@ -337,28 +382,6 @@ Extending Singlearity-PA with Markov chains improved more complicated strategies
 Similarly, in cricket the batting lineup and choice of bowler at different points in a game have a large impact on the score. 
 In the example provided, Singlearity-PA's predicted runs scored for an optimal lineup was 6.7\% better than the actual lineup in the 2019 National League All-Star game. 
 It is important not to compare baseball and cricket too closely, but the techniques used by Silver and Huffman could potentially work well in Cricket.
-
-\section{Drawbacks of Existing Methods}
-
-Sport outcome predictors are most commonly used by supervised ML methods, typically classification methods or regression methods \citep{horvat2020}. 
-Whilst existing research can achieve impressive results, unpredictable outcomes in sport still happen. For example, the odds of Leicester City winning the Premier League in the 2015/2016 season were 1-5000. 
-However, analysis of their performances show their title was absolutely deserved.
-Examples like this illustrate the limitations of current predictions in sport.
-
-One explanation is that existing models only output a single value. 
-There is no uncertainty in the output as to how confident the model is in its prediction. 
-This is problematic in that making decisions based on this prediction becomes much more difficult, as decision makers can't be sure how much to trust the prediction. 
-Furthermore, certain test input data could have very little similar training data to it. 
-In such cases, the uncertainty in a models output should be much greater. 
-Yet, existing models will still provide a prediction the same as it would for inputs where there was a large amount of training data.
-
-Another downside of many commonly used methods is how they discretise the input space. 
-The features gathered by the likes of Hawk-Eye have a rich continuous space.
-By using a neural network or gradient boosting method, these continuous features are being discretised. 
-In reality a model that can incorporate the value of the continuous nature of these inputs would be valuable.
-TODO: Finish this para, potentially some of it might duplicate the introduction
-
- TODO: talk about \citep{Blumberg2020}.
 
 \section{Gaussian Processes in Sport}
 
@@ -674,9 +697,11 @@ Both classification and regression can be seen as function approximation problem
 Unfortunately, the solution of classification problems using Gaussian processes is tougher than regression problems. 
 For regression problems, the likelihood is often assumed to be Gaussian. 
 A Gaussian process prior combined with a Gaussian likelihood gives a posterior Gaussian process over functions, where everything remains analytically tractable. 
-For classification models, the Gaussian likelihood is inappropriate; a different likelihood such as a Bernoulli likelihood must be used.
+For classification models, the Gaussian likelihood is inappropriate; a different likelihood such as a Bernoulli or multi-class likelihood must be used for approximate inference.
 
-TODO: Explain classification
+In such cases the latent function $f$ plays the role of a nuisance function. 
+This is that values of $f$ are not observed directly and there is no interest in the values of f, but rather in $\pi$ where $\pi (\textbf{x})$ is TODO.
+The purpose of $f$ is solely to allow convenient formulation of the model and the goal is to integrate out $f$.
 
 TODO: Explain variational GPs
 
@@ -728,10 +753,6 @@ Standard machine learning approaches can pollute any models, where the model sta
 The cricket dataset could be deemed a data association problem, as perhaps we can say that each outcome (runs scored) of a cricket delivery is generated by a different process. 
 Each of these processes are noisy, as cricket has stochastic outcomes. 
 
-For example, in cricket a seam delivery at the top of off stump is generally considered to be a good ball. 
-This knowledge is gathered through anecdotal experience of humans observing many cricket matches and in turn many cricket deliveries.
-However, it is still entirely possible that a good delivery could be hit for a maximum of 6 runs. 
-
 Furthermore, the relationship between a cricket delivery's features and its outcome is not a simple relationship. 
 For example, lets take a high level look at a seam bowlers length of pitch in IPL cricket (the "pitchY" feature in the dataset).
 A good short ball (also known as a bouncer) from a quick bowler is one that reaches the batsmen at shoulder or above height. 
@@ -743,47 +764,60 @@ This is as a yorker, a ball right at a batsmens feet, which is considered a very
 Therefore it is clear the relationship between the pitch length and the outcome of a delivery is not linear and not simple.
 Similar examples can be made with the width of a ball, its swing, its spin, and many other features.
 
-Equally, a "good" or "bad" ball is subjective depending on the match state and what the bowling team is trying to achieve. 
-Typically in an IPL match the goal of the bowling team is to reduce the oppositions runs scored. 
-The best balls for this requirement are not the same as the best balls to take a wicket. 
-Equally there is an idea in cricket of "setting a batsmen up". 
-This idea refers to having the previous deliveries set the batsmen up to get out on the next ball. 
-For example, a short ball to throw the batsmen off, followed by a yorker right at the stumps. 
-This highlights that there is some relationship between previous deliveries on any future deliveries.
+%Equally, a "good" or "bad" ball is subjective depending on the match state and what the bowling team is trying to achieve. 
+%Typically in an IPL match the goal of the bowling team is to reduce the oppositions runs scored. 
+%The best balls for this requirement are not the same as the best balls to take a wicket. 
+%Equally there is an idea in cricket of "setting a batsmen up". 
+%This idea refers to having the previous deliveries set the batsmen up to get out on the next ball. 
+%For example, a short ball to throw the batsmen off, followed by a yorker right at the stumps. 
+%This highlights that there is some relationship between previous deliveries on any future deliveries.
 
-From theses examples, it is clear that the game of cricket has many nuances and challenges for modelling with machine learning techniques. 
+It is clear that the game of cricket has many nuances and challenges for modelling with machine learning techniques. 
 Data association techniques however, provide a framework to attempt to seperate some of the differences in how runs are scored in cricket, and model the overlap in the varying outcomes.
 
-\subsection{Data Association with Gaussian Processes}
-
-The data association with Gaussian processes model introduced by \citet{Kaiser2018} assumes there exists $K$ independent functions.
-The assignment of the $n^{th}$ data point to a function is specificed by the indicator vector $\textbf{a}_{n} \in {0, 1}^K$ which has exactly one non-zero entry.
-The assignment probabilities of outputs is calculated with a softmax function and multinomial distribution. 
-
-\subsection{Modulated Scalable Gaussian Processes}
-
-\citet{Lui2020} proposed a similar method with a tighter evidence lower bound (ELBO).
-\citet{Kaiser2018} keeps the latent variables $\textbf{W}$ by approximating $\log p(\textbf{y}, \textbf{W})$ rather than the interested $\log p(y)$.
-\citet{Lui2020} directly approximates $\log p(y)$ by marginalising all the latent variables out.
-
-The scalable mixture of Gausssian processes model developed by \citet{Lui2020} makes use of the reparametisation trick \citep{Maddison2017}.
-TODO: Fill this out.
-
-\section{Gradient Boosting}
+\section{XGBoost}
 
 XGBoost is a scalable machine learning gradient boosting library.  
-It is an extremely popular, versatile and state-of-the-art technique.
+It is an extremely popular, versatile and state-of-the-art gradient boosting technique.
 For example, among the 29 challenge winning solutions published at Kaggle’s blog during 2015 17 solutions used XGBoost.
 Among these solutions, eight solely used XGBoost to train the model, while most others combined XGBoost with neural nets in ensembles.
 These results demonstrate that XGBoost gives state-of-the-art results on a wide range of problems. 
 Examples of the problems in the winning solutions include: store sales prediction; high energy physics event classification; web text classification; customer behavior prediction; motion detection; ad click through rate prediction; malware classification; product categorization; hazard risk prediction; massive online course dropout rate prediction \citep{Chen2016}.
 
-The versatility and performance of XGBoost and gradient boosting make it a popular choice, yet it hasn't been widely adopted in cricket research (see section \ref{sec:CrickSurvey}).
+The versatility and performance of XGBoost make it a popular choice of boosting algorithm, yet it hasn't been widely adopted in cricket research (see section \ref{sec:CrickSurvey}).
 For this reason, I wanted to experiment with XGBoost in this project, and use it as a baseline performance compared to solutions with GPs.
+
+\section{Hawk-Eye and Ball Tracking}
+
+The data-set used in this project contains tracking data from Hawk-Eye systems.
+Hawk-Eye Innovations is a sports technology company, that provides many products, including computer version services.
+In particular there is a focus on ball and player tracking in sports, including cricket.
+In this project the emphasis is placed on the ball tracking.
+Hawk-Eye have a number of cameras at IPL grounds, that the video from is then triangulated and combined to create a three-dimensional representation of the ball's trajectory.
+It has been adopted as an ajudication tool by many governing bodies in cricket and is generally accepted to be accurate.
+
+Hawk-Eye tracking data is accumulated and stored. 
+It can then be used for various data science and machine learning purposes.
+Further explanation of the dataset and features used in this project are explained in section \ref{sec:Dataset}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Method} \label{chap:Method}
+
+\section{Objectives}
+
+Following on from the appropriate literature review and background, the primary objectives of this project can be listed as follows:
+
+\begin{enumerate}
+  \item From \ref{sec:T20Cricket} it is clear that it is key for bowling attacks to reduce the number of boundaries scored and increase the number of dot balls.
+Therefore, a key objective of this project is to accurately predict which delivery would be most optimal to stop a boundary and cause a dot ball.
+  \item From sections \ref{sec:SportSurvey} and \ref{sec:CrickSurvey}, it is clear that there is a lack of current research in delivery outcome prediction and use of a wider breadth of ML techniques. 
+Another objective of this project, is to attempt to explore new prediciton types in cricket, as well as use under-utilised  ML techniques, notably:
+  \begin{enumerate}
+	\item Mixtures of Gaussian processes.
+	\item XGBoost
+  \end{enumerate}
+\end{enumerate}
 
 \section{Dataset} \label{sec:Dataset}
 
@@ -813,6 +847,23 @@ One noticeable thing is how much the data overlaps for different outcomes.
 Whilst their most likely is relationships and functions that can describe good and bad balls, it is clear that cricket is very noisy.
 
 \section{Mixture of Gaussian Processes}
+
+\subsection{Data Association with Gaussian Processes}
+
+The data association with Gaussian processes model introduced by \citet{Kaiser2018} assumes there exists $K$ independent functions.
+The assignment of the $n^{th}$ data point to a function is specificed by the indicator vector $\textbf{a}_{n} \in {0, 1}^K$ which has exactly one non-zero entry.
+The assignment probabilities of outputs is calculated with a softmax function and multinomial distribution. 
+
+\subsection{Modulated Scalable Gaussian Processes}
+
+\citet{Lui2020} proposed a similar method with a tighter evidence lower bound (ELBO).
+\citet{Kaiser2018} keeps the latent variables $\textbf{W}$ by approximating $\log p(\textbf{y}, \textbf{W})$ rather than the interested $\log p(y)$.
+\citet{Lui2020} directly approximates $\log p(y)$ by marginalising all the latent variables out.
+
+The scalable mixture of Gausssian processes model developed by \citet{Lui2020} makes use of the reparametisation trick \citep{Maddison2017}.
+TODO: Fill this out.
+
+\subsection{Implementation}
 
 The implementation to mix gaussian processes was an iteration of the SMGP (scalable modulated Gaussian processes) model developed by \citet{Lui2020}.
 The original model was developed in TensorFlow version one and code copied over from GPFlow version one \citep{GPflow2017}.
@@ -853,6 +904,8 @@ TODO: Discuss results.
 \chapter{Conclusion}
 
 TODO: Conclude on results and findings. Explain future work (e.g. taking into account that we know the assignments). Furthermore more inputs and use of categorical inputs etc.
+
+\section{Future Work}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -963,12 +1016,12 @@ When ten batters have been dismissed, the innings ends and the teams swap sides 
 The game is referreed by two umpires.
 In the case of international or professional cricket, there is typically an additional 3rd umpire off the field for video or technology assisted reviews.
 
-\section{T20 Cricket} \label{sec:T20Cricket}
+\section{Additional T20 Cricket Details} \label{sec:AdditionalT20Cricket}
 
-There are varying formats of cricket and the focus in this project is the T20 format (20 over cricket) that is played in the IPL, see section \ref{sec:IPL}. 
-T20 cricket gives the first side 20 overs to score as many runs as they can, or until they have used all 10 of their wickets.
-The teams then swap roles and the opposing team attempt to "chase" the total runs plus one scored by the first team. 
-If they manage to do so they win the match, but if they get all out before the target total, or use all 20 overs before reaching the target, they lose.
+The following section includes any additional details on T20 cricket not included in section \ref{sec:T20Cricket}.
+
+\subsection{Super Overs}
+
 On the rare case a T20 game finishes with both sides scoring the same number of runs, a tie breaker "super over" is played.
 In a super over, each team nominates three batsmen and one bowler to play a one-over-per-side "mini-match".
 If the Super Over also ends up in a tie, it is repeated until the tie is broken.
