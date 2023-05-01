@@ -117,9 +117,10 @@ It involves the use of statistical and machine learning techniques to extract me
 Sports analytics has become an integral part of the decision-making process for many professional teams and organisations. 
 By analyzing data on player performance and team strategies, coaches and managers can make more informed decisions on player recruitment, game tactics, and training regimes.
 
-\section{Drawbacks of Current Methods in Sports Analytics}
 
-Sport predictors are most commonly using supervised ML methods, typically Neural networks, classification methods or regression methods \citep{horvat2020} (see sections \ref{sec:SportSurvey} and \ref{sec:CrickSurvey}). 
+\section{Drawbacks of Current Methods in Sports Analytics}
+ 
+Sport predictors are most commonly using supervised ML methods, typically Neural networks, classification methods, regression methods or gradient boosting \citep{horvat2020} (see sections \ref{sec:SportSurvey} and \ref{sec:CrickSurvey}).
 Whilst existing research can achieve impressive results, unpredictable outcomes in sport still happen. For example, the odds of Leicester City winning the Premier League in the 2015/2016 season were 1-5000. 
 However, analysis of their performances show their title was absolutely deserved.
 Examples like this illustrate the limitations of current predictions in sport.
@@ -135,20 +136,14 @@ Regularization techniques such as L1 or L2 regularization, dropout, or early sto
 
 \subsection{Discretisation of Continuous Features}
 
-TODO:  Talk about how they do this in football.
-
 Gradient boosting and neural networks, along with other machine learning techniques such as decision trees and random forests, discretize their input space by binning continuous features into intervals or categories. 
 This allows these models to handle continuous variables as categorical variables, simplifying the modeling process. 
 However this is another potential drawback, as this discretization can lead to a loss of information, as the fine-grained details of the continuous variables are lost. 
 This can be particularly problematic for variables with high granularity or subtle variations, where the loss of information can result in reduced accuracy.
 
-This is the case in cricket, where for example, a perfect yorker \footnotemark{} is a very difficult ball to play against. 
-However, becoming fuller or shorter can turn the ball into a full toss \footnotemark{} or half volley \footnotemark{} respectively, which are both considered easier deliveries to score high runs off of.
+This is the case in cricket, where for example, a perfect yorker \footnote{In cricket, a yorker is a delivery which hits the cricket pitch around the batsman's feet.} is a very difficult ball to play against. 
+However, becoming fuller or shorter can turn the ball into a full toss \footnote{In cricket, a full toss is a delivery which does not pitch before it reaches the batsman.} or half volley \footnote{In cricket, a half volley is a delivery which hits the cricket pitch ahead of a good length, but before the batsman's feet.} respectively, which are both considered easier deliveries to score high runs off of.
 So in the case of binning a feature such as the location of pitch bounces, it wouldn't appropriately represent the realities of this continuous feature.
-
-\footnotetext{In cricket, a yorker is a delivery which hits the cricket pitch around the batsman's feet.}
-\footnotetext{In cricket, a full toss is a delivery which does not pitch before it reaches the batsman.}
-\footnotetext{In cricket, a half volley is a delivery which hits the cricket pitch ahead of a good length, but before the batsman's feet.}
 
 In addition to discretization, another way to handle continuous variables is by bucketing data into tabular format. 
 This approach involves partitioning continuous variables into distinct ranges or "buckets" and assigning them categorical labels. 
@@ -185,43 +180,47 @@ Additionally, there may be inherent noise in the training data, such as errors i
 Furthermore, outputs can constantly overlap the same regions of input space.
 For these reasons, Gaussian processes are an underutilised model choice for cricket because they can handle noisy training data and can provide probabilistic predictions.
 
-\section{Project Plan}
+\section{Privacy in Sports Analytics}
 
-There are 26 weeks from Friday the 4th November until the final deadline of Friday the 5th May. 
-The individual project is 24 credits out of a total 60 credits for the year, meaning 40\% of my time can be used for the project. 
-This is 10.4 weeks. 
-To allow for buffer and holidays I will assume I have 8 working weeks to complete the project. 
-I have split my project into 3 main sections:
+Whilst there is certainly publically available research in the field of sports analytics, it is true that many professional sports teams and sports technology companies are secretive about their analytical methods and data. 
+This is for various reasons, but mostly to maintain an advantage over their competitors.
+For this reason, it is important to note that large amounts of current sports analytics work is not publically visible and often has to be inferred.
 
-\begin{enumerate}
-    \item Literature review and pre-processing (2 weeks)
-    \item Developing and improving models (4 weeks)
-    \item Analysis of models and write up (2 weeks)
-\end{enumerate}
-
-The buffer time can be used for any unforseen challenges, or sections that need it. 
-See a Gantt chart for an overview of the plan in figure \ref{fig:gantt_chart}.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{Gantt Chart.png}
-    \caption{Gantt Chart For Project}
-    \label{fig:gantt_chart}
-\end{figure}
-
-\section{Resources Required}
-
-In order to train any machine learning model an appropriate amount of data for training and testing. 
-Because it is not beneficial to use data that is too old \citep{horvat2020}, at least a recent season's worth of data would be good, saving some data for testing. 
-
-Training machine learning models may also require appropriate computing power depending on the models used and size of the data set. 
-This could potentially be achieved with the University of Bath's Hex GPU cluster.
+%\section{Project Plan}
+%
+%There are 26 weeks from Friday the 4th November until the final deadline of Friday the 5th May. 
+%The individual project is 24 credits out of a total 60 credits for the year, meaning 40\% of my time can be used for the project. 
+%This is 10.4 weeks. 
+%To allow for buffer and holidays I will assume I have 8 working weeks to complete the project. 
+%I have split my project into 3 main sections:
+%
+%\begin{enumerate}
+%    \item Literature review and pre-processing (2 weeks)
+%    \item Developing and improving models (4 weeks)
+%    \item Analysis of models and write up (2 weeks)
+%\end{enumerate}
+%
+%The buffer time can be used for any unforseen challenges, or sections that need it. 
+%See a Gantt chart for an overview of the plan in figure \ref{fig:gantt_chart}.
+%
+%\begin{figure}[H]
+%    \centering
+%    \includegraphics[width=\linewidth]{Gantt Chart.png}
+%    \caption{Gantt Chart For Project}
+%    \label{fig:gantt_chart}
+%\end{figure}
+%
+%\section{Resources Required}
+%
+%In order to train any machine learning model an appropriate amount of data for training and testing. 
+%Because it is not beneficial to use data that is too old \citep{horvat2020}, at least a recent season's worth of data would be good, saving some data for testing. 
+%
+%Training machine learning models may also require appropriate computing power depending on the models used and size of the data set. 
+%This could potentially be achieved with the University of Bath's Hex GPU cluster.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Literature and Technology Survey}
-
-TODO: Talk about secretive nature of sports analytics (much of it is private).
 
 \section{Moneyball}
 
@@ -294,15 +293,17 @@ The most accurate results were achieved by researchers who used data from a sing
 When using data from a single season, the majority of the data was used for training and a small portion for testing. 
 Some researchers used the same data set for training and testing, yielding unrealistically accurate results.
 
-\subsection{XGBoost and Football}
+\subsection{Expected Goals and Football}
 
-TODO: Talk about \citep{Blumberg2020}.
+Expected goals (xG) is a statistical metric used in football to quantify the quality of scoring chances created by a team or player in a match. 
+It is calculated by analyzing a range of variables such as shot location, shot angle, distance from goal, type of shot, and more. Each shot is assigned a probability of being scored based on historical data from similar situations. 
+Expected goals provides a more accurate assessment of a team's performance than simply looking at the number of goals scored as it takes into account the difficulty of chances created.
 
-TODO: Talk about stats bomb.
+Large sports analysis company StatsBomb have referenced in their blog posts that their xG model uses gradient boosting models \citep{statsbomb2022}. 
+This can also be seen in that when \citet{Blumberg2020} implemented his own xG model, he made use of XGBoost \citep{Chen2016} and achieved comparable results to StatsBomb.
+One of the valuable things about XGBoost and Blumbergs model is that it provides a feature interpretation of what features are most important.
 
 \section{Existing Machine Learning Research on Cricket} \label{sec:CrickSurvey}
-
-TODO: Talk about CricketSavant, his XGBoost, and then subsequent hiring by CrickVis.
 
 \citet{KampakisStylianos2015} used Naïve Bayes, logistic regression, random forests and gradient boosted decision trees to predict the outcome of English County 20 over Cricket Matches from 2009 - 2014. 
 The performance of each algorithm was assessed using one year's data as the training data set and the following year's data for testing. 
@@ -311,7 +312,7 @@ Each model was tested over these seasons and achieved an accuracy of 62.4\% for 
 \begin{table}[H] \label{tab:ResearchCrick}
 	\centering
 	\caption{Research areas in cricket and their percentage of the total research output in cricket \citep{Wickramasinghe2022}}
-	\begin{tabular}{||c c ||} 
+	\begin{tabular}{| c | c |} 
 		\hline
 		Research Area & \% of Studies \\ [0.5ex] 
 		\hline\hline
@@ -332,7 +333,7 @@ Each model was tested over these seasons and achieved an accuracy of 62.4\% for 
 		Pitch Behaviour Predicition & 4 \\
 		\hline
 		Team Selection/Performance & 3 \\ [1ex] 
-	\hline
+		\hline
 	\end{tabular}
 \end{table}
 
@@ -362,6 +363,15 @@ When the predicted results were validated with the players performances in the f
 
 Otherwise, there is generally limited research on the IPL and it is an area ripe for research.
 
+%\subsection{Expected Runs}
+%
+%In cricket, expected runs (xR) refers to the estimated number of runs a team or a batsman is expected to score based on various factors such as the number of overs left, the current score, and the quality of the opposition. 
+%It is calculated using statistical models that take into account various variables such as the batsman's average, strike rate, and the pitch conditions. 
+%The concept of expected runs is often used by cricket analysts and commentators to assess a team's performance, identify areas of improvement, and make predictions about the outcome of a match. 
+%It is a useful tool in evaluating a player's performance and predicting the final score of a match.
+%
+%TODO: Talk about CricketSavant, his XGBoost, and then subsequent hiring by CrickVis.
+
 \section{Research With Similar Goals}
 
 The Singlearity-PA model \citep{silver2021baseball} wanted to attempt to solve one of the most fundamental questions in baseball:	 How can we	predict the outcome of a batter	vs. pitcher plate appearance (PA)? 
@@ -383,9 +393,9 @@ Similarly, in cricket the batting lineup and choice of bowler at different point
 In the example provided, Singlearity-PA's predicted runs scored for an optimal lineup was 6.7\% better than the actual lineup in the 2019 National League All-Star game. 
 It is important not to compare baseball and cricket too closely, but the techniques used by Silver and Huffman could potentially work well in Cricket.
 
-\section{Gaussian Processes in Sport}
-
-TODO: Talk about Gaussian processes in sport
+%\section{Gaussian Processes in Sport}
+%
+%TODO: Talk about Gaussian processes in sport
 
 \chapter{Background}
 
@@ -705,6 +715,8 @@ The purpose of $f$ is solely to allow convenient formulation of the model and th
 
 TODO: Explain variational GPs
 
+TODO: This has good \citep{Yi2020}
+
 \subsection{Sparse Variational Gaussian Processes}
 
 A major drawback of Gaussian processes is their $O(N^3)$ complexity when computing $[K + \sigma_{n}^2I]^-1$ from \ref{alg:GPR}, but it can be done as a preprocessing step since it is independent of the test points. 
@@ -826,25 +838,37 @@ The dataset is a CSV where each row is a different cricket delivery.
 Each row contains identifying information of the delivery, such as the match ID, delivery number, the batter, the bowler, and additional Hawk-Eye data.
 For this project, personal information on whose batting or bowling will not be disclosed. 
 Hawk-Eye data includes the bowling style, ball speed, the runs scored (including how many were from the batter or extras), where the ball pitches, where the ball passed the stumps and more.     
+Whilst there exists data for many deliveries involving many batters and bowlers, the focus of this project is on right arm seam deliveries against one particular batter.
+The purpose is to use this batter to explore what the best and worst deliveries are for this person.
+From here forward a pseudonym of "John Doe" will be used for this batter.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.49\linewidth]{jos_buttler_0_runs_right_arm_seam_stumps.png}
-    \includegraphics[width=0.49\linewidth]{jos_buttler_0_runs_right_arm_seam_stumps_heat_map.png}
-    \caption{The "StumpsX" and "StumpsY" features of the dataset. This is all the right arm seam deliveries that went for 0 "batterRuns" for one batter.}
-    \label{fig:StumpsXY0Runs}
+    \includegraphics[width=\linewidth]{right_arm_seam_stumps.png}
+    \caption{The "StumpsX" and "StumpsY" features of the dataset. This is all the right arm seam deliveries faced by John Doe. The left is deliveries that went for 0 runs and the right is deliveries that went for 6 runs.}
+    \label{fig:StumpsXY}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.49\linewidth]{jos_buttler_6_runs_right_arm_seam_stumps.png}
-    \includegraphics[width=0.49\linewidth]{jos_buttler_6_runs_right_arm_seam_stumps_heat_map.png}
-    \caption{The "StumpsX" and "StumpsY" features of the dataset. This is all the right arm seam deliveries that went for 6 "batterRuns" for one batter.}
-    \label{fig:StumpsXY6Runs}
+    \includegraphics[width=\linewidth]{right_arm_seam_pitch.png}
+    \caption{The "PitchX" and "PitchY" features of the dataset. This is all the right arm seam deliveries faced by John Doe. The view is birds-eye (from above the stumps). The grey area is the pitch, with the x-axis stretched as to make each delivery clearer. The left is deliveries that went for 0 runs and the right is deliveries that went for 6 runs.}
+    \label{fig:PitchXY}
 \end{figure}
 
-One noticeable thing is how much the data overlaps for different outcomes. 
-Whilst their most likely is relationships and functions that can describe good and bad balls, it is clear that cricket is very noisy.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{right_arm_seam_pitch_strike_rate.png}
+    \caption{The pitches of right arm seam deliveries for John Doe. For exemplary purposes, the areas on the pitch have been bucketed. Each bucket has an associated strike rate, show by the scale on the right.}
+    \label{fig:PitchXYStrikeRate}
+\end{figure}
+
+Figures \ref{fig:StumpsXY}, \ref{fig:PitchXY} and \ref{fig:PitchXYStrikeRate} visualise various parts of the dataset. 
+Figure \ref{fig:PitchXYStrikeRate} shows the strike rate \footnotemark{} for the different areas of the pitch. 
+It highlights that too short, too wide, or too full deliveries have a higher strike rate than the areas at a classically good pitch length and width.
+Whilst there is clear signs of a good or bad pitch location, one noticeable thing in figures \ref{fig:StumpsXY} and \ref{fig:PitchXY} is how much the data overlaps for different outcomes i.e. locations of zero runs are also locations of six runs.
+
+\footnotetext{Strike rate is a common metric in T20 cricket to evaluate a batter's performance. The batters strike rate is their runs scored divided by the balls faced times 100. A high strike rate is good for a batter. Note there is a metric for bowlers also called strike rate that this is not to be confused with.}
 
 \section{Mixture of Gaussian Processes}
 
@@ -881,6 +905,7 @@ Rather than train every classifier used by Blumberg, only the XGBoost model was 
 
 TODO: Describe implementation and approach to XGBoost model
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Results}
@@ -891,7 +916,33 @@ TODO: Write up results once assignment function of SMGP smooth
 
 \section{XGBoost}
 
-TODO: Write up results of Jos Buttler demo from DoP.
+\begin{table}[H] \label{tab:XGResults}
+	\centering
+	\caption{Results of XGBoost model}
+	\begin{tabular}{| c | c | c |} 
+		\hline
+		Model Features & \% Accuracy & Log Loss \\ [0.5ex] 
+		\hline\hline
+		StumpsX \& StumpsY & 84.0 & 0.5125 \\
+		\hline
+		StumpsX \& StumpsY \& PitchX \& PitchY & 84.00 & 0.4538 \\ [1ex]
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{stumps_shap.png}
+    \caption{TODO}
+    \label{fig:ShapStumps}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{stumps_pitch_shap.png}
+    \caption{TODO}
+    \label{fig:ShapStumpsPitch}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
