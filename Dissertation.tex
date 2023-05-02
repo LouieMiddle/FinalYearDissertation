@@ -87,7 +87,17 @@ Lastly, I would like to thank my parents, for who without I would not have had t
 
 \addcontentsline{toc}{chapter}{Glossary}
 \chapter*{Glossary}
-TODO: Write a glossary of terms
+
+TODO: Finish this
+
+\begin{tabular}{l@{}cll@{}cl}
+	Bouncer && Another name for a short ball - a delivery that pitches at the short end of the pitch \\
+	Dot Ball && A cricket delivery that goes for zero runs \\
+	GP && Gaussian Process \\
+	Single && A cricket delivery that goes for one run \\
+	SMGP && Scalable Mixture of Gaussian Process \\
+	SVGP && Sparse Variational Gaussian Process \\
+\end{tabular}
 
 \newpage
 \setcounter{page}{1}
@@ -105,7 +115,6 @@ Therefore, every insight that can be made as to what is good or bad cricket is e
 For this reason, there is a strong incentive to improve the machine learning techniques used in current sports analytics to improve a teams performance.
 
 This study aims to investigate the possibility of predicting the outcome of a cricket delivery using modern machine learning techniques and how this could then aid cricket bowling choices and team selection. 
-The main training and testing data used will be the last 10 years of the Indian Premier League (IPL).
 The hope is that using knowledge of bowler pitch trajectories and batter shot trajectories gathered from modern ball tracking will add another layer of granularity in addition to simply considering the resultant runs scored off each delivery. 
 Furthermore, building a model which can incorporate pitch, atmospheric and ground conditions could further improve any models. 
 
@@ -713,9 +722,18 @@ In such cases the latent function $f$ plays the role of a nuisance function.
 This is that values of $f$ are not observed directly and there is no interest in the values of f, but rather in $\pi$ where $\pi (\textbf{x})$ is TODO.
 The purpose of $f$ is solely to allow convenient formulation of the model and the goal is to integrate out $f$.
 
-TODO: Explain variational GPs
+\subsection{Variational Gaussian Processes}
 
-TODO: This has good \citep{Yi2020}
+Variational Gaussian processes (VGP) models use a variational approximation to the true posterior distribution over functions.
+The variational approach in VGP models involves approximating the true posterior distribution with a simpler, tractable distribution. 
+The parameters of this approximate distribution are optimized to minimize the Kullback-Leibler (KL) divergence between the approximate and true posterior distributions. 
+This optimization is done using a procedure called Variational Inference (VI).
+VGP models have several advantages over standard GP models. 
+They are more computationally efficient and can handle larger data sets. 
+They also allow for more flexible modeling of the covariance structure of the data, as the covariance function can be learned from the data. 
+Additionally, VGP models can handle missing data and can be easily extended to multiclass classification problems.
+
+TODO: This has good explanations \citep{Yi2020}
 
 \subsection{Sparse Variational Gaussian Processes}
 
@@ -801,7 +819,7 @@ For this reason, I wanted to experiment with XGBoost in this project, and use it
 
 \section{Hawk-Eye and Ball Tracking}
 
-The data-set used in this project contains tracking data from Hawk-Eye systems.
+The dataset used in this project contains tracking data from Hawk-Eye systems.
 Hawk-Eye Innovations is a sports technology company, that provides many products, including computer version services.
 In particular there is a focus on ball and player tracking in sports, including cricket.
 In this project the emphasis is placed on the ball tracking.
@@ -822,53 +840,87 @@ Following on from the appropriate literature review and background, the primary 
 
 \begin{enumerate}
   \item From \ref{sec:T20Cricket} it is clear that it is key for bowling attacks to reduce the number of boundaries scored and increase the number of dot balls.
-Therefore, a key objective of this project is to accurately predict which delivery would be most optimal to stop a boundary and cause a dot ball.
+Therefore, a key objective of this project is to accurately predict which delivery would be most optimal to stop a boundary and cause a dot ball or a single.
   \item From sections \ref{sec:SportSurvey} and \ref{sec:CrickSurvey}, it is clear that there is a lack of current research in delivery outcome prediction and use of a wider breadth of ML techniques. 
 Another objective of this project, is to attempt to explore new prediciton types in cricket, as well as use under-utilised  ML techniques, notably:
   \begin{enumerate}
-	\item Mixtures of Gaussian processes.
+	\item Mixtures of Gaussian processes
 	\item XGBoost
   \end{enumerate}
 \end{enumerate}
 
 \section{Dataset} \label{sec:Dataset}
 
-The dataset used is the mens IPL cricket dataset. 
-The dataset is a CSV where each row is a different cricket delivery. 
-Each row contains identifying information of the delivery, such as the match ID, delivery number, the batter, the bowler, and additional Hawk-Eye data.
-For this project, personal information on whose batting or bowling will not be disclosed. 
-Hawk-Eye data includes the bowling style, ball speed, the runs scored (including how many were from the batter or extras), where the ball pitches, where the ball passed the stumps and more.     
-Whilst there exists data for many deliveries involving many batters and bowlers, the focus of this project is on right arm seam deliveries against one particular batter.
-The purpose is to use this batter to explore what the best and worst deliveries are for this person.
-From here forward a pseudonym of "John Doe" will be used for this batter.
+The dataset used is provided by Hawk-Eye innovations.
+At Hawk-Eye's request, the full data-set will not be uploaded due to its commercial sensitivity.
+Furthermore, the dataset contains identifying information such as batter names, bowler names, match IDs and so on.
+For the purposes of this project and executability of the code submitted, a small subset of the data has been uploaded that I have called the "John Doe dataset". 
+This is all the data for one batter, who will be called John Doe from here, that has had any identifying information removed.
 
-\begin{figure}[H]
+The John Doe dataset is a CSV where each row is a different cricket delivery. 
+The data includes features such as the bowling style, ball speed, the runs scored (including how many were from the batter or extras), where the ball pitches, where the ball passed the stumps and more.     
+The purpose is to use John Doe to explore what the best and worst deliveries are for this person.
+
+\subsection{Features of the dataset}
+
+\begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{right_arm_seam_stumps.png}
-    \caption{The "StumpsX" and "StumpsY" features of the dataset. This is all the right arm seam deliveries faced by John Doe. The left is deliveries that went for 0 runs and the right is deliveries that went for 6 runs.}
+    \includegraphics[width=\linewidth]{post_wicket_right_arm.png}
+    \caption{The "StumpsX" and "StumpsY" features of the dataset. This is all the right arm seam deliveries faced by John Doe. The left is deliveries that went for 0/1 runs and the right is deliveries that went for 4/6 runs. The purple lines are the stumps if you are looking at the stumps face on.}
     \label{fig:StumpsXY}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{right_arm_seam_pitch.png}
-    \caption{The "PitchX" and "PitchY" features of the dataset. This is all the right arm seam deliveries faced by John Doe. The view is birds-eye (from above the stumps). The grey area is the pitch, with the x-axis stretched as to make each delivery clearer. The left is deliveries that went for 0 runs and the right is deliveries that went for 6 runs.}
+    \includegraphics[width=\linewidth]{post_wicket_left_arm.png}
+    \caption{The "StumpsX" and "StumpsY" features of the dataset. This is all the left arm seam deliveries faced by John Doe. The left is deliveries that went for 0/1 runs and the right is deliveries that went for 4/6 runs. The purple lines are the stumps if you are looking at the stumps face on.}
+    \label{fig:StumpsXY}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{pitch_bounce.png}
+    \caption{The "PitchX" and "PitchY" features of the dataset. This is all the right arm seam deliveries faced by John Doe. The view is birds-eye (from above the stumps). The grey area is the pitch, with the x-axis stretched as to make each delivery clearer.}
     \label{fig:PitchXY}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=\linewidth]{right_arm_seam_pitch_strike_rate.png}
-    \caption{The pitches of right arm seam deliveries for John Doe. For exemplary purposes, the areas on the pitch have been bucketed. Each bucket has an associated strike rate, show by the scale on the right.}
+    \caption{The pitches of right arm seam deliveries for John Doe. For exemplary purposes, the areas on the pitch have been bucketed. Each bucket has an associated strike rate, shown by the scale on the right.}
     \label{fig:PitchXYStrikeRate}
 \end{figure}
 
-Figures \ref{fig:StumpsXY}, \ref{fig:PitchXY} and \ref{fig:PitchXYStrikeRate} visualise various parts of the dataset. 
-Figure \ref{fig:PitchXYStrikeRate} shows the strike rate \footnotemark{} for the different areas of the pitch. 
+Figures \ref{fig:StumpsXY} and \ref{fig:PitchXY} visualise the "stumpsX", "stumpsY", "pitchX" and "pitchY" features of the dataset. 
+"StumpsX" and "stumpsY" represent where the ball passed the stumps in 2D space.
+"PitchX" and "pitchY" represent where the ball bounced on the pitch. 
+Figure \ref{fig:PitchXYStrikeRate} shows the strike rate \footnote{Strike rate is a common metric in T20 cricket to evaluate a batter's performance. The batters strike rate is their runs scored divided by the balls faced times 100. A high strike rate is good for a batter. Note there is a metric for bowlers also called strike rate that this is not to be confused with.} for the different areas of the pitch. 
 It highlights that too short, too wide, or too full deliveries have a higher strike rate than the areas at a classically good pitch length and width.
-Whilst there is clear signs of a good or bad pitch location, one noticeable thing in figures \ref{fig:StumpsXY} and \ref{fig:PitchXY} is how much the data overlaps for different outcomes i.e. locations of zero runs are also locations of six runs.
+Whilst it shows that there is clear signs of a good or bad pitch location, one noticeable thing in figures \ref{fig:StumpsXY} and \ref{fig:PitchXY} is how much the data overlaps for different outcomes i.e. locations of zero runs are also locations of six runs.
 
-\footnotetext{Strike rate is a common metric in T20 cricket to evaluate a batter's performance. The batters strike rate is their runs scored divided by the balls faced times 100. A high strike rate is good for a batter. Note there is a metric for bowlers also called strike rate that this is not to be confused with.}
+To know if a ball was delivered right arm or left arm a "rightArmedBowl" column could take either true or false values.
+The following column contained the "bowlingStyle", which included various values such as "FAST\_SEAM", "MEDIUM\_SEAM",  "OFF\_SPIN" and more.
+Features for the runs scored also existed, that included "runs", "batterRuns" and "bowlerRuns". 
+"BatterRuns" represent runs scored off the batsmen, such as running between the wickets or scoring a boundary.
+"BowlerRuns" represent runs scored off the bowler. 
+This includes any "batterRuns", but also any additional wides and no balls.
+Therefore the column "runs" was a summation of the "batterRuns" and "bowlerRuns", plus any additional cases where the runs will not be attributed to either the batter or bowler, but simply to their respecting teams (for example bys and leg-bys).
+The type of extra is indicated in the "extras" column.
+
+\subsection{Pre-processing}
+
+The first step of the pre-processing was to load all the data into a pandas dataframe and then filter it for one batter.
+After that all columns with identifying information were removed.
+
+Next, deliveries were removed where the "pitchX" and "pitchY" were impossible values. 
+This could of happened for a number of reasons, such as rare extremely poor deliveries or bad tracking.
+Regardless, they added unneccessary extra noise and were removed.
+
+Lastly a new feature "boundary" was added. 
+Boundary was a binary feature, where a value of 0 indicated 0 or 1 "batterRuns" were scored.
+A value of 1 indicated 4 or 6 "batterRuns" were scored. 
+I decided not to include extras, but only deliveries where the batter themselves had scored that many runs.
+This felt more indicative of a good or a bad delivery, versus a good delivery that the batsmen missed and went for 4 bys.
 
 \section{Mixture of Gaussian Processes}
 
@@ -903,8 +955,12 @@ The XGBoost \citep{Chen2016} model implemented was a modification of the XGFootb
 In the code published by Blumberg, there is an implementation of various boosting and decision tree models.
 Rather than train every classifier used by Blumberg, only the XGBoost model was trained on the cricket dataset.
 
-TODO: Describe implementation and approach to XGBoost model
+The model trained was a XGBoost classifier to classify the outcome of a delivery as either 0 or 6 runs.
+For a classification tree with 2 classes, the value of the leaf node represents the score for one of the classes.
+It is then converted to a probability using the logistic function.
 
+\begin{equation}
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -912,7 +968,12 @@ TODO: Describe implementation and approach to XGBoost model
 
 \section{Mixture of Gaussian Processes}
 
-TODO: Write up results once assignment function of SMGP smooth
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{demo_tf2.png}
+    \caption{Multimodal SMGP results on stochastic toy data}
+    \label{fig:MultimodalSMGP}
+\end{figure}
 
 \section{XGBoost}
 
@@ -923,25 +984,47 @@ TODO: Write up results once assignment function of SMGP smooth
 		\hline
 		Model Features & \% Accuracy & Log Loss \\ [0.5ex] 
 		\hline\hline
-		StumpsX \& StumpsY & 84.0 & 0.5125 \\
+		StumpsX \& StumpsY & 75.0 & 0.5796 \\
 		\hline
-		StumpsX \& StumpsY \& PitchX \& PitchY & 84.00 & 0.4538 \\ [1ex]
+		StumpsX \& StumpsY \& PitchX \& PitchY & 71.43 & 0.5811 \\ [1ex]
 		\hline
 	\end{tabular}
 \end{table}
 
+TODO: Talk about accuracy.
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{stumps_shap.png}
-    \caption{TODO}
+    \includegraphics[width=\linewidth]{shap_stumps.png}
+    \caption{SHAP values for XGBoost model with stumpsX and stumpsY as features}
     \label{fig:ShapStumps}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{stumps_pitch_shap.png}
-    \caption{TODO}
+    \includegraphics[width=\linewidth]{tree_stumps.png}
+    \caption{Decision tree for XGBoost model with stumpsX and stumpsY as features}
+    \label{fig:TreeStumps}
+\end{figure}
+
+XGBoost models can be difficult to interpret. 
+The SHAP package offers a solution to interpreting XGBoost models, using principles of game theory to determine the effect of each feature on the odds of each outcome.
+Essentially, SHAP considers how much the probabilities change when adding or removing features from the model.
+Figure \ref{fig:ShapStumps} visualises the SHAP values for each feature, with a "high" shap value indicating a higher chance of scoring a six.
+TODO: Flesh this out
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{shap_stumps_pitch.png}
+    \caption{SHAP values for XGBoost model with stumpsX, stumpsY, pitchX and pitchY as features}
     \label{fig:ShapStumpsPitch}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{tree_stumps_pitch.png}
+    \caption{Decision tree for XGBoost model with stumpsX, stumpsY, pitchX and pitchY as features}
+    \label{fig:TreeStumpsPitch}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
