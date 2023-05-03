@@ -33,8 +33,24 @@
 
 \hypersetup{pageanchor=false}	
 
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
 % Set this to the language you want to use in your code listings (if any)
-\lstset{language=Java,breaklines,breakatwhitespace,basicstyle=\small}
+\lstset{ %
+  language = python,
+  backgroundcolor=\color{white},   % choose the background color
+  basicstyle=\footnotesize,        % size of fonts used for the code
+  breaklines=true,                 % automatic line breaking only at whitespace
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  keywordstyle=\color{blue},       % keyword style
+  stringstyle=\color{mymauve},     % string literal style
+}
+
+\lstMakeShortInline`
 
 \setcounter{page}{0}
 \pagenumbering{roman}
@@ -79,7 +95,8 @@ $\rangle$
 \addcontentsline{toc}{chapter}{Acknowledgements}
 \chapter*{Acknowledgements}
 
-I would like to acknowledge my supervisor Adam Hartshorne for his support and advice throughout the development of this project.  
+I would like to acknowledge my supervisor Mr. Adam Hartshorne for his support and advice throughout the development of this project.  
+His countless hours spent meeting with all his students, in addition to his availability on slack during the evenings and weekends is a testament to his dedication and passion towards his work.
 In addition, my partner Hoi Ching Leung has provided much personal support for me throughout this challenging final year.
 Lastly, I would like to thank my parents, for who without I would not have had the amazing oppurtunities in life that I have had, including University and the chance to work on this project.
 
@@ -92,6 +109,7 @@ TODO: Finish this
 
 \begin{tabular}{l@{}cll@{}cl}
 	Bouncer && Another name for a short ball - a delivery that pitches at the short end of the pitch \\
+	DAGP && Data Association with Gaussian Processes \\
 	Dot Ball && A cricket delivery that goes for zero runs \\
 	GP && Gaussian Process \\
 	Single && A cricket delivery that goes for one run \\
@@ -120,48 +138,45 @@ Furthermore, building a model which can incorporate pitch, atmospheric and groun
 
 \section{Sports Analytics}
 
-Sports analytics is the use of data analysis techniques to gain insights and make decisions related to various aspects of sports, such as player performance, team strategy, and game outcomes. 
-It involves the use of statistical and machine learning techniques to extract meaningful information from large and complex datasets.
+Sports analytics is the use of data analysis techniques to gain insights and make decisions related to various aspects of sports.
+It involves the use of statistical and machine learning techniques to extract meaningful insights from large and complex datasets.
 
-Sports analytics has become an integral part of the decision-making process for many professional teams and organisations. 
-By analyzing data on player performance and team strategies, coaches and managers can make more informed decisions on player recruitment, game tactics, and training regimes.
-
+Sports analytics has become an integral part of the decision making process for many professional sports teams and organisations. 
+By analysing data owners, coaches and managers can make more informed decisions on talent recruitment, tactics, training regimes and more.
 
 \section{Drawbacks of Current Methods in Sports Analytics}
  
-Sport predictors are most commonly using supervised ML methods, typically Neural networks, classification methods, regression methods or gradient boosting \citep{horvat2020} (see sections \ref{sec:SportSurvey} and \ref{sec:CrickSurvey}).
+Sport predictors are most commonly using supervised ML methods, typically neural networks, classification methods, regression methods or gradient boosting \citep{horvat2020} (see sections \ref{sec:SportSurvey} and \ref{sec:CrickSurvey}).
 Whilst existing research can achieve impressive results, unpredictable outcomes in sport still happen. For example, the odds of Leicester City winning the Premier League in the 2015/2016 season were 1-5000. 
 However, analysis of their performances show their title was absolutely deserved.
 Examples like this illustrate the limitations of current predictions in sport.
 
 Currently in sports analytics and machine learning in general there is a go to set of methods that are very popular.
-Particularly neural networks and boosting algorithms are currently popular and have a large research output.
+Particularly neural networks and boosting algorithms are popular and have a large research output.
 Whilst they have gained popularity for their ability to solve complex problems and deliver accurate predictions, all methods have drawbacks.
 
 \subsection{Overfitting}
 
-One significant drawback of neural networks and boosting models is that they can easily overfit the training data, meaning they memorize the data and fail to generalize well to new data. 
-Regularization techniques such as L1 or L2 regularization, dropout, or early stopping can help reduce overfitting, but these methods may not always be sufficient.
+One significant drawback of neural networks and boosting models is that they can easily overfit the training data, meaning the model have extracted some of the noise into the model structure.
+This can mean they fail to generalise well to new data. 
+Regularisation techniques such as L1 or L2 regularisation, dropout, or early stopping can help reduce overfitting, but these methods may not always be sufficient.
 
 \subsection{Discretisation of Continuous Features}
 
-Gradient boosting and neural networks, along with other machine learning techniques such as decision trees and random forests, discretize their input space by binning continuous features into intervals or categories. 
-This allows these models to handle continuous variables as categorical variables, simplifying the modeling process. 
-However this is another potential drawback, as this discretization can lead to a loss of information, as the fine-grained details of the continuous variables are lost. 
+Gradient boosting, decision trees and random forests all in some way discretise their input space by binning continuous features into intervals or categories. 
+This allows these models to handle continuous variables as categorical variables or decisions.
+However this is another potential drawback, as this discretisation can lead to a loss of information, as the fine-grained details of the continuous variables are lost. 
 This can be particularly problematic for variables with high granularity or subtle variations, where the loss of information can result in reduced accuracy.
 
 This is the case in cricket, where for example, a perfect yorker \footnote{In cricket, a yorker is a delivery which hits the cricket pitch around the batsman's feet.} is a very difficult ball to play against. 
 However, becoming fuller or shorter can turn the ball into a full toss \footnote{In cricket, a full toss is a delivery which does not pitch before it reaches the batsman.} or half volley \footnote{In cricket, a half volley is a delivery which hits the cricket pitch ahead of a good length, but before the batsman's feet.} respectively, which are both considered easier deliveries to score high runs off of.
 So in the case of binning a feature such as the location of pitch bounces, it wouldn't appropriately represent the realities of this continuous feature.
 
-In addition to discretization, another way to handle continuous variables is by bucketing data into tabular format. 
+In addition to discretisation, another way to handle continuous variables is by bucketing data into tabular format. 
 This approach involves partitioning continuous variables into distinct ranges or "buckets" and assigning them categorical labels. 
-This method preserves more of the original information compared to discretization, and is particularly useful for variables with high granularity. 
-Bucketing can be applied to different types of variables, including numerical and time-series data, and is commonly used in machine learning models such as decision trees, random forests, and gradient boosting.
-
-However, bucketing can also be prone to certain issues such as overfitting and bias, particularly when the number of buckets is too large or too small. 
+This method can preserve more of the original information compared to discretisation, but bucketing can also be prone to certain issues such as overfitting and bias, particularly when the number of buckets is too large or too small. 
 Furthermore, the choice of bucketing method and the number of buckets can be subjective, and may require experimentation and tuning. 
-Overall, both discretization and bucketing have their advantages and disadvantages, and the choice of method depends on the specific data and modeling needs.
+Overall, both discretisation and bucketing have their advantages and disadvantages, and the choice of method depends on the specific data and modeling needs.
 
 \subsection{Limited Data}
 
@@ -169,31 +184,33 @@ Limited data is another challenge faced by machine learning models.
 In some cases, obtaining enough data to train a model can be expensive, time-consuming, or simply impossible. 
 This is often the case in sport (and in turn cricket), for various reasons. 
 For example, if attempting to model player performance when a player may have only played a handful of professional matches.
-This issue can be addressed using transfer learning or pseudo Monte Carlo sampling techniques.
+This issue can potentially be addressed using methods such as transfer learning or pseudo Monte Carlo sampling.
 
 \section{Potential Solutions}
 
-A potential solution is to use an entirely different approach to those that are currently popular in sports analytics, namely Gaussian processes (GPs).
+A potential solution is to use an entirely different approach to the methods that are currently popular in sports analytics, namely Gaussian processes (GPs).
 GPs are particularly effective in handling small datasets and can model complex distributions. 
 One of the main benefits of Gaussian processes is their ability to incorporate uncertainty into the model. 
 This means that instead of providing a single prediction, Gaussian processes can provide a range of possible outcomes along with the associated probabilities. 
 
-Although neural networks and boosting algorithms also attempt to predict with uncertainty, they often rely on heuristic methods to estimate uncertainty, which may not be as accurate as a fully Bayesian approach. 
+Although neural networks and boosting algorithms can be extended to attempt to predict with uncertainty, they often rely on heuristic methods, which may not be as accurate as a fully Bayesian approach. 
 In contrast, Gaussian processes are inherently Bayesian, which means they can provide more accurate and reliable estimates of uncertainty.
 
 \subsection{Benefits of Gaussian Processes for Cricket Modeling}
 
-Cricket is a sport that involves many variables, including pitch conditions, weather, player skills, and tactics. 
-These variables can all impact the outcome of a game, and as a result, it can be challenging to model the performance of a cricket team accurately. 
+Cricket is a sport that involves many variables, including pitch conditions, weather, player skills, tactics, team selection and more.
+These variables can all impact the outcome of a game and as a result it can be challenging to model cricket accurately. 
 Additionally, there may be inherent noise in the training data, such as errors in data collection or variations in player performance.
-Furthermore, outputs can constantly overlap the same regions of input space.
+Furthermore, different outputs can constantly overlap the same regions of input space.
+
+In a case such as this, it would be extremely benefitial to develop a model that can make a prediction and provide some gauge as to how uncertain it is in that prediction, either based on large noise, variance, or lack of training data.
 For these reasons, Gaussian processes are an underutilised model choice for cricket because they can handle noisy training data and can provide probabilistic predictions.
 
 \section{Privacy in Sports Analytics}
 
-Whilst there is certainly publically available research in the field of sports analytics, it is true that many professional sports teams and sports technology companies are secretive about their analytical methods and data. 
+Whilst there is publically available research in the field of sports analytics, it is true that many professional sports teams and sports technology companies are secretive about their methods and data. 
 This is for various reasons, but mostly to maintain an advantage over their competitors.
-For this reason, it is important to note that large amounts of current sports analytics work is not publically visible and often has to be inferred.
+For this reason, it is important to note that large amounts of current sports analytics work is not publically visible and often has to be gathered from various sources.
 
 %\section{Project Plan}
 %
@@ -251,13 +268,10 @@ The combination of Klopp and his intuitive knowledge, paired with the likes of G
 
 \section{T20 Cricket} \label{sec:T20Cricket}
 
-Whilst there are varying formats of cricket \footnotemark{}, the focus in this project is the T20 format (20 over cricket) that is played in the IPL.
+Whilst there are varying formats of cricket \footnote{Whilst knowledge of cricket is useful to understand this project, it is not necessary to appreciate the project and its applications. Despite this, I present a brief introduction to the game and its laws for those unfamiliar with the sport in chapter \ref{chap:CrickBackground}.}, the focus in this project is the T20 format (20 over cricket) that is played in the IPL.
 T20 cricket gives the first team 20 overs to score as many runs as possible, or until they have used all 10 of their wickets.
 The teams then swap roles and the opposing team attempt to "chase" the total runs plus one scored by the first team. 
 If they manage to do so they win the match, but if all their batters get out before the target total, or use all 20 overs before reaching the target, they lose.
-
-\footnotetext{Whilst knowledge of cricket is useful to understand this project, it is not necessary to appreciate the project and its applications.
-Despite this, I present a brief introduction to the game and its laws for those unfamiliar with the sport in chapter \ref{chap:CrickBackground}.}
 
 Longer formats of the game such as 40/50 over one day matches and four/five day matches have different tactics compared to T20 cricket.
 Due to T20s shorter nature, a bowling team's goal is generally to minimise the runs the batting team can score, in addition to the traditional goal of taking wickets.
@@ -305,8 +319,9 @@ Some researchers used the same data set for training and testing, yielding unrea
 \subsection{Expected Goals and Football}
 
 Expected goals (xG) is a statistical metric used in football to quantify the quality of scoring chances created by a team or player in a match. 
-It is calculated by analyzing a range of variables such as shot location, shot angle, distance from goal, type of shot, and more. Each shot is assigned a probability of being scored based on historical data from similar situations. 
-Expected goals provides a more accurate assessment of a team's performance than simply looking at the number of goals scored as it takes into account the difficulty of chances created.
+Each shot is assigned a probability of being scored, which is calculated by analysing a range of variables such as shot location, shot angle, distance from goal, type of shot, and more. 
+This can be done with traditional statistical methods, or machine learning approaches.
+Expected goals provides a more accurate assessment of a team's performance than simply looking at the number of goals scored as it takes into account the quality of the chances made.
 
 Large sports analysis company StatsBomb have referenced in their blog posts that their xG model uses gradient boosting models \citep{statsbomb2022}. 
 This can also be seen in that when \citet{Blumberg2020} implemented his own xG model, he made use of XGBoost \citep{Chen2016} and achieved comparable results to StatsBomb.
@@ -360,8 +375,10 @@ Instead, most of the focus is on predicting game outcomes or overall player perf
 \end{figure}
 
 \citet{Wickramasinghe2022} also evaluated the frequently used ML techniques in cricket, as shown in figure \ref{fig:NoPapersCricket}. 
-There is a noticeable lack of deep learning, reinforcement learning or natural language processing techniques.
-Furthermore, better boosting algorithmgs such as XGBoost have only recently begun to be adopted, and Gaussian processes have not been used at all.
+There is a noticeable lack of deep learning or reinforcement learning techniques.
+Furthermore, better boosting algorithms such as XGBoost have only recently begun to be adopted and Gaussian processes have not been used at all.
+There is clearly gaps in currently research methods in sports analytics.
+
 Lastly, a clear uptick in the number of publications can be seen over the years, which is also corroborated in sport as whole in \citet{horvat2020}.
 It once again highlights the growing interest in ML in sport.
 
@@ -408,7 +425,22 @@ It is important not to compare baseball and cricket too closely, but the techniq
 
 \chapter{Background}
 
-This chapter will cover the requisite background for Gaussian processes and gradient boosting, the two key methods used in this project.
+This chapter will firstly introduce some background on Hawk-Eye and current computer vision in sports.
+Next, the requisite background for Gaussian processes and gradient boosting, the two key methods used in this project is provided.
+Additionaly, the idea of a data association problem is introduced. 
+
+\section{Hawk-Eye and Ball Tracking}
+
+The dataset used in this project contains tracking data from Hawk-Eye systems.
+Hawk-Eye Innovations is a sports technology company, that provides many products, including computer version services.
+In particular there is a focus on ball and player tracking in sports, including cricket.
+In this project the emphasis is placed on the ball tracking.
+Hawk-Eye have a number of cameras at IPL grounds, that the video from is then triangulated and combined to create a three-dimensional representation of the ball's trajectory.
+It has been adopted as an ajudication tool by many governing bodies in cricket and is generally accepted to be accurate.
+
+Hawk-Eye tracking data is accumulated and stored. 
+It can then be used for various data science and machine learning purposes.
+Further explanation of the dataset and features used in this project are explained in section \ref{sec:Dataset}.
 
 \section{Gaussian Processes}
 
@@ -417,8 +449,8 @@ This chapter will cover the requisite background for Gaussian processes and grad
 \citep{Griffiths2023} TODO: As does this
 
 This section introduces Gaussian processes and the following section then explains how to extend their application to solve data association problems. 
-This project is mostly concerned with using Gaussian processes for classification, but a background on using Gaussian processes for regression is provided first as a basis before their extension to classification tasks. 
-As Gaussian processes are not computationally cheap, sparse approximations were used in this project and are also reviewed in this section.
+A background on using Gaussian processes for regression is provided first as a basis before their extension to classification tasks. 
+As Gaussian processes are not computationally cheap, sparse approximations are also reviewed in this section.
 
 Gaussian processes are a non-parametric regression model. 
 \emph{Non-parametric models} are not based on insights about the concrete structure of the function to be modelled, but instead make assumptions about the function itself, such as its smoothness or differentiability. 
@@ -427,7 +459,7 @@ Instead of modeling a distribution of parameter values, a non-parametric model t
 In addition, Gaussian processes are a supervised learning technique. 
 It starts with a training data set $\mathcal{D}$ of $n$ observations, $\mathcal{D} = (\textbf{x}_{i}, y_{i} | i = 1, ..., n)$.
 $\textbf{x}$ denotes an input vector (covariates) of dimension $D$ and $y$ denotes an output or target. 
-The column vector inputs for all $n$ cases are aggregated in the $D x n$ design matrix $X$ and the targets collected in the vector $\textbf{y}$, such that $\mathcal{D} = (X, \textbf{y})$.
+The column vector inputs for all $n$ cases are aggregated in the $D x n$ design matrix $X$ and the targets collected in the vector $\textbf{y}$, such that $\mathcal{D} = (X, \textbf{y})$ \citep{RasmussenWilliams2006}.
 
 \subsection{Gaussian Processes for Regression}
 
@@ -581,8 +613,8 @@ Choices of such free hyperparameters will be discussed more in chapter \ref{chap
 Figure \ref{fig:SEKernSig1Length1}, figure \ref{fig:SEKernSigRoot2Length1} and figure \ref{fig:SEKernSig1Length0.25} compare sample functions drawn from Gaussian processes with SE kernels with different hyperparameters. 
 Since the mean function $m(x)$ is assumed to be constant zero, the kernel specifies the prior assumptions about the function.
 The SE kernel describes arbritrary smooth functions. The hyperparameters $l$ and $\sigma$ of the kernel describe the dynamic range in the $x$ and $y$ directions respectively.
-As can be seen in \ref{fig:SEKernSig1Length0.25}, reducing the length scale makes drawn sample functions from the kernel more "wiggly".
-Increasing the signal variance as shown in \ref{fig:SEKernSigRoot2Length1}, increases the range of values the sample function will take.
+As can be seen in figure \ref{fig:SEKernSig1Length0.25}, reducing the length scale increases the curvature of drawn sample functions from the kernel.
+Increasing the signal variance as shown in figure \ref{fig:SEKernSigRoot2Length1}, increases the range of values the sample function will take.
 
 \subsection{Predictions and Posterior}
 
@@ -667,13 +699,13 @@ Thus the best guess is
 	y_{optimal} | \textbf{x}_{*} = \underset{y_{guess}}{\textrm{argmin}} \, \overset{\sim}{R_{\mathcal{L}}}(y_{guess} | \textbf{x}_{*})
 \end{equation}
 
-where $\overset{\sim}{R_{\mathcal{L}}}$ represents the risk and $\overset{\sim}{R_{\mathcal{L}}}(y_{guess} | \textbf{x}_{*}) = \int \mathcal{L}(y_{*}, y_{guess}) p(y_{*} | x_{*}, \mathcal{D}) dy_{*}$.
+where $\overset{\sim}{R_{\mathcal{L}}}$ represents the risk and $\overset{\sim}{R_{\mathcal{L}}}(y_{guess} | \textbf{x}_{*}) = \int \mathcal{L}(y_{*}, y_{guess}) p(y_{*} | x_{*}, \mathcal{D}) dy_{*}$ \citep{RasmussenWilliams2006}.
 
 \subsubsection{Choosing Hyperparameters}
 
 Up until now, the hyperparameters $\boldsymbol{\theta}$ have been assumed constant.
 If this were the case, GPs would have no training stage. 
-However, knowing the correct hyperparameters is not clear a priori, and such a method of determing the hyperparameters must be used.
+However, knowing the correct hyperparameters is not clear a priori, and so a method of determing the hyperparameters must be used.
 
 The correct way to model uncertainty about the hyperparameters is to give them a prior probability $p(\boldsymbol{\theta})$.
 The prior chosen should be broad to reflect the vagueness of the parameters before training.
@@ -683,7 +715,7 @@ To derive the dependent distributions marginalise the prior to get
 	\begin{aligned}
 		\centering
 		p(f) &= \int p(f | \theta) p(\theta) d\theta \\
-		p(y | X) &= p(y | X, \theta) p(\theta) d\theta.
+		p(y | X) &= \int p(y | X, \theta) p(\theta) d\theta.
 	\end{aligned}
 \end{equation}
 
@@ -699,8 +731,8 @@ A new distribution can be obtained by combining the prior with the likelihood of
 \end{equation}
 
 The integration required in the denominator of eq. \ref{eq:ChooseHyper} is very hard in practise as $y$ is a complicated function of $\boldsymbol{\theta}$. 
-Instead, $p(\boldsymbol{\theta} | X, y)$ is maximised to provide an estimate.
-The solution of $p(y | X, \theta)$ you might recognise as the log marginal likelihood in eq. \ref{eq:LogMargLik}. 
+Instead, $p(\boldsymbol{\theta} | X, y)$ is maximised to provide an estimate and does not require the calculation of the integral in the denonimator because it is a constant.
+The solution of the numerator $p(y | X, \theta)$ you might recognise as the log marginal likelihood in eq. \ref{eq:LogMargLik}. 
 For practical reasons minimising the negative of the log marginal likelihood is easier than maximising it directly.
 Therefore, the estimation of hyperparameters is the solution of the following optimisation problem:
 
@@ -716,30 +748,33 @@ Both classification and regression can be seen as function approximation problem
 Unfortunately, the solution of classification problems using Gaussian processes is tougher than regression problems. 
 For regression problems, the likelihood is often assumed to be Gaussian. 
 A Gaussian process prior combined with a Gaussian likelihood gives a posterior Gaussian process over functions, where everything remains analytically tractable. 
-For classification models, the Gaussian likelihood is inappropriate; a different likelihood such as a Bernoulli or multi-class likelihood must be used for approximate inference.
+For classification models, the Gaussian likelihood is inappropriate; a different likelihood such as a Bernoulli or multi-class likelihood must be used.
+When the likelihood is non-Gaussian, the bayes rule results in an intractable posterior $p(f|y)$ \citep{Yi2020}.
+However, a variational approach can approximate the true posterior distribution.
 
-In such cases the latent function $f$ plays the role of a nuisance function. 
-This is that values of $f$ are not observed directly and there is no interest in the values of f, but rather in $\pi$ where $\pi (\textbf{x})$ is TODO.
-The purpose of $f$ is solely to allow convenient formulation of the model and the goal is to integrate out $f$.
+%In such cases the latent function $f$ plays the role of a nuisance function. 
+%This is that values of $f$ are not observed directly and there is no interest in the values of f, but rather in $\pi$ where $\pi (\textbf{x})$ is TODO.
+%The purpose of $f$ is solely to allow convenient formulation of the model and the goal is to integrate out $f$.
+%TODO: Fill out this paragraph.
 
 \subsection{Variational Gaussian Processes}
 
 Variational Gaussian processes (VGP) models use a variational approximation to the true posterior distribution over functions.
 The variational approach in VGP models involves approximating the true posterior distribution with a simpler, tractable distribution. 
-The parameters of this approximate distribution are optimized to minimize the Kullback-Leibler (KL) divergence between the approximate and true posterior distributions. 
-This optimization is done using a procedure called Variational Inference (VI).
-VGP models have several advantages over standard GP models. 
-They are more computationally efficient and can handle larger data sets. 
-They also allow for more flexible modeling of the covariance structure of the data, as the covariance function can be learned from the data. 
-Additionally, VGP models can handle missing data and can be easily extended to multiclass classification problems.
+This distribution is the variational distribution and $q(f)$ is used to denote its probability density function.
+This forces some key assumptions, namely that there exists some concrete variational distribution that is similar to the true posterior distribution. 
+Next is that we can find the parameters for this approximate distribution in some way \citep{Yi2020}.
 
-TODO: This has good explanations \citep{Yi2020}
+Ultimately, the parameters of this approximate distribution are optimised to minimise the Kullback-Leibler (KL) divergence (see section \ref{sec:KLDiv} for an overview) between the approximate and true posterior distributions, where the KL divergence signifies the closeness between the two distributions.
+Gradient descent maximises the expression for the evidence lower bound (ELBO) to find concrete model parameter values.
 
 \subsection{Sparse Variational Gaussian Processes}
 
-A major drawback of Gaussian processes is their $O(N^3)$ complexity when computing $[K + \sigma_{n}^2I]^-1$ from \ref{alg:GPR}, but it can be done as a preprocessing step since it is independent of the test points. 
+A major drawback of Gaussian processes is their $O(N^3)$ complexity when computing $[K + \sigma_{n}^2I]^{-1}$ from alg. \ref{alg:GPR}, but it can be done as a preprocessing step since it is independent of the test points. 
 After this, each single test point costs $O(N)$. 
 To predict its variance it is still necessary to perform matrix multiplication which costs $O(N^2)$.
+Consequently, as the size of the dataset grows the more infeasible it is to evaluate a GP.
+
 An approach to reduce this complexity is \emph{Sparse Variational Gaussian Processes} (SVGP) \citep{Hensman2014}.
 Spare approximations of GPs are a method of approximating a GP using a $M < N$ set of \emph{inducing points} $\textbf{Z}$ and \emph{inducing variables} $\textbf{u}$ that can represent the entire dataset, rather than $X$ itself. 
 This approach suits datasets with high levels of redundancy, but also introduces the problem of choosing the subset.
@@ -751,10 +786,15 @@ Using inducing points, we arrive at the Nystr{\"o}m approximation
 \end{equation}
 
 where $K_{NM} = K(\textbf{X}, \textbf{Z})$ and $K_{MM} = K(\textbf{Z}, \textbf{Z})$.
-The SVGP complexity now costs $O(NM^2)$ instead of $O(N^3)$.
+The SVGP complexity now costs $O(NM^2)$ instead of $O(N^3)$ \citep{Lui2020}.
 
 When the inducing points are the real data points, such that $\textbf{Z} = \textbf{X}$ then $K_{NM} = K_{MM} = K_{NN}$ and the bound on the marginal likelihood becomes tight. 
-Therefore, the approximate marginal likelihood equals the real marginal likelihood.
+Therefore, the approximate marginal likelihood equals the real marginal likelihood \citep{Hensman2014}.
+
+The SVGP approach has been shown to provide accurate predictions with significantly reduced computational cost. 
+Additionally, it also allows for more efficient training of GP models using stochastic gradient descent.
+Lastly, it allows for variational inference, accepting non-Gaussian likelihoods.
+For these reasons, it is a popular choice in Gaussian process models \citep{SVGPYi2020}.
 
 \subsubsection{Choosing the Inducing Points}
 
@@ -784,14 +824,11 @@ The cricket dataset could be deemed a data association problem, as perhaps we ca
 Each of these processes are noisy, as cricket has stochastic outcomes. 
 
 Furthermore, the relationship between a cricket delivery's features and its outcome is not a simple relationship. 
-For example, lets take a high level look at a seam bowlers length of pitch in IPL cricket (the "pitchY" feature in the dataset).
-A good short ball (also known as a bouncer) from a quick bowler is one that reaches the batsmen at shoulder or above height. 
-Any delivery pitching slighly fuller will be at the batsmens chest, which is considered a poor ball, as it is far easier for the batsmen to get over with their bat and hit for boundaries.
-Equally, a slightly fuller pitch again puts the ball back in a good length, as it is around the top of the stumps. 
-Slighly fuller however, is once again deemed poor, as it is at a full length for the batsmen to step forward and drive or slog for runs. 
-Yet, once again, slighly fuller is a good length.
-This is as a yorker, a ball right at a batsmens feet, which is considered a very difficult ball to play against. 
-Therefore it is clear the relationship between the pitch length and the outcome of a delivery is not linear and not simple.
+For example, the bowlers length of pitch in IPL cricket (the "pitchY" feature in the dataset) is not a simple case of fuller or shorter is better.
+A good short ball from a quick bowler is one that pitches and then reaches the batsmen at shoulder or above height. 
+A good yorker is a ball pitching right at the batsmens feets. 
+A "good length" delivery is one that pitches and then will pass the stumps at around the top of off stump.
+Yet, pitch lengths in between these values are generally considered bad. 
 Similar examples can be made with the width of a ball, its swing, its spin, and many other features.
 
 %Equally, a "good" or "bad" ball is subjective depending on the match state and what the bowling team is trying to achieve. 
@@ -809,26 +846,12 @@ Data association techniques however, provide a framework to attempt to seperate 
 
 XGBoost is a scalable machine learning gradient boosting library.  
 It is an extremely popular, versatile and state-of-the-art gradient boosting technique.
-For example, among the 29 challenge winning solutions published at Kaggle’s blog during 2015 17 solutions used XGBoost.
+For example, among the 29 challenge winning solutions published at Kaggle’s blog during 2015, 17 of the solutions used XGBoost.
 Among these solutions, eight solely used XGBoost to train the model, while most others combined XGBoost with neural nets in ensembles.
-These results demonstrate that XGBoost gives state-of-the-art results on a wide range of problems. 
-Examples of the problems in the winning solutions include: store sales prediction; high energy physics event classification; web text classification; customer behavior prediction; motion detection; ad click through rate prediction; malware classification; product categorization; hazard risk prediction; massive online course dropout rate prediction \citep{Chen2016}.
+The solutions demonstrated that XGBoost gives state-of-the-art results on a wide range of problems, including: store sales prediction; high energy physics event classification; web text classification; customer behavior prediction; motion detection; ad click through rate prediction; malware classification; product categorisation; hazard risk prediction; massive online course dropout rate prediction \citep{Chen2016}.
 
 The versatility and performance of XGBoost make it a popular choice of boosting algorithm, yet it hasn't been widely adopted in cricket research (see section \ref{sec:CrickSurvey}).
-For this reason, I wanted to experiment with XGBoost in this project, and use it as a baseline performance compared to solutions with GPs.
-
-\section{Hawk-Eye and Ball Tracking}
-
-The dataset used in this project contains tracking data from Hawk-Eye systems.
-Hawk-Eye Innovations is a sports technology company, that provides many products, including computer version services.
-In particular there is a focus on ball and player tracking in sports, including cricket.
-In this project the emphasis is placed on the ball tracking.
-Hawk-Eye have a number of cameras at IPL grounds, that the video from is then triangulated and combined to create a three-dimensional representation of the ball's trajectory.
-It has been adopted as an ajudication tool by many governing bodies in cricket and is generally accepted to be accurate.
-
-Hawk-Eye tracking data is accumulated and stored. 
-It can then be used for various data science and machine learning purposes.
-Further explanation of the dataset and features used in this project are explained in section \ref{sec:Dataset}.
+For this reason, I wanted to experiment with XGBoost in this project and use it as a baseline performance compared to solutions with GPs.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -863,6 +886,8 @@ The purpose is to use John Doe to explore what the best and worst deliveries are
 
 \subsection{Features of the dataset}
 
+\subsubsection{Ball Trajectory Features}
+
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{post_wicket_right_arm.png}
@@ -893,10 +918,12 @@ The purpose is to use John Doe to explore what the best and worst deliveries are
 
 Figures \ref{fig:StumpsXY} and \ref{fig:PitchXY} visualise the "stumpsX", "stumpsY", "pitchX" and "pitchY" features of the dataset. 
 "StumpsX" and "stumpsY" represent where the ball passed the stumps in 2D space.
-"PitchX" and "pitchY" represent where the ball bounced on the pitch. 
+"PitchX" and "pitchY" represent where the ball bounced on the pitch from a top-down view.
 Figure \ref{fig:PitchXYStrikeRate} shows the strike rate \footnote{Strike rate is a common metric in T20 cricket to evaluate a batter's performance. The batters strike rate is their runs scored divided by the balls faced times 100. A high strike rate is good for a batter. Note there is a metric for bowlers also called strike rate that this is not to be confused with.} for the different areas of the pitch. 
 It highlights that too short, too wide, or too full deliveries have a higher strike rate than the areas at a classically good pitch length and width.
-Whilst it shows that there is clear signs of a good or bad pitch location, one noticeable thing in figures \ref{fig:StumpsXY} and \ref{fig:PitchXY} is how much the data overlaps for different outcomes i.e. locations of zero runs are also locations of six runs.
+Whilst it shows that there is potential signs of a good or bad pitch location, one noticeable thing in figures \ref{fig:StumpsXY} and \ref{fig:PitchXY} is how much the data overlaps for different outcomes i.e. locations of no boundary scored are also locations of a boundary being scored.
+
+\subsubsection{Delivery Outcome Features}
 
 To know if a ball was delivered right arm or left arm a "rightArmedBowl" column could take either true or false values.
 The following column contained the "bowlingStyle", which included various values such as "FAST\_SEAM", "MEDIUM\_SEAM",  "OFF\_SPIN" and more.
@@ -905,7 +932,7 @@ Features for the runs scored also existed, that included "runs", "batterRuns" an
 "BowlerRuns" represent runs scored off the bowler. 
 This includes any "batterRuns", but also any additional wides and no balls.
 Therefore the column "runs" was a summation of the "batterRuns" and "bowlerRuns", plus any additional cases where the runs will not be attributed to either the batter or bowler, but simply to their respecting teams (for example bys and leg-bys).
-The type of extra is indicated in the "extras" column.
+The type of extra is indicated in the "extras" column, for example "Wd" (wide) or "Nb" (no ball).
 
 \subsection{Pre-processing}
 
@@ -919,35 +946,73 @@ Regardless, they added unneccessary extra noise and were removed.
 Lastly a new feature "boundary" was added. 
 Boundary was a binary feature, where a value of 0 indicated 0 or 1 "batterRuns" were scored.
 A value of 1 indicated 4 or 6 "batterRuns" were scored. 
-I decided not to include extras, but only deliveries where the batter themselves had scored that many runs.
-This felt more indicative of a good or a bad delivery, versus a good delivery that the batsmen missed and went for 4 bys.
+I decided to only consider the "batterRuns" value, as this felt more indicative of a good or a bad delivery, versus a good delivery that the batsmen missed and went for 4 bys.
 
 \section{Mixture of Gaussian Processes}
 
 \subsection{Data Association with Gaussian Processes}
 
 The data association with Gaussian processes model introduced by \citet{Kaiser2018} assumes there exists $K$ independent functions.
+A data point is generated by evaluating one of the $K$ functions and adding Gaussian noise from a corresponding likelihood.
 The assignment of the $n^{th}$ data point to a function is specificed by the indicator vector $\textbf{a}_{n} \in {0, 1}^K$ which has exactly one non-zero entry.
-The assignment probabilities of outputs is calculated with a softmax function and multinomial distribution. 
+The $k^{th}$ latent function and its value with the $n^{th}$ data point are denoted as $f_{n}^k = f^k(\textbf{x}_{n})$ and collected as $\textbf{F}^k = (f_{1}^k, ... , f_{N}^k)$ and $\textbf{F} = (\textbf{F}^1, ... , \textbf{F}^K)$.
+Similarly the $k^{th}$ entry in $\textbf{a}_{n}$ as $a_{n}^k$ and denote $\textbf{A} = (\textbf{a}_{1}, ... , \textbf{a}_{N})$.
+With this notation, the marginal likelihood of Kaiser's data association with Gaussian processes (DAGP) model is as follows
+
+\begin{equation}
+	\begin{aligned}
+		\centering 
+		P(Y | X) &= \int p(Y | \textbf{F}, \textbf{A}) P(\textbf{F} | X) P(\textbf{A} | X) d\textbf{A}d\textbf{F} \\
+		P(Y | \textbf{F}, \textbf{A}) &= \prod_{n=1}^{N} \prod_{k=1}^{K} \mathcal{N}(\textbf{y}_{n} | \textbf{f}_{n}^k, (\sigma^k)^2)^{\mathbb{I}(a_{n}^k = 1)}
+	\end{aligned}
+\end{equation}
+
+where $\sigma^k$ is the noise for the $k^{th}$ Gaussian likelihood and $\mathbb{I}$ is the indicator function.
+
+As each process is assumed to be independent of the data and assignments, GP priors can be placed on the latent functions $P(\textbf{F} | X)$ with mean functions and kernels.
+There is an assumption that the $\textbf{a}_{n}$ are drawn independently from multinomial distributions with logit parameters $\boldsymbol{\alpha}_{n} = (\alpha_{n}^1, ... , \alpha_{n}^K)$. 
+Next we assume a relationship between the location in input space $\textbf{x}$ and the associations, meaning independent GP priors can be placed on $\boldsymbol{\alpha}^k$.
+Any prior knowledge of the associations can be encoded into the choice of covariance function.
+The assignment probabilities is given by marginalising the $\boldsymbol{\alpha}^k$ that parametrise a batch of multinomial distributions
+
+\begin{equation}
+	\centering 
+	p(\textbf{A} | X) = \int M(\textbf{A} | softmax({\alpha})) p(\boldsymbol{\alpha} | X) d\boldsymbol{\alpha}.
+\end{equation}
+
+\subsubsection{Variational Approximation of Lower Bound}
+
+All GPs in the DAGP model use sparse approximations through inducing points and variables.
+They then derive a lower bound for the log-joint $\log p(Y, \textbf{A} | X)$ given by
+
+\begin{equation}
+	\begin{aligned}
+		\centering
+		\mathcal{L}_{DAGP} = &\Sigma_{n=1}^{N} \mathbb{E}_{q(\textbf{f}_{n})} [\log p(\textbf{y}_{n} | \textbf{f}_{n}, \textbf{a}_{n})]  + \Sigma_{n=1}^{N} \mathbb{E}_{q(\boldsymbol{\alpha}_{n})} [\log p(\textbf{a}_{n} | \boldsymbol{\alpha}_{n})]  \\
+		&- \Sigma_{k=1}^{K} \textrm{KL}(q(\textbf{u}^k) || p(\textbf{u}^k || \textbf{Z}^k)) - \Sigma_{k=1}^{K} \textrm{KL}(q(\textbf{u}_{\boldsymbol{\alpha}}^k) || p(\textbf{u}_{\boldsymbol{\alpha}}^k || \textbf{Z}_{\boldsymbol{\alpha}}^k))
+	\end{aligned}
+\end{equation}
+
+where $\textbf{u}$ are the inducing variables and $\textbf{Z}$ the inducing points.
+This bound has complexity $O(NM^2K)$ to evaluate.
+
+TODO: They also do continous relaxation
 
 \subsection{Modulated Scalable Gaussian Processes}
 
 \citet{Lui2020} proposed a similar method with a tighter evidence lower bound (ELBO).
-\citet{Kaiser2018} keeps the latent variables $\textbf{W}$ by approximating $\log p(\textbf{y}, \textbf{W})$ rather than the interested $\log p(y)$.
+\citet{Kaiser2018} keeps the indicator vector in the approximation of the lowerbound by approximating $\log p(\textbf{y}, \textbf{A})$ rather than the interested $\log p(y)$.
 \citet{Lui2020} directly approximates $\log p(y)$ by marginalising all the latent variables out.
 
-The scalable mixture of Gausssian processes model developed by \citet{Lui2020} makes use of the reparametisation trick \citep{Maddison2017}.
-TODO: Fill this out.
-
-\subsection{Implementation}
+\section{Implementation}
 
 The implementation to mix gaussian processes was an iteration of the SMGP (scalable modulated Gaussian processes) model developed by \citet{Lui2020}.
-The original model was developed in TensorFlow version one and code copied over from GPFlow version one \citep{GPflow2017}.
-This was then updated to use the latest GPFlow API version two and TensorFlow version two. 
-Following this the code could now be run in eager execution, enabling debugging.
-The code was then extended to enable different likelihoods and multiple inputs.
-
-TODO: Describe implementation and approach to SMGP model
+The original model was developed in TensorFlow v1 using additional code copied over from GPFlow v1 \citep{GPflow2017}.
+This model was updated to use the latest GPFlow API v2 and TensorFlow v2.
+In TensorFlow v1 only graph execution is possible, which is notoriously difficult to debug.
+Following this update the code could now be run in eager execution, enabling better debugging.
+The last part of this update included adding the `_training_loss` method of the `ExternalDataTrainingLossMixin` class in GPFlow.
+With this the training loss could be fed to an optimiser's minimise function, in this case an Adam optimiser.
 
 \section{XGBoost}
 
@@ -959,12 +1024,13 @@ The model trained was a XGBoost classifier to classify the outcome of a delivery
 For a classification tree with 2 classes, the value of the leaf node represents the score for one of the classes.
 It is then converted to a probability using the logistic function.
 
-\begin{equation}
-\end{equation}
+TODO: Need to flesh out implementation details for both SMGP and XGBoost.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Results}
+
+TODO: Add all results and describe
 
 \section{Mixture of Gaussian Processes}
 
@@ -1031,7 +1097,7 @@ TODO: Flesh this out
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Discussion}
 
-TODO: Discuss results.
+TODO: Discuss results and findings. Mention things discussed with Adam on slack etc.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1336,31 +1402,15 @@ Captains in cricket typically shoulder more responsibility on the outcome of a c
 
 \section{Cholesky Factorisation} \label{sec:CholFac}
 
+TODO: Cholesky Factorisation
+
 \section{Kullback–Leibler Divergence} \label{sec:KLDiv}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Design Diagrams}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Raw Results Output}
+TODO: KL Divergence
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Code}
-
-%% NOTE For this to typeset correctly, ensure you use the pdflatex
-%%      command in preference to the latex command.  If you do not have
-%%      the pdflatex command, you will need to remove the landscape and
-%%      multicols tags and just make do with single column listing output
-
-\begin{landscape}
-\begin{multicols}{2}
-\section{File: yourCodeFile.java}
-\lstinputlisting[basicstyle=\scriptsize]{yourCodeFile.java}
-\end{multicols}
-\end{landscape}	
 
 %STOP IGNORING WORDS
 %TC:endignore 
