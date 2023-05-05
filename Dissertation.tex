@@ -70,9 +70,9 @@
 
 \addcontentsline{toc}{chapter}{Abstract}
 \abstract
-Cricket is a popular sport with a large following globally. In recent decades, sports analytics has become an established industry, utilising statistical and machine learning algorithms to extract meaningful insights from sports data. 
+Cricket is a popular sport with a large, global following. In recent decades, sports analytics has become an established industry, utilising statistical and machine learning algorithms to extract meaningful insights from sports data. 
 However, current research on machine learning in cricket and sport in general has overlooked the potential use of Gaussian processes. 
-This project aims to fill these gaps by introducing Gaussian processes for modelling the outcome of cricket deliveries and provides the necessary background and method. 
+This project aims to fill these gaps by providing the necessary background and method to introduce Gaussian processes for modelling the outcome of cricket deliveries.
 This is done through exploring a state-of-the-art Gaussian process model: Data Association for Gaussian Processes.
 Models using XGBoost were also developed.
 This work provides a platform for future studies into the use of Gaussian processes in cricket analytics.
@@ -931,11 +931,11 @@ In the case of the John Doe dataset, $74.3\%$ of the deliveries are not boundari
 
 \section{Mixture of Gaussian Processes}
 
-For the following examples the figures show in the top left samples drawn from the GP, the top right the ELBO maximisation during training (or in reality the optimisation of the lower bound), the bottom left the softmax assignments for each of the generative processes, and in the bottom right the predicitions of the generative processes.
+The figures show in the top left samples drawn from the GP, in the top right the ELBO maximisation during training (or in reality the optimisation of the lower bound), in the bottom left the softmax assignments for each of the generative processes, and in the bottom right the predicitions of the generative processes.
 The predicitions show the upper and lower bounds within a 95\% confidence interval for each process. 
 
 For the results with 2D input, two figures are provided for each example.
-The first figure represents the raw data, predicted samples, and a 3D plot of the assigments and predicitions.
+The first figure represents the raw data, predicted samples and a 3D plot of the assigments and predicitions.
 The second figure for each example takes slices of the output plane to plot.
 This shows the smooth prediction of the GPs for one axis, with the other axis set to a constant value.
 The second figure also plots the ELBOs during training.
@@ -958,7 +958,7 @@ Figure \ref{fig:MultimodalSMGP} recreates comparable results to \citet{Kaiser202
 The results were gathered using the GPFlow v2 upgraded version of \citet{Lui2021}.
 Uniformly spaced training points $x$ are sampled to generate $y_{1} = \sin (x) + \epsilon$, $y_{2} = \sin(x) - 2 \textrm{exp}(-\frac{1}{2}(x - 2)^2) + \epsilon$ and $y_{3} = -2 -\frac{3}{8}\pi x + \frac{3}{10} \sin(2x) + \epsilon$ where $\epsilon \sim \mathcal{N}(0, 0.1^2)$. 
 The resulting dataset is trimodal in the interval $[0, 5]$ and is otherwise bimodal with one mode containing double the amount of data than the other \citep{Kaiser2020}.
-The SMGP has successfully learned that one of the generative processes has around twice the assignment probability of the other.
+The SMGP has successfully learnt that one of the generative processes has around twice the assignment probability of the other.
 In the tri-modal region the assignments become around equal, representing an equal chance of assignment for each process. This means it has successfully reconstructed the true generative process.
 
 \subsubsection{SMGP with Modified Likelihood}
@@ -1048,18 +1048,18 @@ However, there is a probability of $0.1$ that the process does not take it's pro
 
 \subsubsection{Discussion}
 
-It is clear here, that there is something wrong with the implementation somewhere.
+It is clear here, that there is a problem with an aspect of the implementation.
 The predicitions in the regions where $x_{1} < 0$ and $x_{2} < 0$ are prediciting not whole numbers, which with a multiclass likelihood should be impossible.
 This is because a multiclass likelihood should only be able to predict for the different classes that exist (in this case 0 and 1).
-However, somehow the mixing of predicitions makes some sense.
+However, somehow the mixing of predicitions still is somewhat reasonable.
 As the constant values for $x_{2}$ and $x_{1}$ are zero, this is right at the boundary where the raw data will be 0 or 1. 
-So, if $x_{1}$ just went over 0, for example, $x_{1} = 0.2$ the predictions should all be 1.
-It can be seen in figure \ref{fig:2DMulticlassSMGPModifiedDemonstrative} that doing so, does smooth the predictions more to each class, with the uncertainty only rising at around $x{2} = -0.5$.
-So, in some ways it makes sense for the predicitions to be unsure to predict 0 or 1 right at this point.
-In any case, there must be a bug somewhere in the SMGP implementation or within GPFlow.
+So, if $x_{1}$ exceeded 0 just slightly, for example, $x_{1} = 0.2$, the predictions should all be 1.
+It can be seen in figure \ref{fig:2DMulticlassSMGPModifiedDemonstrative} that doing so smooths the predictions more to each class, with the uncertainty only rising at around $x{2} = -0.5$.
+So, in some ways it is reasonable for the predicitions to be unsure to predict 0 or 1 right at this point.
+In any case, there is likely to be a bug somewhere in the SMGP implementation or within GPFlow.
 In the other regions of input space, where $x_{1} > 0$ and $x_{2} > 0$ the predicitions flatten out to predict exactly the two possible classes.
 
-Looking at the assignment probabilities, they also don't make sense.
+Looking at the assignment probabilities, there are also sections that are incomprehensible.
 It should give a higher probability to the orange process at all times, given that this is the real process with more data.
 The only exception should potentially be at $x{1} = 0$ and $x_{2} = 0$ given that is where the two processes should "swap" (similar to figure \ref{fig:MulticlassSMGPModified}).
 
@@ -1092,7 +1092,7 @@ In the case of the John Doe dataset, $74.3\%$ of the deliveries are not boundari
 As we can see, the assignment sits around $0.7$ or slightly above for no boundary scored.
 It seems as though the assignments have learnt that not scoring a boundary is far more common than scoring a boundary, which is something we already knew.
 
-The reasons for this is most likely that the outcomes are so mixed across the input data. 
+The reasons for this are most likely that the outcomes are very mixed across the input data. 
 In the case of the toy examples such as \ref{fig:MultimodalSMGP}, the assignments only mixed in regions where there was equal chances of many outputs. 
 In the majority of the input space however, the assignment probabilities reflected the proportions of the training data itself.
 It seems to be that this is the case here with the John Doe dataset.
@@ -1117,7 +1117,7 @@ Equally, more outputs (for example prediciting all the possible run outcomes), m
 \end{table}
 
 Table \ref{tab:XGResults} shows the accuracy and final log loss for each of the models trained. 
-The accuracies are less than desired, given that $74.3\%$ of the dataset are not boundaries anyway.
+The accuracies are less than desired, given that $74.3\%$ of the dataset are not boundaries.
 This accuracy could then in theory be achieved by predicting all deliveries to be not a boundary.
 This could be improved with a different model setup (different inputs and outputs) and this will be discussed more later.
 
@@ -1139,12 +1139,12 @@ This could be improved with a different model setup (different inputs and output
 
 \subsubsection{Discussion}
 
-It can be seen that with just two features, the model hasn't learnt any clear relationships, as various features values result in various SHAP values.
-This potentially makes sense, given how mixed the outcomes are in the input space.
+It is evident that with just two features, the model has not learnt any clear relationships, as various features values result in various SHAP values.
+This potentially reasonable, given how mixed the outcomes are in the input space.
 This means potentially more input features are required to seperate the different outcomes more in input space.
 
 Figure \ref{fig:TreeStumps} also represents a decision tree for the model.
-It highlights how XGBoost will split the inputs into intervals to make decisions, potentially losing some of the richness of the continous features.
+It highlights how XGBoost will split the inputs into intervals to make decisions, losing some of the richness of the continous features.
 
 \subsection{StumpsX, StumpsY, PitchX and PitchY}
 
@@ -1164,24 +1164,23 @@ It highlights how XGBoost will split the inputs into intervals to make decisions
 
 \subsubsection{Discussion}
 
-Following on from simply using the stump locations as features, pitch locations were considered as well.
-With 4 features things become clearer, but still not ideal.
+In addition to using the stump locations as features, pitch locations were considered as well.
+With 4 features SHAP values gain more clarity, but still not ideal.
 Lets look at each feature and discuss.
 
 "PitchX" has not developed any clear relationship. 
 Notably, low feature values of "PitchX" seem to be able to have a low and large SHAP value (and so impact on the models prediction).
 This could also be a potential drawback of the SHAP package and its colour scale and that a more numerical analysis is required.
 This is because as described in section \ref{sec:DataAssocCricket} the relationship between pitch locations and outcomes is not simple or linear i.e. bigger "PitchX" does not necessarily linearly increase or decrease the chance of a boundary being scored.
-It's possible a more nuanced relationship with the "PitchX" feature has been discovered that can't be seen with the SHAP package.
+It's possible a more nuanced relationship with the "PitchX" feature has been discovered that cannot be seen with the SHAP package.
 "PitchY" has a similar relationship, with low and high features values carrying potentially both low and large impact on the model.
 
 "StumpsX" and "StumpsY" however have started to show some relationship.
 Lower values of "stumpsX" and "stumpsY" appear to lower the SHAP value, and therefore the odds of a boundary being scored.
 High values appear to increase it. 
-This makes some sense for "StumpsY".
-This is because, figures \ref{fig:StumpsXYRight} and \ref{fig:StumpsXYLeft} do highlight that low values of "StumpsY" have a lack of boundaries scored.
+A potential reasoning for "StumpsY" is because figures \ref{fig:StumpsXYRight} and \ref{fig:StumpsXYLeft} do highlight that low values of "StumpsY" have a lack of boundaries scored.
 However the intuition behind why it has done the same for "StumpsX" is not so clear. 
-It also does not make sense that the same outcome did not happen for the model using just "StumpsX" and "StumpsY" as inputs.
+It is also not immediately apparent why the same outcome did not happen for the model using just "StumpsX" and "StumpsY" as inputs.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1190,11 +1189,10 @@ It also does not make sense that the same outcome did not happen for the model u
 This project identified areas of new research in current sports analytics for cricket.
 In particular, there is a lack of exploration of alternative methods to those that are popular in current research.
 Therefore, this project explored using Data Association with Gaussian processes and XGBoost to predict the outcome of a whether a delivery in T20 cricket is a boundary or not.
-The research here provides a valuable first step towards new avenues of machine learning in cricket.
 
 \section{Future Work}
 
-There is a number of exciting potential future avenues from the work introduced in this project.
+There is a number of exciting potential future avenues for research from the work introduced in this project.
 Notably, further improvements to the SMGP model.
 Currently, the SMGP implementation by \citet{Lui2021} has limitations with using different likelihoods for the assignments and predictions.
 As a result, a revertion to the \citet{Kaiser2020} lowerbound was introduced as an attempt to handle different likelihoods for the assignment and predicition processes.
@@ -1216,6 +1214,10 @@ Lastly, further refinement of all models implemented is possible.
 This includes a greater number of input features, as well as handling categorical inputs that can represent certain game states.
 For example, whether it is raining, overcast, pitch conditions, time of day etc.
 Such improvements would be applicable to both XGBoost or SMGP.
+
+Although the results were not as expected, this study provides a valuable first step towards exploring new avenues of machine learning in cricket.
+
+Word count: 9467.
 
 % IGNORE WORDS AFTER HERE
 %TC:ignore 
