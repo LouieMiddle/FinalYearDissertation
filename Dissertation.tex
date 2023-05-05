@@ -36,11 +36,12 @@
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
 % Set this to the language you want to use in your code listings (if any)
 \lstset{ %
   language = python,
-  backgroundcolor=\color{white},   % choose the background color
+  backgroundcolor=\color{backcolour},   % choose the background color
   basicstyle=\footnotesize,        % size of fonts used for the code
   breaklines=true,                 % automatic line breaking only at whitespace
   captionpos=b,                    % sets the caption-position to bottom
@@ -69,10 +70,12 @@
 
 \addcontentsline{toc}{chapter}{Abstract}
 \abstract
-$\langle$
-The abstract should appear here. 
-An abstract is a short paragraph describing the aims of the project, what was achieved and what contributions it has made.
-$\rangle$
+Cricket is a popular sport with a large following globally. In recent decades, sports analytics has become an established industry, utilising statistical and machine learning algorithms to extract meaningful insights from sports data. 
+However, current research on machine learning in cricket and sport in general has overlooked the potential use of Gaussian processes. 
+This project aims to fill these gaps by introducing Gaussian processes for modelling the outcome of cricket deliveries and provides the necessary background and method. 
+This is done through exploring a state-of-the-art Gaussian process model: Data Association for Gaussian Processes.
+Models using XGBoost were also developed.
+This work provides a platform for future studies into the use of Gaussian processes in cricket analytics.
 \newpage
 
 \tableofcontents
@@ -101,29 +104,12 @@ In addition, my partner Hoi has provided much personal support for me throughout
 Lastly, I would like to thank my parents, for who without I would not have had the amazing oppurtunities in life that I have had, including University and the chance to work on this project.
 
 \newpage
-
-\addcontentsline{toc}{chapter}{Glossary}
-\chapter*{Glossary}
-
-TODO: Finish this
-
-\begin{tabular}{l@{}cll@{}cl}
-	Bouncer && Another name for a short ball - a delivery that pitches at the short end of the pitch \\
-	DAGP && Data Association with Gaussian Processes \\
-	Dot Ball && A cricket delivery that goes for zero runs \\
-	GP && Gaussian Process \\
-	Single && A cricket delivery that goes for one run \\
-	SMGP && Scalable Mixture of Gaussian Process \\
-	SVGP && Sparse Variational Gaussian Process \\
-\end{tabular}
-
-\newpage
 \setcounter{page}{1}
 \pagenumbering{arabic}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Introduction}
+\chapter{Introduction} \label{chap:Intro}
 
 Over the last few decades the amount of data driven techniques to improve the outcomes of sports games has increased greatly. 
 The multi-billion pound market of cricket is no exception. 
@@ -132,7 +118,7 @@ Cricket is a game of fine margins; matches can be decided by a small number of r
 Therefore, every insight that can be made as to what is good or bad cricket is extremely valuable.
 For this reason, there is a strong incentive to improve the machine learning techniques used in current sports analytics to improve a teams performance.
 
-This study aims to investigate the possibility of predicting the outcome of a cricket delivery \footnote{Whilst knowledge of cricket is useful to understand this project, it is not necessary to appreciate the project and its applications. Despite this, I present a brief introduction to the game and its laws for those unfamiliar with the sport in chapter \ref{chap:CrickBackground}.} using modern machine learning techniques and how this could then aid cricket bowling choices and team selection. 
+This study aims to investigate the possibility of predicting the outcome of a cricket delivery \footnote{Whilst knowledge of cricket is useful to understand this project, it is not necessary to appreciate the project and its applications. Despite this, I present a brief introduction to the game and its laws for those unfamiliar with the sport in chapter \ref{chap:CrickBackground}. A delivery is a single action of bowling a ball toward a batter.} using modern machine learning techniques and how this could then aid cricket bowling choices and team selection. 
 The hope is that using knowledge of bowler pitch trajectories and batter shot trajectories gathered from modern ball tracking will add another layer of granularity in addition to simply considering the resultant runs scored off each delivery. 
 Furthermore, building a model which can incorporate pitch, atmospheric and ground conditions could further improve any models. 
 
@@ -152,7 +138,7 @@ Whilst existing predictors can achieve impressive results, unpredictable outcome
 For example, bookmaker's odds of Leicester City Football Club winning the Premier League at the start of the 2015/2016 season were 5000-1.
 Despite this, Leicester won the Premier League that season, in one of the biggest sport surprises in recent memory.
 Further analysis of their performances using a data segmentation evaluation method in \citet{Ruiz2017} show their title was absolutely deserved.
-Examples like this illustrate the limitations of current predictions in sport.
+Examples like Leicester City winning the Premier League illustrate the limitations of current predictions in sport.
 
 Currently in sports analytics and machine learning in general there is a popular set of methods that are frequently adopted.
 In particular, neural networks and gradient boosting algorithms are currently popular and have a large research output.
@@ -160,7 +146,7 @@ Whilst they have gained popularity for their ability to solve complex problems a
 
 \subsection{Overfitting}
 
-One significant drawback of neural networks and boosting models is that they can easily overfit the training data.
+One significant drawback of neural networks and gradient boosting models is that they can easily overfit the training data.
 This means the model has extracted some of the variation in the training data into the model structure, as if that variation was part of the actual underlying model structure.
 This can mean they fail to generalise well to new data. 
 Processes exist that can alleviate this issue, for example regularisation \citep{Girosi1995} techniques such as L1 or L2 regularisation, dropout or early stopping.
@@ -213,41 +199,9 @@ They have much to offer in their handling of limited and noisy training data and
 
 \section{Privacy in Sports Analytics}
 
-Whilst there is publically available research in the field of sports analytics, it is true that many professional sports teams and sports technology companies are secretive about their methods and data. 
+Whilst there is publically available research in the field of sports analytics, many professional sports teams and sports technology companies are secretive about their methods and data. 
 This is for various reasons, but mostly to maintain an advantage over their competitors.
 For this reason, it is important to note that large amounts of current sports analytics work is not publically visible and often has to be gathered from various sources.
-
-%\section{Project Plan}
-%
-%There are 26 weeks from Friday the 4th November until the final deadline of Friday the 5th May. 
-%The individual project is 24 credits out of a total 60 credits for the year, meaning 40\% of my time can be used for the project. 
-%This is 10.4 weeks. 
-%To allow for buffer and holidays I will assume I have 8 working weeks to complete the project. 
-%I have split my project into 3 main sections:
-%
-%\begin{enumerate}
-%    \item Literature review and pre-processing (2 weeks)
-%    \item Developing and improving models (4 weeks)
-%    \item Analysis of models and write up (2 weeks)
-%\end{enumerate}
-%
-%The buffer time can be used for any unforseen challenges, or sections that need it. 
-%See a Gantt chart for an overview of the plan in figure \ref{fig:gantt_chart}.
-%
-%\begin{figure}[H]
-%    \centering
-%    \includegraphics[width=\linewidth]{Gantt Chart.png}
-%    \caption{Gantt Chart For Project}
-%    \label{fig:gantt_chart}
-%\end{figure}
-%
-%\section{Resources Required}
-%
-%In order to train any machine learning model an appropriate amount of data for training and testing. 
-%Because it is not beneficial to use data that is too old \citep{horvat2020}, at least a recent season's worth of data would be good, saving some data for testing. 
-%
-%Training machine learning models may also require appropriate computing power depending on the models used and size of the data set. 
-%This could potentially be achieved with the University of Bath's Hex GPU cluster.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -256,16 +210,16 @@ For this reason, it is important to note that large amounts of current sports an
 \section{Moneyball}
 
 The release of the book Moneyball \citep{Moneyball2004} and its subsequent film adaptation, was a big driver in the increased use of statistical driven techniques in Baseball player selection and scouting techniques. 
-This empirical analysis of baseball is known as sabermetrics pioneered by the likes of Bill James.
-The impact of Moneyball has meant that Moneyball has entered baseball's lexicon; teams that value Sabermetrics are often said to be playing "Moneyball".  
-One of the notable benefits of a Moneyball approach is in reducing player salaries, whilst maintaining high performance. 
-Notable recent successes of baseball teams that have adopted a Moneyball approach include the Tampa Bay Rays, whose entire 2019 roster was around 63\% of the \$40 million their competitor the Houston Astros were spending soley on Gerrit Cole's contract. 
-It was reported that the Tampa Bay Rays spending totalled \$648,000 per victory, compared to the Astros \$1.54 million per win.
-Despite this large difference in pay, the Rays still had a successful season and finished second in the American League East \citep{Fox2019}.
+This empirical analysis of baseball is known as sabermetrics and was pioneered by the likes of Bill James.
+The impact of Moneyball has meant that moneyball has entered baseball's lexicon; teams that value sabermetrics are often said to be playing "moneyball".  
+One of the notable benefits of a moneyball approach is in reducing player salaries, whilst maintaining high performance. 
+Notable recent successes of baseball teams that have adopted a moneyball approach include the Tampa Bay Rays, whose entire 2019 roster was around 63\% of the \$40 million their competitor the Houston Astros were spending soley on Gerrit Cole's contract. 
+It was reported that the Tampa Bay Rays spending totalled \$648,000 per win, compared to the Astros \$1.54 million per win.
+Despite this large difference in pay, the Tampa Bay Rays still had a successful season and finished second in the American League East \citep{Fox2019}.
 
 Similar successes can be found in other sports, such as association football (or soccer). 
 In 2010 Liverpool F.C. were purchased by Boston Red Sox owner John W. Henry. 
-During this time with the Red Sox, Henry hired Sabermetrics pioneer Bill James and their Moneyball approach saw the team win the World Series in 2004, 2007, 2013 and 2018. 
+During this time with the Red Sox, Henry hired sabermetrics pioneer Bill James and their moneyball approach saw the team win the World Series in 2004, 2007, 2013 and 2018. 
 Attempting to replicate these results with Liverpool, Henry hired University of Cambridge PhD Ian Graham in 2012 as head of analysis and J\"urgen Klopp as Manager in 2015 \citep{Liverpool2022}. 
 Graham influenced the signings of key players, such as Mohammed Salah, Philippe Coutinho and Naby Ke\"ita. 
 Graham's data suggested Salah would pair especially well with Roberto Firmino, who creates more expected goals than nearly anyone else in his position \citep{Liverpool2019}. 
@@ -285,11 +239,11 @@ Typically, once a batter settles into \footnote{"Settling in" refers to the proc
 Furthermore, some "power hitters" are selected for their specialism in scoring boundaries at the end of an innings, with no settling in period that is afforded to batters in longer formats or at the start of a T20 innings.
 Whilst this style of play is more risky as the chances of misplaying increase, it is generally more beneficial to score as many runs as possible in the short time T20 cricket allots.
 In general T20 batters protect their wicket less than those in other formats and play a riskier, high run scoring style of play.
-\citet{Irvine2017} and the general consensus of the cricket community is that this high boundary scoring carries a greater importance than scoring singles \footnote{A single is when the batters run one time between the wickets, scoring one run (see \ref{sec:Runs}).}. 
+\citet{Irvine2017} and the general consensus of the cricket community is that this high boundary scoring carries a greater importance than scoring singles \footnote{A single is when the batters run one time between the wickets, scoring one run (see section \ref{sec:Runs}).}. 
 \citet{Irvine2017} found that the higher the number of singles scored was detrimental to a batting team's chances of success.
 
 Due to the batters desire to score boundaries in T20, bowlers might adopt different strategies to reduce the batters ability to score boundaries. 
-This is often done through bowling a wider variety of deliveries and aiming for dot balls \footnote{A dotball is a delivery that went for 0 runs (see \ref{sec:Runs}).} or singles.
+This is often done through bowling a wider variety of deliveries and aiming for dot balls \footnote{A dotball is a delivery that went for 0 runs (see section \ref{sec:Runs}).} or singles.
 Consequently, this should reduce the runs the batters score and increase the chance of taking a wicket due to the batter needing to play a wider variety of shots to score runs, which increases the chance of them making a mistake.
 In general, T20 bowling attacks often assess the ways to reduce the number of boundaries the opposing team can score.
 \citet{Irvine2017} found that increased number of dot balls led to a higher chance of winning for the bowling team. 
@@ -334,13 +288,9 @@ Large sports analysis company StatsBomb have referenced in their blog posts that
 He made use of XGBoost \citep{Chen2016} and achieved comparable results to StatsBomb.
 One of the valuable things about XGBoost models is that they can provide a feature interpretation of what features are most important.
 This is valuable for sanity checking models.
-For example, Blumberg's model found the closer the shot is to the goal, the higher the probability of a goal, which matchs our a priori knowledge of the game.
+For example, Blumberg's model found the closer the shot is to the goal, the higher the probability of a goal, which matchs our intuitive knowledge of the game.
 
 \section{Existing Machine Learning Research on Cricket} \label{sec:CrickSurvey}
-
-%\citet{KampakisStylianos2015} used Naïve Bayes, logistic regression, random forests and gradient boosted decision trees to predict the outcome of English County T20 Cricket Matches from 2009 - 2014. 
-%The performance of each algorithm was assessed using one year's data as the training data set and the following year's data for testing. 
-%Each model was tested over these seasons and achieved an accuracy of 62.4\% for Naïve Bayes, 60.1\% for logistic regression, 55.6\% for random forests and 57.2\% for decision trees.
 
 \begin{table}[H] \label{tab:ResearchCrick}
 	\centering
@@ -394,23 +344,7 @@ There is clearly gaps in current research in sports analytics that can be explor
 Lastly, a clear uptick in the number of publications can be seen over the years, which is also corroborated in sport as whole in \citet{horvat2020}.
 It once again highlights the growing interest in ML in sport.
 
-%\subsection{Existing Machine Learning Research on the Indian Premier League}
-%
-%\citet{Saikia2012} have used Artificial Neural Network models to predict the performance of bowlers based on their performance in the first three seasons of the IPL. 
-%When the predicted results were validated with the players performances in the fourth season, the model had an accuracy of 71.43\%.
-%
-%Otherwise, there is generally limited research on the IPL and it is an area ripe for research.
-
-%\subsection{Expected Runs}
-%
-%In cricket, expected runs (xR) refers to the estimated number of runs a team or a batsman is expected to score based on various factors such as the number of overs left, the current score, and the quality of the opposition. 
-%It is calculated using statistical models that take into account various variables such as the batsman's average, strike rate, and the pitch conditions. 
-%The concept of expected runs is often used by cricket analysts and commentators to assess a team's performance, identify areas of improvement, and make predictions about the outcome of a match. 
-%It is a useful tool in evaluating a player's performance and predicting the final score of a match.
-%
-%TODO: Talk about CricketSavant, his XGBoost, and then subsequent hiring by CrickVis.
-
-\section{Research With Similar Goals}
+\section{Research With Similar Goals} \label{sec:ResearchWithSimilarGoals}
 
 Research in other sports has attempted to predict the outcome of a batter bowler matchup.
 Namely, the Singlearity plate appearance model (Singlearity-PA) \citep{silver2021baseball} attempted to solve one of the most fundamental questions in baseball:	 How can we	predict the outcome of a batter	vs. pitcher plate appearance (PA) \footnote{A plate appearance in baseball is credited to a batter each time they complete a turn batting. A player completes a turn batting when he is out or becomes a runner.}? 
@@ -432,14 +366,10 @@ Similarly, in cricket the batting lineup and choice of bowler at different point
 In the example provided, Singlearity-PA's predicted runs scored for an optimal lineup was 6.7\% better than the actual lineup in the 2019 National League All-Star game. 
 It is important not to compare baseball and cricket too closely, but the techniques used by Silver and Huffman could potentially work well in Cricket.
 
-%\section{Gaussian Processes in Sport}
-%
-%TODO: Talk about Gaussian processes in sport
-
 \chapter{Background}
 
 This chapter will firstly introduce some background on Hawk-Eye and current computer vision in sports.
-Next, the requisite background for Gaussian processes and gradient boosting, the two key methods used in this project is provided.
+Next, the requisite background for Gaussian processes and gradient boosting is provided, the two key methods used in this project.
 Additionaly, the idea of a data association problem is introduced. 
 
 \section{Hawk-Eye and Ball Tracking}
@@ -472,74 +402,6 @@ $\textbf{x}$ denotes an input vector (covariates) of dimension $D$ and $y$ denot
 The column vector inputs for all $n$ cases are aggregated in the $D x n$ design matrix $X$ and the targets collected in the vector $\textbf{y}$, such that $\mathcal{D} = (X, \textbf{y})$ \citep{RasmussenWilliams2006}.
 
 \subsection{Gaussian Processes for Regression}
-
-%\subsubsection{Weight Space View}
-
-%TODO: This section might not be necessary, but might be good to show understanding....
-
-%One can think of a Gaussian process as defining a distribution over functions and inference taking place directly in the space of functions. 
-%Although this view is appealing, it is difficult to grasp on first attempt, and so we will start with reviewing the \emph{weight-space view}.
-%
-%First, lets review the standard linear regression model with Gaussian noise
-
-%\begin{equation}
-%    \centering
-%    {f(\textbf{x}) = \textbf{x}^T\textbf{w}, \quad y = f(\textbf{x}) + \epsilon}
-%\end{equation}
-
-%where $\textbf{x}$ is the input vector, $\textbf{w}$ is a vector of weights of the linear model, $f$ is the function value, and $y$ is the observed target value.
-%It is often assumed that the observed values differ from the function values by some noise, which we will treat as an independent, identically distributed Gaussian distribution, with zero mean and variance $\sigma^2_{n}$.
-
-%\begin{equation}
-%    \centering
-%    \epsilon \sim \mathcal{N}(0, \sigma^2_{n})
-%\end{equation}
-
-%This noise assumption together with the model gives rise to the likelihood, the probability density of the observations given the parameters, which is factored over cases in the training set to give
-
-%\begin{equation}
-%    \centering
-%    p(\textbf{y} | X, \textbf{w}) = \prod_{i=1}^n = p(y_{i} | \textbf{x}_{i}, \textbf{w}) =  \prod_{i=1}^n \frac{1}{\sqrt{2\pi}\sigma_{n}} exp(-\frac{(y_{i} - \textbf{x}_{i}^T \textbf{w})^2}{2 \sigma_{n}^2})
-%    TODO: Can do the rest later
-%\end{equation}
-
-%We put a zero mean Gaussian prior with covariance matrix $\Sigma_{p}$ on the weights 
-%
-%\begin{equation}
-%    \centering
-%    \textbf{w} \sim \mathcal{N}(0, \Sigma_{p})
-%\end{equation}
-%
-%Inference is based on the posterior distribution over the weights computed by Baye's rule, given by
-%
-%\begin{equation}
-%	\centering
-%	P(\textbf{w} | \textbf{y}, X)  = \frac{p(\textbf{y} | X, \textbf{w})p(\textbf{w})}{p(\textbf{y} | X)}
-%\end{equation}
-%
-%Note that prior $p(\textbf{w})$ neglects the conditioning on $X$, as it is independent of the inputs. The normalising constant $p(\textbf{y} | X)$, also know as the marginal likelihood is independent of the weights and is given by
-%
-%\begin{equation}
-%	\centering
-%	P(\textbf{y} | X)  = \int p(\textbf{y} | X, \textbf{w})p(\textbf{w}) d\textbf{w}
-%\end{equation}
-%
-%Since the number of obervations is finite and the function $f$ lives in an infinite dimensional function space, the estimation of $f$ is uncertain and based on prior assumptions about its structure.
-%
-%TODO: Finish this later when you can ask Adam about it....
-%
-%To make predictions we average over all possible parameter values, weighted by their posterior probability.
-%Thus the predictive distribution for $f_{*} \triangleq f(\textbf{x}_{*})$ at $\textbf{x}_{*}$ is given by averaging the output of all possible linear models w.r.t the Gaussian posterior
-%
-%\begin{equation}
-%	\begin{aligned}
-%		\centering 
-%		p(f_{*} | \textbf{x}_{*}, X, \textbf{y}) &= \int p(f_{*} | \textbf{x}_{*}, \textbf{w})p(\textbf{w} | X, \textbf{y}) d\textbf{w}\\
-%		&= \mathcal{N}(\frac{1}{\sigma_{n}^2} \textbf{x}_{*}^T A^{-1} X \textbf{y}, \enskip \textbf{x}_{*}^T A^{-1} \textbf{x}_{*}).
-%	\end{aligned}
-%\end{equation}
-%
-%The predictive distribution is again Gaussian.
 
 \subsubsection{Function-Space View}
 
@@ -597,8 +459,7 @@ Kernels have characteristic \emph{length scales} which informally can be thought
 $\Lambda^{-1}  = diag(l_{1}^2, ... , l_{d}^2)$ is a diagonal matrix of the squared length scales $l_{i} \in \mathbb{R}_{>0}$ in each axis.
 The variable $\sigma_{f}^2 \in \mathbb{R}_{>0}$ is the \emph{signal variance}.
 The signal variance specifies the average distance of function values from the mean value.
-The vector of all hyperparameters in a model is called $\boldsymbol{\theta}$ \citep{RasmussenWilliams2006}.
-Choices of such free hyperparameters will be discussed more in chapter \ref{chap:Method} including their optimisation. 
+The vector of all hyperparameters in a model is called $\boldsymbol{\theta}$ \citep{RasmussenWilliams2006}. 
 
 \begin{figure}[H]
    	 \begin{minipage}[t]{0.3\textwidth}
@@ -679,7 +540,7 @@ Observing that $\textbf{y} \sim \mathcal{N} (0, K + \sigma_{n}^2I)$ yields the l
 	\log p(\textbf{y} | X) = -\frac{1}{2}\textbf{y}^T(K +  \sigma_{n}^2I)^-1\textbf{y} - -\frac{1}{2}log|K +  \sigma_{n}^2I| - \frac{n}{2}log2\pi.
 \end{equation}
 
-With this, an algorithm for Gaussian process regression can be formed, which is given in alg. \ref{alg:GPR}. The matrix inversion required by eq. \ref{eq:MeanFunc} and \ref{eq:CovarianceFunc} is addressed with Cholesky factorisation, explained in section \ref{sec:CholDecomp}. The cholesky decomposition costs $O(N^3/6)$.
+With this, an algorithm for Gaussian process regression can be formed, which is given in alg. \ref{alg:GPR}. The matrix inversion required by eq. \ref{eq:MeanFunc} and \ref{eq:CovarianceFunc} is addressed with Cholesky factorisation, explained in section \ref{sec:CholDecomp} \citep{RasmussenWilliams2006}. The cholesky decomposition costs $O(N^3/6)$.
 
 \begin{algorithm}
 	\caption{Algorithm for Gaussian process regression \citep{RasmussenWilliams2006}}
@@ -715,7 +576,7 @@ where $\overset{\sim}{R_{\mathcal{L}}}$ represents the risk and $\overset{\sim}{
 
 Up until now, the hyperparameters $\boldsymbol{\theta}$ have been assumed constant.
 If this were the case, GPs would have no training stage. 
-However, knowing the correct hyperparameters is not clear a priori, and so a method of determing the hyperparameters must be used.
+However, knowing the correct hyperparameters is not clear a priori, and so a method of determing the hyperparameters must be used \citep{Kaiser2017}.
 
 The correct way to model uncertainty about the hyperparameters is to give them a prior probability $p(\boldsymbol{\theta})$.
 The prior chosen should be broad to reflect the vagueness of the parameters before training.
@@ -744,7 +605,7 @@ The integration required in the denominator of eq. \ref{eq:ChooseHyper} is very 
 Instead, $p(\boldsymbol{\theta} | X, y)$ is maximised to provide an estimate and does not require the calculation of the integral in the denonimator because it is a constant.
 The solution of the numerator $p(y | X, \theta)$ you might recognise as the log marginal likelihood in eq. \ref{eq:LogMargLik}. 
 For practical reasons minimising the negative of the log marginal likelihood is easier than maximising it directly.
-Therefore, the estimation of hyperparameters is the solution of the following optimisation problem \citep{Kaiser2018}:
+Therefore, the estimation of hyperparameters is the solution of the following optimisation problem \citep{Kaiser2017}:
 
 \begin{equation}
 	\centering
@@ -757,15 +618,10 @@ A Gaussian process is a generalisation of the Gaussian probability distribution.
 Both classification and regression can be seen as function approximation problems. 
 Unfortunately, the solution of classification problems using Gaussian processes is tougher than regression problems. 
 For regression problems, the likelihood is often assumed to be Gaussian. 
-A Gaussian process prior combined with a Gaussian likelihood gives a posterior Gaussian process over functions, where everything remains analytically tractable. 
-For classification models, the Gaussian likelihood is inappropriate; a different likelihood such as a Bernoulli or multi-class likelihood must be used.
+A Gaussian process prior combined with a Gaussian likelihood gives a posterior Gaussian process over functions, where everything remains analytically tractable \citep{RasmussenWilliams2006}. 
+For classification models, the Gaussian likelihood is inappropriate; a different likelihood such as a Bernoulli or multiclass likelihood must be used.
 When the likelihood is non-Gaussian, the bayes rule results in an intractable posterior $p(f|y)$ \citep{Yi2020}.
 However, a variational approach can approximate the true posterior distribution.
-
-%In such cases the latent function $f$ plays the role of a nuisance function. 
-%This is that values of $f$ are not observed directly and there is no interest in the values of f, but rather in $\pi$ where $\pi (\textbf{x})$ is TODO.
-%The purpose of $f$ is solely to allow convenient formulation of the model and the goal is to integrate out $f$.
-%TODO: Fill out this paragraph.
 
 \subsection{Variational Gaussian Processes}
 
@@ -780,12 +636,12 @@ Gradient descent maximises the expression for the evidence lower bound (ELBO) to
 
 \subsection{Sparse Variational Gaussian Processes}
 
-A major drawback of Gaussian processes is their $O(N^3)$ complexity when computing the cholesky decomposition of $[K + \sigma_{n}^2I]$ from alg. \ref{alg:GPR}, but it can be done as a preprocessing step since it is independent of the test points. 
+A major drawback of Gaussian processes is their $O(N^3)$ complexity when computing the cholesky factorisation of $[K + \sigma_{n}^2I]$ from alg. \ref{alg:GPR}, but it can be done as a preprocessing step since it is independent of the test points. 
 After this, each single test point costs $O(N)$. 
-To predict its variance it is still necessary to perform matrix multiplication which costs $O(N^2)$ \citep{Kaiser2018}.
-Consequently, as the size of the dataset grows the more infeasible it is to evaluate a GP.
+To predict its variance it is still necessary to perform matrix multiplication which costs $O(N^2)$ \citep{Kaiser2020}.
+Consequently, as the size of the dataset grows the more infeasible it is to evaluate a GP efficiently.
 
-An approach to reduce this complexity is \emph{Sparse Variational Gaussian Processes} (SVGP) \citep{Hensman2014}.
+An approach to reduce this complexity is \emph{Sparse Variational Gaussian Processes} (SVGP) \citep{Hensman2015}.
 Spare approximations of GPs are a method of approximating a GP using a $M < N$ set of \emph{inducing points} $\textbf{Z}$ and \emph{inducing variables} $\textbf{u}$ that can represent the entire dataset, rather than $X$ itself. 
 This approach suits datasets with high levels of redundancy, but also introduces the problem of choosing the subset.
 
@@ -796,10 +652,10 @@ Using inducing points, we arrive at the Nystr{\"o}m approximation
 \end{equation}
 
 where $K_{NM} = K(\textbf{X}, \textbf{Z})$ and $K_{MM} = K(\textbf{Z}, \textbf{Z})$.
-The SVGP complexity now costs $O(NM^2)$ instead of $O(N^3)$ \citep{Lui2020}.
+The SVGP complexity now costs $O(NM^2)$ instead of $O(N^3)$ \citep{Lui2021}.
 
 When the inducing points are the real data points, such that $\textbf{Z} = \textbf{X}$ then $K_{NM} = K_{MM} = K_{NN}$ and the bound on the marginal likelihood becomes tight. 
-Therefore, the approximate marginal likelihood equals the real marginal likelihood \citep{Hensman2014}.
+Therefore, the approximate marginal likelihood equals the real marginal likelihood \citep{Hensman2015}.
 
 The SVGP approach has been shown to provide accurate predictions with significantly reduced computational cost. 
 Additionally, it also allows for more efficient training of GP models using stochastic gradient descent.
@@ -811,29 +667,28 @@ For these reasons, it is a popular choice in Gaussian process models \citep{SVGP
 When choosing your inducing points you want to use a method that will select $M$ inducing points, that can represent the $N$ real points.
 This can be done in many ways; an obvious example is to select inducing points linearly across the input range. 
 However if your input data is not linearly spaced, then this can misrepresent your data.
-A better method used in this project and used in \citet{Hensman2014} is k-means clustering, which can appropriately find all major regions of the input space so long as there are enough inducing points.
-
-TODO: Maybe visualise this?
+A better method used in this project and used in \citet{Hensman2015} is k-means clustering, which can appropriately find all major regions of the input space so long as there are enough inducing points.
 
 \section{Data Association}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{data_association_problem.png}
-    \caption{A data association problem consisting of two generating processes, one of which is a signal to recover and one is an uncorrelated noise process \citep{Kaiser2018}}
+    \caption{A data association problem consisting of two generating processes, one of which is a signal to recover and one is an uncorrelated noise process \citep{Kaiser2020}}
     \label{fig:DataAssocProblem}
 \end{figure}
 
 A \emph{data association problem} is one where we consider the data to have been generated by a mixture of processes and we are interested in factorising the data into these components. 
-For example, as described by \citet{Kaiser2018}, figure \ref{fig:DataAssocProblem} could represent faulty sensor data, where sensor readings are disturbed by uncorrelated and asymettric noise. 
+For example, as described by \citet{Kaiser2020}, figure \ref{fig:DataAssocProblem} could represent faulty sensor data, where sensor readings are disturbed by uncorrelated and asymettric noise. 
 Standard machine learning approaches can pollute any models, where the model starts to explain the noise instead of the underlying signal. 
 
-\subsection{Data Association and Cricket}
+\subsection{Data Association and Cricket} \label{sec:DataAssocCricket}
 
 The cricket dataset could be deemed a data association problem, as each outcome (runs scored) of a cricket delivery could be generated by a different process. 
-Each of these processes are noisy, as cricket has stochastic outcomes. 
+Each of these processes are overlapping as identical cricket deliveries can produce each of the possible outcomes.
+Despite this, there is a belief that there is a possibility of modelling each outcome separately, given that we intuitively know that there are good and bad delivery.
 
-Furthermore, the relationship between a cricket delivery's features and its outcome is not a simple relationship. 
+In addition, the relationship from a good delivery to a bad delivery is not a simple one. 
 For example, the bowlers length of pitch in IPL cricket (the "pitchY" feature in the dataset) is not a simple case of fuller or shorter is better.
 A good short ball from a quick bowler is one that pitches and then reaches the batsmen at shoulder or above height. 
 A good yorker is a ball pitching right at the batsmens feet.
@@ -841,22 +696,14 @@ A "good length" delivery is one that pitches and then will pass the stumps at ar
 Yet, pitch lengths in between these values are generally considered bad. 
 Similar examples can be made with the width of a ball, its swing, its spin, and many other features.
 
-%Equally, a "good" or "bad" ball is subjective depending on the match state and what the bowling team is trying to achieve. 
-%Typically in an IPL match the goal of the bowling team is to reduce the oppositions runs scored. 
-%The best balls for this requirement are not the same as the best balls to take a wicket. 
-%Equally there is an idea in cricket of "setting a batsmen up". 
-%This idea refers to having the previous deliveries set the batsmen up to get out on the next ball. 
-%For example, a short ball to throw the batsmen off, followed by a yorker right at the stumps. 
-%This highlights that there is some relationship between previous deliveries on any future deliveries.
-
-It is clear that the game of cricket has many nuances and challenges for modelling with machine learning techniques. 
-Data association techniques however, provide a framework to attempt to seperate some of the differences in how runs are scored in cricket, and model the overlap in the varying outcomes.
+A data association solution that can uncover the underlying processes in this noise would be very beneficial for cricket delivery prediction.
+Data association techniques could provide a framework to attempt to seperate some of the differences in how runs are scored in cricket, and model the overlap in the varying outcomes.
 
 \section{XGBoost}
 
 XGBoost is a scalable machine learning gradient boosting library.  
 It is an extremely popular, versatile and state-of-the-art gradient boosting technique.
-For example, among the 29 challenge winning solutions published at Kaggle’s blog during 2015, 17 of the solutions used XGBoost.
+For example, among the 29 challenge winning solutions published at Kaggle’s blog during 2015, seventeen of the solutions used XGBoost.
 Among these solutions, eight solely used XGBoost to train the model, while most others combined XGBoost with neural nets in ensembles.
 The solutions demonstrated that XGBoost gives impressive results on a wide range of problems, including: store sales prediction, high energy physics event classification, web text classification, customer behavior prediction, motion detection, ad click through rate prediction, malware classification, product categorisation, hazard risk prediction and massive online course dropout rate prediction \citep{Chen2016}.
 
@@ -872,12 +719,12 @@ For this reason, I wanted to experiment with XGBoost in this project and use it 
 Following on from the literature review and background, the primary objectives of this project can be listed as follows:
 
 \begin{enumerate}
-  \item From \ref{sec:T20Cricket} it is clear that it is key for bowling attacks to reduce the number of boundaries scored and increase the number of dot balls.
+  \item From \ref{sec:T20Cricket} it is clear that it is key for bowling attacks to reduce the number of boundaries scored and increase the number of dot balls in T20 cricket.
 Therefore, a key objective of this project is to accurately predict which delivery would be most optimal to stop a boundary and cause a dot ball or a single.
   \item From sections \ref{sec:SportSurvey} and \ref{sec:CrickSurvey}, it is clear that there is a lack of current research in delivery outcome prediction and use of a wider breadth of ML techniques. 
-Another objective of this project, is to attempt to explore new prediciton types in cricket, as well as use under-utilised  ML techniques, notably:
+Another objective of this project, is to attempt to explore new prediciton types in cricket, as well as experiment with potentially under-utilised  ML techniques, notably:
   \begin{enumerate}
-	\item Mixtures of Gaussian processes
+	\item Data association with Gaussian processes
 	\item XGBoost
   \end{enumerate}
 \end{enumerate}
@@ -889,6 +736,7 @@ At Hawk-Eye's request, the full data-set will not be uploaded due to its commerc
 Furthermore, the dataset contains identifying information such as batter names, bowler names, match IDs and so on.
 For the purposes of this project and executability of the code submitted, a small subset of the data has been uploaded that I have called the "John Doe dataset". 
 This is all the data for one batter, who will be called John Doe from here, that has had any identifying information removed.
+See \ref{code:PreProcess} for code to produce the John Doe dataset.
 
 The John Doe dataset is a CSV where each row is a different cricket delivery. 
 The data includes features such as the bowling style, ball speed, the runs scored (including how many were from the batter or extras), where the ball pitches, where the ball passed the stumps and more.     
@@ -927,11 +775,16 @@ The purpose is to use John Doe to explore what would be the best and worst deliv
 \end{figure}
 
 Figures \ref{fig:StumpsXYRight}, \ref{fig:StumpsXYLeft} and \ref{fig:PitchXY} visualise the "stumpsX", "stumpsY", "pitchX" and "pitchY" features of the dataset. 
-"StumpsX" and "stumpsY" represent where the ball passed the stumps in 2D space.
+"StumpsX" and "stumpsY" represent where the ball passed the stumps.
 "PitchX" and "pitchY" represent where the ball bounced on the pitch from a top-down view.
+Each figure contains black dots to represent a delivery and a heatmap to highlight areas where a high concentration of deliveries have been bowled.
+It is visible that for the deliveries that don't go for a boundary, the heatmap concentrates towards a single location compared to those that go for boundaries.
+This location is at around the top of off stump in the case of figure \ref{fig:StumpsXYRight}, which is classically considered a good target location for a seam bowler.
+
 Figure \ref{fig:PitchXYStrikeRate} \footnote{This figure was generated by modified code from \url{https://github.com/opengoalapp/cricket\_tracking}} shows the strike rate \footnote{Strike rate is a common metric in T20 cricket to evaluate a batter's performance. The batters strike rate is their runs scored divided by the balls faced times 100. A high strike rate is good for a batter. Note that there is a metric for bowlers also called strike rate that this is not to be confused with.} for the different areas of the pitch. 
 It highlights that too short, too wide, or too full deliveries have a higher strike rate than the areas at a classically good pitch length and width.
-Whilst it shows that there is potential signs of a good or bad pitch location, one noticeable thing in figures \ref{fig:StumpsXYRight}, \ref{fig:StumpsXYLeft} and \ref{fig:PitchXY} is how much the data overlaps for different outcomes i.e. locations of no boundary scored are also locations of a boundary being scored.
+
+Whilst there are potential signs of a good or bad pitch location, one noticeable thing in figures \ref{fig:StumpsXYRight}, \ref{fig:StumpsXYLeft} and \ref{fig:PitchXY} is how much the data overlaps for different outcomes i.e. locations of no boundary scored are also locations of a boundary being scored.
 
 \subsubsection{Delivery Outcome Features}
 
@@ -941,7 +794,7 @@ Features for the runs scored also existed, that included "runs", "batterRuns" an
 "BatterRuns" represent runs scored off the batsmen, such as running between the wickets or scoring a boundary.
 "BowlerRuns" represent runs scored off the bowler. 
 This includes any "batterRuns", but also any additional wides and no balls.
-Therefore the column "runs" was a summation of the "batterRuns" and "bowlerRuns", plus any additional cases where the runs will not be attributed to either the batter or bowler, but simply to their respecting teams (for example bys and leg-bys).
+Therefore the column "runs" was a summation of the "batterRuns" and "bowlerRuns", plus any additional cases where the runs will not be attributed to either the batter or bowler, but simply to their respecting teams (for example byes and leg-byes).
 The type of extra is indicated in the "extras" column, for example "Wd" (wide) or "Nb" (no ball).
 
 \subsection{Pre-processing}
@@ -956,18 +809,18 @@ Regardless, they added unneccessary extra noise and were removed.
 Lastly a new feature "boundary" was added. 
 Boundary was a binary feature, where a value of 0 indicated 0 or 1 "batterRuns" were scored.
 A value of 1 indicated 4 or 6 "batterRuns" were scored. 
-I decided to only consider the "batterRuns" value, as this felt more indicative of a good or a bad delivery, versus a good delivery that the batsmen missed and went for 4 bys.
+I decided to only consider the "batterRuns" value, as this felt more indicative of a good or a bad delivery, versus a good delivery that the batsmen missed and went for 4 byes.
 
 \section{Mixture of Gaussian Processes}
 
 \subsection{Data Association with Gaussian Processes}
 
-The data association with Gaussian processes model introduced by \citet{Kaiser2018} assumes there exists $K$ independent functions.
+The data association with Gaussian processes model introduced by \citet{Kaiser2020} assumes there exists $K$ independent functions.
 A data point is generated by evaluating one of the $K$ functions and adding Gaussian noise from a corresponding likelihood.
 The assignment of the $n^{th}$ data point to a function is specificed by the indicator vector $\textbf{a}_{n} \in {0, 1}^K$ which has exactly one non-zero entry.
 The $k^{th}$ latent function and its value with the $n^{th}$ data point are denoted as $f_{n}^k = f^k(\textbf{x}_{n})$ and collected as $\textbf{F}^k = (f_{1}^k, ... , f_{N}^k)$ and $\textbf{F} = (\textbf{F}^1, ... , \textbf{F}^K)$.
 Similarly the $k^{th}$ entry in $\textbf{a}_{n}$ as $a_{n}^k$ and denote $\textbf{A} = (\textbf{a}_{1}, ... , \textbf{a}_{N})$.
-With this notation, the marginal likelihood of Kaiser's data association with Gaussian processes (DAGP) model is as follows
+With this notation, the marginal likelihood of \citeauthor{Kaiser2020}'s \citeyearpar{Kaiser2020} data association with Gaussian processes (DAGP) model is as follows
 
 \begin{equation}
 	\begin{aligned}
@@ -983,7 +836,7 @@ As each process is assumed to be independent of the data and assignments, GP pri
 There is an assumption that the $\textbf{a}_{n}$ are drawn independently from multinomial distributions with logit parameters $\boldsymbol{\alpha}_{n} = (\alpha_{n}^1, ... , \alpha_{n}^K)$. 
 Next a relationship between the location in input space $\textbf{x}$ and the associations is assumed, meaning independent GP priors can be placed on $\boldsymbol{\alpha}^k$.
 Any prior knowledge of the associations can be encoded into the choice of covariance function.
-The assignment probabilities is given by marginalising the $\boldsymbol{\alpha}^k$ that parametrise a batch of multinomial distributions
+The assignment probabilities is given by marginalising the $\boldsymbol{\alpha}^k$ that parameterise a batch of multinomial distributions
 
 \begin{equation}
 	\centering 
@@ -1008,9 +861,9 @@ This bound has complexity $O(NM^2K)$ to evaluate.
 
 \subsection{Modulated Scalable Gaussian Processes}
 
-\citet{Lui2020} proposed a similar method with a tighter evidence lower bound (ELBO).
-\citet{Kaiser2018} keeps the indicator vector in the approximation of the lowerbound by approximating $\log p(\textbf{y}, \textbf{A})$ rather than the interested $\log p(y)$.
-\citet{Lui2020} directly approximates $\log p(y)$ by marginalising all the latent variables out.
+\citet{Lui2021} proposed a similar method with a tighter evidence lower bound (ELBO).
+\citet{Kaiser2020} keeps the indicator vector in the approximation of the lowerbound by approximating $\log p(\textbf{y}, \textbf{A})$ rather than the interested $\log p(y)$.
+\citet{Lui2021} directly approximates $\log p(y)$ by marginalising all the latent variables out.
 
 Both Kaiser and Lui apply the reparameterisation trick when sampling from $\textbf{a}_{i} \sim M(\textbf{a}_{i} | \textrm{softmax}(\boldsymbol{\alpha_{i}}))$. 
 Instead of sampling directly from the discrete distribution, the continuous relaxation proposed in \citet{Maddison2017} is employed to perform stochastic gradient descent. 
@@ -1020,53 +873,38 @@ Samples from a concrete random variable are unit vectors and as $\lambda \longri
 
 \subsection{Implementation}
 
-The implementation to mix gaussian processes was an iteration of the SMGP (scalable modulated Gaussian processes) model developed by \citet{Lui2020} \footnote{Find repository for original implementation here: \url{https://github.com/LiuHaiTao01/ModulatedGPs}}.
+The implementation to mix gaussian processes was an iteration of the `SMGP` (scalable modulated Gaussian processes) model developed by \citet{Lui2021} \footnote{The repository for the original implementation can be found here: \url{https://github.com/LiuHaiTao01/ModulatedGPs}}.
 The original model was developed in TensorFlow v1 using additional code copied over from GPFlow v1 \citep{GPflow2017}.
 This model was updated to use the latest GPFlow API v2 and TensorFlow v2.
 In TensorFlow v1 only graph execution is possible, which is notoriously difficult to debug.
 Following this update the code could now be run in eager execution, enabling better debugging.
-The last part of this update included adding the `_training_loss` method of the `ExternalDataTrainingLossMixin` class in GPFlow.
-With this the training loss could be fed to an optimiser's minimise function, in this case an Adam optimiser.
 
-In the original SMGP, the code featured plots for 1d input. 
-This was extended to plot for 2D inputs, taking slices of the output plane to plot.
-
-Lui's implementation used a modified Gaussian likelihood, that could store Gaussian noise for each of the $K$ Gaussian processes. 
-
-\begin{lstlisting}[label=code:SMGPElogpY,  caption={E\_log\_p\_Y for the original SMGP using \citet{Lui2020} lowerbound}]
-def E_log_p_Y(self, Xt, Y, W_SND):
-    Fmean, Fvar = self.pred_layer.predict_f(Xt, full_cov=False)
-    var_exp = self.likelihood.variational_expectations(Xt, Fmean, Fvar, tf.cast(Y, dtype=tf.float64))
-    var_exp *= tf.cast(W_SND, dtype=float_type)
-    return tf.reduce_logsumexp(tf.reduce_sum(var_exp, 2), 0) - np.log(self.num_samples)
-\end{lstlisting}
-
-\begin{lstlisting}[label=code:SMGPModifiedElogpY,  caption={E\_log\_p\_Y for the modified SMGP using \citet{Kaiser2018} lowerbound}]
-def E_log_p_Y(self, Xt, Y, W_SND):
-    Fmean, Fvar = self.assign_layer.predict_f(Xt, full_cov=False)
-    var_exp = self.assign_likelihood.variational_expectations(Xt, Fmean, Fvar, tf.cast(Y, dtype=tf.float64))
-    var_exp *= tf.cast(W_SND, dtype=float_type)
-    E_log_p_A = tf.reduce_sum(var_exp, 2) - np.log(self.num_samples)
-
-    Fmean, Fvar = self.pred_layer.predict_f(Xt, full_cov=False)
-    var_exp = self.likelihood.variational_expectations(Xt, Fmean, Fvar, tf.cast(Y, dtype=tf.float64))
-    var_exp *= tf.cast(W_SND, dtype=float_type)
-    E_log_p_y = tf.reduce_sum(var_exp, 2) - np.log(self.num_samples)
-
-    return tf.reduce_logsumexp(E_log_p_A, 0) + tf.reduce_logsumexp(E_log_p_y, 0)
-\end{lstlisting}
-
-Lastly a new `SMGPModified` class was added following the lowerbound of Kaiser instead of Lui.
-This is because Lui's implementation of marginalising the latent variables, meant the assignment kernels parameters were never updated during optimisation if the assignment and predicition were using different likelihoods.
+A new `SMGPModified` class was added following the lowerbound of Kaiser instead of Lui.
+This is because Lui's implementation of marginalising the latent variables, meant the assignment kernels parameters were never updated during optimisation if the assignment and prediction were using different likelihoods.
+This was a necessary change, to attempt to perform classification with the `SMGP` model.
 The original can be seen in \ref{code:SMGPElogpY} and the modified in \ref{code:SMGPModifiedElogpY}.
+
+The base code was also extended to be a GPFlow `Module` and `ExternalDataTrainingLossMixin`, adding the `_training_loss` method of the `ExternalDataTrainingLossMixin` class in GPFlow.
+With this the training loss could be passed into an optimiser's minimise function, in this case a TensorFlow Adam optimiser.
+The likelihood code can be see in \ref{code:SMGPLikelihood} and training loop in \ref{code:SMGPTrainingLoop}.
+
+To start the code creates the kernels and `SVGP` models (called "layers" in the code) with $K$ number of latent GPs, before creating the `SMGP` model.
+This takes in your layers, and likelihood.
+The modified `SMGPModified` takes in two likelihoods: one for predicition and one for assignment.
+The code implemented by \citet{Lui2021} also features monte carlo sampling of 25 samples for each iteration of training.
+I also decided to batch the training set into minibatches of size 500, as anything larger could potentially crash my laptops GPU.
+
+Various parameters can be set, including the `seed` value passed into numpy and TensorFlow for reproducability of results.
+The configuration of number of iterations, size of minibatches and number of monte carlo samples can be set.
+Relating directly to GPs and the SMGP model, $K$, the kernel hyperparameters and inducing points can all be changed.
 
 \section{XGBoost}
 
 The XGBoost \citep{Chen2016} model implemented was a modification of the XGFootball model developed by \citet{Blumberg2020}.
-In the code published by Blumberg, there is an implementation of various boosting and decision tree models.
-Rather than train every classifier used by Blumberg, only the XGBoost model was trained on the cricket dataset.
+In the code published by \citet{Blumberg2020}, there is an implementation of various boosting and decision tree models.
+Rather than train every classifier used in the original, only the XGBoost model was trained on the cricket dataset.
 
-The model trained was a XGBoost classifier to classify the outcome of a delivery as either 0 or 6 runs.
+The model trained was a XGBoost classifier to classify the outcome of a delivery as either a boundary or not a boundary.
 For a classification tree with 2 classes, the value of the leaf node represents the score for one of the classes.
 It is then converted to a probability using the logistic function.
 
@@ -1075,15 +913,39 @@ The optimised trees could then make predicitions on a validation set and the log
 A soft voting classifier was also employed, however the improvement in log loss was minimal (\ref{code:VotingXG}).
 Training could then take place on the full training and validation sets, to produce a final model and make predictions.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Results}
+\subsection{SHAP}
 
-$74.3\%$ of the outcomes are boundaries.
+XGBoost models can be difficult to interpret. 
+The SHAP package offers a solution to interpreting XGBoost models, using principles of game theory to determine the effect of each feature on the odds of each outcome.
+Essentially, SHAP considers how much the probabilities change when adding or removing features from the model.
+Figure \ref{fig:ShapStumps} visualises the SHAP values for each feature, with a "high" shap value indicating a higher chance of scoring a boundary.
+The code for SHAP can be seen at \ref{code:SHAPXG}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Results and Discussion}
+
+The following is an exploration of the results yielded through the SMGP model and XGBoost model.
+For SMGP a review on toy data is provided first before moving to the cricket data.
+In the case of the John Doe dataset, $74.3\%$ of the deliveries are not boundaries.
 
 \section{Mixture of Gaussian Processes}
 
-\subsection{Toy Data}
+For the following examples the figures show in the top left samples drawn from the GP, the top right the ELBO maximisation during training (or in reality the optimisation of the lower bound), the bottom left the softmax assignments for each of the generative processes, and in the bottom right the predicitions of the generative processes.
+The predicitions show the upper and lower bounds within a 95\% confidence interval for each process. 
+
+For the results with 2D input, two figures are provided for each example.
+The first figure represents the raw data, predicted samples, and a 3D plot of the assigments and predicitions.
+The second figure for each example takes slices of the output plane to plot.
+This shows the smooth prediction of the GPs for one axis, with the other axis set to a constant value.
+The second figure also plots the ELBOs during training.
+The first input axis is $x_{1}$ and the second input axis is $x_{2}$, except for the cricket data that labels appropriately the features used as input.
+
+In each example, squared exponential kernels were used as priors for $f^k$ and $\alpha^k$ and 25 inducing points for each SVGP layer.  
+
+\subsection{1D Input Multimodal Toy Data}
+
+\subsubsection{SMGP}
 
 \begin{figure}[H]
     \centering
@@ -1092,11 +954,14 @@ $74.3\%$ of the outcomes are boundaries.
     \label{fig:MultimodalSMGP}
 \end{figure}
 
-Figure \ref{fig:MultimodalSMGP} represents comparable results to \citet{Kaiser2018} multimodal toy example.
-The results were gathered using the GPFlow v2 upgraded version of \citet{Lui2020}.
-Data points are sampled to generate $y_{1} = \sin (x) + \epsilon$, $y_{2} = \sin(x) - 2 \textrm{exp}(-\frac{1}{2}(x - 2)^2) + \epsilon$ and $y_{3} = -2 -\frac{3}{8}\pi x + \frac{3}{10} \sin(2x) + \epsilon$ where $\epsilon \sim \mathcal{N}(0, 0.2^2$. 
-The resulting dataset is trimodal in the interval $[0, 5]$ and is otherwise bimodal with one mode containing double the amount of data than the other \citep{Kaiser2018}.
-The SMGP has successfully learned 
+Figure \ref{fig:MultimodalSMGP} recreates comparable results to \citet{Kaiser2020} multimodal toy example.
+The results were gathered using the GPFlow v2 upgraded version of \citet{Lui2021}.
+Uniformly spaced training points $x$ are sampled to generate $y_{1} = \sin (x) + \epsilon$, $y_{2} = \sin(x) - 2 \textrm{exp}(-\frac{1}{2}(x - 2)^2) + \epsilon$ and $y_{3} = -2 -\frac{3}{8}\pi x + \frac{3}{10} \sin(2x) + \epsilon$ where $\epsilon \sim \mathcal{N}(0, 0.1^2)$. 
+The resulting dataset is trimodal in the interval $[0, 5]$ and is otherwise bimodal with one mode containing double the amount of data than the other \citep{Kaiser2020}.
+The SMGP has successfully learned that one of the generative processes has around twice the assignment probability of the other.
+In the tri-modal region the assignments become around equal, representing an equal chance of assignment for each process. This means it has successfully reconstructed the true generative process.
+
+\subsubsection{SMGP with Modified Likelihood}
 
 \begin{figure}[H]
     \centering
@@ -1105,6 +970,14 @@ The SMGP has successfully learned
     \label{fig:MultimodalSMGPModified}
 \end{figure}
 
+Figure \ref{fig:MultimodalSMGPModified} uses the updated code (\ref{code:SMGPModifiedElogpY}) with the lowerbound updated to match \citet{Kaiser2020}.
+The three generating processes have been uncovered, however differently to before.
+The green process follows the blue process, before diverging in the trimodal region.
+At this point the assigments mix. 
+However, in the bimodal region the orange process still has twice the assigment probability of the others.
+
+\subsection{1D Input Toy Data with Multiclass Likelihood}
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{demo_tf2_modified_multiclass.png}
@@ -1112,35 +985,120 @@ The SMGP has successfully learned
     \label{fig:MulticlassSMGPModified}
 \end{figure}
 
+Using the modified lowerbound different likelihoods could be applied to both the assignment and predicition.
+Figure \ref{fig:MulticlassSMGPModified} represents toy data that can take two values, 0 or 1.
+At input values less than 0, the process is 0 and at input values greater than 0 the process is 1.
+However, there is a probability of $0.1$ that the process does not take it's proper value i.e. the process is stochastic.
+The SMGP has successfully learnt the real orange process and the stochasticity in the blue process.
+Furthermore, the orange process has far greater assignment probabilities, except at $x = 0$, where the process changes value.
+At this value the assignments of the two processes mix, before seperating again.
+
+\subsection{2D Input Toy Data}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{demo_tf2_2d.png}
+    \includegraphics[width=\linewidth]{demo_tf2_2d_1.png}
     \caption{Tensorflow v2 SMGP results on 2d toy data}
-    \label{fig:2DSMGP}
+    \label{fig:2DSMGP1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{demo_tf2_2d_modified_multiclass.png}
+    \includegraphics[width=\linewidth]{demo_tf2_2d_2.png}
+    \caption{Tensorflow v2 SMGP results on 2d toy data}
+    \label{fig:2DSMGP2}
+\end{figure}
+
+Figures \ref{fig:2DSMGP1} and \ref{fig:2DSMGP2} represent an example of a trained SMGP with 2D input. 
+There are two processes, $y_{1} = \sqrt{(x_{1} - 0.5)^2 + (x_{2} - 0.5)^2}$ and $y_{2} = y_{1} + 10$.
+In addition, in this test, $K = 3$ meaning an additional third process was learnt.
+The SMGP has successfully learnt the two underlying processes.
+The assignment probabilities should be equal, given that each process has an equal number of points in the training set. 
+However, at points the assignments of each process are not both $0.5$, but are instead different.
+In some regions the assignments both equal $0.5$ and it is possible that with further training they would eventually converge to be $0.5$ across the entire input space.
+Furthermore, the SMGP has implicitly incentivised to explain the data using as few processes as possible, meaning the orange process has an assignment probability of 0.
+
+\subsection{2D Input Toy Data with Multiclass Likelihood}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{demo_tf2_2d_modified_multiclass_1.png}
     \caption{Modified SMGP results on 2d toy data with a multiclass likelihood}
-    \label{fig:2DMulticlassSMGPModified}
-\end{figure}
-
-\subsection{Cricket Data}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{demo_JohnDoe_RightArmSeam_stumpsX_stumpsY.png}
-    \caption{Tensorflow v2 SMGP results on John Doe dataset}
-    \label{fig:CricketSMGP}
+    \label{fig:2DMulticlassSMGPModified1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{demo_JohnDoe_RightArmSeam_stumpsX_stumpsY_multi_class.png}
-    \caption{Tensorflow v2 SMGP results on John Doe dataset}
-    \label{fig:CricketMulticlassSMGPModified}
+    \includegraphics[width=\linewidth]{demo_tf2_2d_modified_multiclass_2.png}
+    \caption{Modified SMGP results on 2d toy data with a multiclass likelihood}
+    \label{fig:2DMulticlassSMGPModified2}
 \end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{demo_tf2_2d_modified_multiclass_demonstrative.png}
+    \caption{Modified SMGP results on 2d toy data with a multiclass likelihood. In this example the fixed value of $x_{1}$ has been shifted to $0.2$ instead of $0$.}
+    \label{fig:2DMulticlassSMGPModifiedDemonstrative}
+\end{figure}
+
+Figures \ref{fig:2DMulticlassSMGPModified1} and \ref{fig:2DMulticlassSMGPModified2} show the results using the modified lowerbound, so that different likelihoods could be applied to both the assignment and predicition.
+The toy data is analogous to the 1D multiclass example in that it can take two values, 0 or 1.
+At input values less than 0 for $x_{1}$ and $x_{2}$, the process is 0 and at input values greater than 0 the process is 1.
+However, there is a probability of $0.1$ that the process does not take it's proper value i.e. the process is stochastic.
+
+\subsubsection{Discussion}
+
+It is clear here, that there is something wrong with the implementation somewhere.
+The predicitions in the regions where $x_{1} < 0$ and $x_{2} < 0$ are prediciting not whole numbers, which with a multiclass likelihood should be impossible.
+This is because a multiclass likelihood should only be able to predict for the different classes that exist (in this case 0 and 1).
+However, somehow the mixing of predicitions makes some sense.
+As the constant values for $x_{2}$ and $x_{1}$ are zero, this is right at the boundary where the raw data will be 0 or 1. 
+So, if $x_{1}$ just went over 0, for example, $x_{1} = 0.2$ the predictions should all be 1.
+It can be seen in figure \ref{fig:2DMulticlassSMGPModifiedDemonstrative} that doing so, does smooth the predictions more to each class, with the uncertainty only rising at around $x{2} = -0.5$.
+So, in some ways it makes sense for the predicitions to be unsure to predict 0 or 1 right at this point.
+In any case, there must be a bug somewhere in the SMGP implementation or within GPFlow.
+In the other regions of input space, where $x_{1} > 0$ and $x_{2} > 0$ the predicitions flatten out to predict exactly the two possible classes.
+
+Looking at the assignment probabilities, they also don't make sense.
+It should give a higher probability to the orange process at all times, given that this is the real process with more data.
+The only exception should potentially be at $x{1} = 0$ and $x_{2} = 0$ given that is where the two processes should "swap" (similar to figure \ref{fig:MulticlassSMGPModified}).
+
+\subsection{Cricket Data with Multiclass Likelihood}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{demo_JohnDoe_RightArmSeam_stumpsX_stumpsY_multi_class_1.png}
+    \caption{Modified SMGP results on John Doe dataset with a multiclass likelihood}
+    \label{fig:CricketMulticlassSMGPModified1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{demo_JohnDoe_RightArmSeam_stumpsX_stumpsY_multi_class_2.png}
+    \caption{Modified SMGP results on John Doe dataset with a multiclass likelihood}
+    \label{fig:CricketMulticlassSMGPModified2}
+\end{figure}
+
+Figures \ref{fig:CricketMulticlassSMGPModified1} and \ref{fig:CricketMulticlassSMGPModified2} show the results on the John Doe dataset for predicting whether a delivery would go for a boundary or not.
+This uses the SMGP implementation with the modified lowerbound, so that a multiclass likelihood could be applied to the predicition.
+
+\subsubsection{Discussion}
+
+The predictions have learnt the possible outputs of no boundary or boundary, with the uncertainty bars growing greatly outside the range of training data.
+Unfortunately, the assignments have not mixed in the desired fashion. 
+The lengthscale of the assignment GP optimised to a large value, and the assignment essentially always has a high probability for no boundary being scored.
+This simply could be because, there are more boundaries scored than not.
+In the case of the John Doe dataset, $74.3\%$ of the deliveries are not boundaries.
+As we can see, the assignment sits around $0.7$ or slightly above for no boundary scored.
+It seems as though the assignments have learnt that not scoring a boundary is far more common than scoring a boundary, which is something we already knew.
+
+The reasons for this is most likely that the outcomes are so mixed across the input data. 
+In the case of the toy examples such as \ref{fig:MultimodalSMGP}, the assignments only mixed in regions where there was equal chances of many outputs. 
+In the majority of the input space however, the assignment probabilities reflected the proportions of the training data itself.
+It seems to be that this is the case here with the John Doe dataset.
+Because the outcomes are so mixed, it has simply learnt the probability of no boundary is higher than a boundary everywhere.
+It is possible that more inputs are needed to further seperate different data points in input space.
+Equally, more outputs (for example prediciting all the possible run outcomes), might produce better results than just a 2 class predicition.
 
 \section{XGBoost}
 
@@ -1158,7 +1116,10 @@ The SMGP has successfully learned
 	\end{tabular}
 \end{table}
 
-TODO: Talk about accuracy.
+Table \ref{tab:XGResults} shows the accuracy and final log loss for each of the models trained. 
+The accuracies are less than desired, given that $74.3\%$ of the dataset are not boundaries anyway.
+This accuracy could then in theory be achieved by predicting all deliveries to be not a boundary.
+This could be improved with a different model setup (different inputs and outputs) and this will be discussed more later.
 
 \subsection{StumpsX and StumpsY}
 
@@ -1176,11 +1137,8 @@ TODO: Talk about accuracy.
     \label{fig:TreeStumps}
 \end{figure}
 
-XGBoost models can be difficult to interpret. 
-The SHAP package offers a solution to interpreting XGBoost models, using principles of game theory to determine the effect of each feature on the odds of each outcome.
-Essentially, SHAP considers how much the probabilities change when adding or removing features from the model.
-Figure \ref{fig:ShapStumps} visualises the SHAP values for each feature, with a "high" shap value indicating a higher chance of scoring a boundary.
-The code for SHAP can be seen at \ref{code:SHAPXG}.
+\subsubsection{Discussion}
+
 It can be seen that with just two features, the model hasn't learnt any clear relationships, as various features values result in various SHAP values.
 This potentially makes sense, given how mixed the outcomes are in the input space.
 This means potentially more input features are required to seperate the different outcomes more in input space.
@@ -1204,19 +1162,26 @@ It highlights how XGBoost will split the inputs into intervals to make decisions
     \label{fig:TreeStumpsPitch}
 \end{figure}
 
+\subsubsection{Discussion}
+
 Following on from simply using the stump locations as features, pitch locations were considered as well.
 With 4 features things become clearer, but still not ideal.
 Lets look at each feature and discuss.
 
 "PitchX" has not developed any clear relationship. 
-Notably, low features values seem to be able to have a low and large impact.
-This could also be a potential drawback of the SHAP package and its colour scale and a more numerical analysis is required.
+Notably, low feature values of "PitchX" seem to be able to have a low and large SHAP value (and so impact on the models prediction).
+This could also be a potential drawback of the SHAP package and its colour scale and that a more numerical analysis is required.
+This is because as described in section \ref{sec:DataAssocCricket} the relationship between pitch locations and outcomes is not simple or linear i.e. bigger "PitchX" does not necessarily linearly increase or decrease the chance of a boundary being scored.
+It's possible a more nuanced relationship with the "PitchX" feature has been discovered that can't be seen with the SHAP package.
 "PitchY" has a similar relationship, with low and high features values carrying potentially both low and large impact on the model.
-This could be explained with reasoning similar to that presented in section \ref{sec:DiscretisingFeatures} in that the relationship of pitch and stump locations in cricket are not simple.
-In such a case, the XGBoost model might be struggling to discover any obvious relationships.
 
 "StumpsX" and "StumpsY" however have started to show some relationship.
-Low values of "stumpsX" and "stumpsY"
+Lower values of "stumpsX" and "stumpsY" appear to lower the SHAP value, and therefore the odds of a boundary being scored.
+High values appear to increase it. 
+This makes some sense for "StumpsY".
+This is because, figures \ref{fig:StumpsXYRight} and \ref{fig:StumpsXYLeft} do highlight that low values of "StumpsY" have a lack of boundaries scored.
+However the intuition behind why it has done the same for "StumpsX" is not so clear. 
+It also does not make sense that the same outcome did not happen for the model using just "StumpsX" and "StumpsY" as inputs.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1224,94 +1189,33 @@ Low values of "stumpsX" and "stumpsY"
 
 This project identified areas of new research in current sports analytics for cricket.
 In particular, there is a lack of exploration of alternative methods to those that are popular in current research.
-Therefore, this project explored using mixtures of Gaussian processes and XGBoost to predict the outcome of a whether a delivery in T20 cricket is a boundary or not.
+Therefore, this project explored using Data Association with Gaussian processes and XGBoost to predict the outcome of a whether a delivery in T20 cricket is a boundary or not.
+The research here provides a valuable first step towards new avenues of machine learning in cricket.
+
+\section{Future Work}
 
 There is a number of exciting potential future avenues from the work introduced in this project.
 Notably, further improvements to the SMGP model.
-Currently, the SMGP implementation by \citet{Lui2020} has limitations with using different likelihoods for the assignments and predictions.
-As a result, a revertion to the \citet{Kaiser2018} lowerbound was introduced as an attempt to handle different likelihoods for the assignment and predicition processes.
-Currently, the results on cricket are less than satisfactory, however there is potential to further advance the SMGP model for noisy and overlapping datasets.
+Currently, the SMGP implementation by \citet{Lui2021} has limitations with using different likelihoods for the assignments and predictions.
+As a result, a revertion to the \citet{Kaiser2020} lowerbound was introduced as an attempt to handle different likelihoods for the assignment and predicition processes.
+As discovered, the classification is not behaving as expected.
+However there is potential to further advance the SMGP model for classification tasks.
 Any improvements to the model itself could then improve outcomes on the cricket data.
-In any case, exploration of Gaussian processes in cricket should be explored further given the reasons in chapter \ref{chap:LitReview}.
+
+For example, all the possible outcomes (runs scored) of a cricket delivery could be modelled by a Multiclass classification SVGP.
+You could then have $K$ numbers of these GPs, that are then mixed with an assignment GP.
+In this case, you first assign a GP to a region of input space and then predict using a multiclass GP that could predict any of the possible outcomes.
+This is different to the current implementation, as each process is no longer modelling just one outcome, but many.
+In any case, exploration of Gaussian processes in cricket should be explored further given the reasons provided in chapters \ref{chap:Intro} and \ref{chap:LitReview}.
+
+It is also possible that predicting the exact specifics of what delivery to bowl is too challenging a task.
+Potentially predicting a broader idea of what bowler to pick for a certain over is more achievable, as it relies less on the specifics of what exact deliveries they bowl.
+This could be done with methods similar to \citet{silver2021baseball} explored in section \ref{sec:ResearchWithSimilarGoals}.
 
 Lastly, further refinement of all models implemented is possible. 
 This includes a greater number of input features, as well as handling categorical inputs that can represent certain game states.
 For example, whether it is raining, overcast, pitch conditions, time of day etc.
 Such improvements would be applicable to both XGBoost or SMGP.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%Code can be output inline using \verb@\lstinline|some code|@.  For example, this code is inline: \lstinline|public static int example = 0;| (we have used the character \verb@|@ as a delimiter, but any non-reserved character not in the code text can be used.)
-%
-%Code snippets can be output using the \verb|\begin{lstlisting} ... \end{lstlisting}|
-%environment with the code given in the environment. For example, consider listing \ref{Example-Code}, below.
-%
-%\begin{lstlisting}[breaklines,breakatwhitespace,caption={Example code},label=Example-Code]
-%public static void main() {
-%
-%  System.out.println("Hello World");
-%
-%}
-%\end{lstlisting}
-%
-%Code listings are produced using the package `listings'.  This has many useful options, so have a look at the package documentation for further ideas.
-%
-%\section[Short Section Title]{Another Section With a Long Title and Whose Title Is Abbreviated in the Table of Contents}
-%
-%%-------------------------------------------------------------------------------
-%\begin{table}[htb]
-%\caption{An example table}
-%\bigskip
-%\begin{center}
-%\label{Example-Table}
-%\begin{tabular}{|l|l|}
-%\hline
-%Items & Values \\
-%\hline
-%\hline
-%Item 1 & Value 1 \\
-%Item 2 & Value 2 \\
-%\hline
-%\end{tabular}
-%\end{center}
-%\end{table}
-%
-%Another section, just for good measure. You can reference a table, figure or equation using \verb|\ref|, just like this reference to Table \ref{Example-Table}.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\section{Example Lists}
-%
-%%-------------------------------------------------------------------------------
-%\subsection{Enumerated}
-%
-%\begin{enumerate}
-%\item Example enumerated list:
-%  \begin{itemize}
-%  \item a nested enumerated list item;
-%  \item and another one.
-%  \end{itemize}
-%\item Second item in the list.
-%\end{enumerate}
-%
-%%-------------------------------------------------------------------------------
-%\subsection{Itemised}
-%
-%\begin{itemize}
-%\item Example itemised list.
-%  \begin{itemize}
-%  \item A nested itemised list item.
-%  \end{itemize}
-%\item Second item in the list.
-%\end{itemize}
-%
-%%-------------------------------------------------------------------------------
-%\subsection{Description}
-%
-%\begin{description}
-%\item[Item 1]First item in the list.
-%\item[Item 2]Second item in the list.
-%\end{description}
 
 % IGNORE WORDS AFTER HERE
 %TC:ignore 
@@ -1394,7 +1298,7 @@ If the fielding team get the ball to the wickets before the batsmen they could b
 To register a run, both runners must touch the ground behind the popping crease with either their bats or their bodies (the batters carry their bats as they run). 
 Each completed run increments the score of both the team and the striker.
 Infinitely many runs can be scored off one delivery this way, with the batsmen running back and forth between the wickets.
-Typically the maxmimum runs scored this way would be three, but it is possible to score more if there are misfields.
+Typically the maximum number of runs scored this way would be three, but it is possible to score more if there are misfields.
 
 There are some terms for certain runs scored off a delivery.
 A \emph{dot ball} is a delivery where the batter scored zero runs.
@@ -1485,10 +1389,10 @@ The two batters (3 and 8; wearing yellow) have taken position at each end of the
 Three members of the fielding team (4, 10 and 11; wearing dark blue) are in shot. 
 The bowler (4) is bowling the ball (5) from his end of the pitch to the batter (8) at the other end who is called the "striker". 
 The other batter (3) at the bowling end is called the "non-striker". 
-The wicket-keeper (10) is positioned behind the striker's wicket (9).
+The wicket-keeper (10) is positioned behind the striker's wicket (9) \citep{cricketWiki}.
 
 The bowler (4) intends to dimiss the batsmen, or to prevent the striker (8) from scoring runs. 
-By using his bat, the striker (8) intends to defend his wicket and hit the ball away from the pitch in order to score runs.
+By using his bat, the striker (8) intends to defend his wicket and hit the ball away from the pitch in order to score runs \citep{cricketWiki}.
 
 \subsection{Player Roles}
 
@@ -1550,15 +1454,128 @@ To solve $A\textbf{x} = \textbf{b}$ for $\textbf{x}$, first solve the triangular
 Next solve the triangular system $L^T\textbf{x} = \textbf{y}$ by back substitution.
 Using the backslash operator, the solution can be written as $\textbf{x} = L^T \textbackslash (L \textbackslash \textbf{b})$ \citep{RasmussenWilliams2006}.
 
-\section{Kullback–Leibler Divergence} \label{sec:KLDiv}
+\section{Entropy and Kullback–Leibler Divergence} \label{sec:KLDiv}
 
-TODO: KL Divergence
+The \emph{entropy} $H[p(x)]$ of a distribution $p(x)$ is a non-negative measure of the amount of "uncertainty" inherent to the variable's possible outcomes, given by
+
+\begin{equation}
+	H[p(x)]  = - \int p(x) \log p(x) dx.
+\end{equation}
+
+The Kullback-Leibler (KL) divergence (also known as relative entropy) $KL(p || q)$ between two distributions $p(x)$ and $q(x)$ is defined as 
+
+\begin{equation}
+	KL(p || q) = \int p(x) \log \frac{p(x)}{q(x)} dx.
+\end{equation}
+
+For two Gaussian distributions $\mathcal{N}(\mu_{0}, \Sigma_{0})$ and $\mathcal{N}(\mu_{1}, \Sigma_{1})$ we have
+
+\begin{equation}
+	\begin{aligned}
+		KL(\mathcal{N}_{0} || \mathcal{N}_{1}) = &\frac{1}{2} \log |\Sigma_{1}\Sigma_{0}^{-1}| + \\
+		&\frac{1}{2} tr \Sigma_{1}^{-1} ((\mu_{0} - \mu{1})(\mu_{0} - \mu{1})^T  + \Sigma_{0} - \Sigma_{1}).
+	\end{aligned}
+\end{equation}
+
+When the log is the natural log entropy is measure in \emph{nats}. The KL divergence can be viewed as the extra number of nats needed on average to code data generated from $p(x)$ under the distribution $q(x)$ \citep{RasmussenWilliams2006}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Code}
 
 \section{Mixture of Gaussian Processes}
+
+\begin{lstlisting}[label=code:SMGPElogpY,  caption={E\_log\_p\_Y for the original SMGP using \citet{Lui2021} lowerbound}]
+def E_log_p_Y(self, Xt, Y, W_SND):
+    Fmean, Fvar = self.pred_layer.predict_f(Xt, full_cov=False)
+    var_exp = self.likelihood.variational_expectations(Xt, Fmean, Fvar, tf.cast(Y, dtype=tf.float64))
+    var_exp *= tf.cast(W_SND, dtype=float_type)
+    return tf.reduce_logsumexp(tf.reduce_sum(var_exp, 2), 0) - np.log(self.num_samples)
+\end{lstlisting}
+
+\begin{lstlisting}[label=code:SMGPModifiedElogpY,  caption={E\_log\_p\_Y for the modified SMGP using \citet{Kaiser2020} lowerbound}]
+def E_log_p_Y(self, Xt, Y, W_SND):
+    Fmean, Fvar = self.assign_layer.predict_f(Xt, full_cov=False)
+    var_exp = self.assign_likelihood.variational_expectations(Xt, Fmean, Fvar, tf.cast(Y, dtype=tf.float64))
+    var_exp *= tf.cast(W_SND, dtype=float_type)
+    E_log_p_A = tf.reduce_sum(var_exp, 2) - np.log(self.num_samples)
+
+    Fmean, Fvar = self.pred_layer.predict_f(Xt, full_cov=False)
+    var_exp = self.likelihood.variational_expectations(Xt, Fmean, Fvar, tf.cast(Y, dtype=tf.float64))
+    var_exp *= tf.cast(W_SND, dtype=float_type)
+    E_log_p_y = tf.reduce_sum(var_exp, 2) - np.log(self.num_samples)
+
+    return tf.reduce_logsumexp(E_log_p_A, 0) + tf.reduce_logsumexp(E_log_p_y, 0)
+\end{lstlisting}
+
+\begin{lstlisting}[label=code:SMGPLikelihood,  caption={Likelihood for the modified SMGP}]
+def _build_likelihood(self, X, Y):
+    Xt = self.integrate(X, self.num_samples)[0]
+    # sample from q(w)
+    W_dist = self.W_dist(Xt)
+    W = W_dist.sample(1)[0, :, :]
+    W_SND = tf.reshape(W, [self.num_samples, tf.shape(Xt)[1], self.K])
+    # Expectation of lik
+    L = tf.reduce_mean(self.E_log_p_Y(Xt, Y, W_SND))
+    # ELBO
+    # KL Divergence
+    return L - (self.pred_layer.prior_kl() + self.assign_layer.prior_kl()) / self.num_data
+
+def _training_loss(self, data: Data) -> tf.Tensor:
+    X, Y = data
+    return -self._build_likelihood(X, Y)
+\end{lstlisting}
+
+\begin{lstlisting}[label=code:SMGPCreateModels,  caption={Creating kernels and inducing points to pass into SVGP layer. The SMGP model is then instantiated.}]
+pred_kernel = gpflow.kernels.SquaredExponential(variance=0.5, lengthscales=0.5)
+assign_kernel = gpflow.kernels.SquaredExponential(variance=0.1, lengthscales=1.0)
+Z, Z_assign = kmeans(Xtrain, num_ind, seed=0)[0], kmeans(Xtrain, num_ind, seed=1)[0]
+
+lik = GaussianModified(variance=0.5, D=K)
+
+pred_layer = SVGPModified(kernel=pred_kernel, likelihood=lik, inducing_variable=Z, num_latent_gps=K, whiten=True)
+assign_layer = SVGPModified(kernel=assign_kernel, likelihood=lik, inducing_variable=Z_assign, num_latent_gps=K,
+                            whiten=True)
+
+# model definition
+model = SMGP(likelihood=lik, pred_layer=pred_layer, assign_layer=assign_layer, K=K, num_samples=num_samples,
+             num_data=num_data)
+\end{lstlisting}
+
+\begin{lstlisting}[label=code:SMGPBatching,  caption={Dataset batching}]
+dataset = tf.data.Dataset.from_tensor_slices((Xtrain, Ytrain))
+dataset = dataset.shuffle(buffer_size=num_data, seed=seed)
+dataset = dataset.batch(num_minibatch).repeat()
+train_iter = iter(dataset)
+\end{lstlisting}
+
+\begin{lstlisting}[label=code:SMGPTrainingLoop,  caption={Training loop for SMGP}]
+def run_adam(model, num_iter, train_iter, lr, compile=True):
+    training_loss = model.training_loss_closure(train_iter, compile=compile)
+    optimizer = tf.optimizers.Adam(lr)
+
+    @tf.function
+    def optimization_step():
+        optimizer.minimize(training_loss, model.trainable_variables)
+
+    print('{:>5s}'.format("iter") + '{:>24s}'.format("ELBO:"))
+    iters = []
+    elbos = []
+    for i in range(1, num_iter + 1):
+        try:
+            optimization_step()
+
+            if i % 5 == 0 or i == 0:
+                elbo = -training_loss().numpy()
+                print('{:>5d}'.format(i) + '{:>24.6f}'.format(elbo))
+                iters.append(i)
+                elbos.append(elbo)
+        except KeyboardInterrupt as e:
+            print("stopping training")
+            break
+
+    return iters, elbos
+\end{lstlisting}
 
 \section{XGBoost}
 
@@ -1618,6 +1635,27 @@ explainer = shap.TreeExplainer(xgb)
 shap_values = explainer.shap_values(X_train_preprocessed)
 shap.summary_plot(shap_values, X_train_preprocessed, feature_names=all_features_transformed)
 plt.show()
+\end{lstlisting}
+
+\section{Pre-processing}
+
+\begin{lstlisting}[label=code:PreProcess,  caption={Code to filter data for a batter and remove identifying information}]
+from data_processing.query_utils import load_csv_data_mipl, filter_by_pitch_x_pitch_y
+
+mipl_csv = load_csv_data_mipl()
+mipl_csv = filter_by_pitch_x_pitch_y(mipl_csv)
+
+batter_name = "ENTER BATTER NAME"
+batter_data = mipl_csv[mipl_csv['batter'] == batter_name]
+
+columns_containing_identifying_information = ['batter', 'batterId', 'nonStriker', 'nonStrikerId', 'bowler', 'bowlerId',
+                                              'dismissalDetails', 'matchId']
+
+batter = batter_data.drop(columns=columns_containing_identifying_information)
+
+batter.to_csv('../Pre-processing-csvs/john_doe_dataset.csv')
+
+print("Finished")
 \end{lstlisting}
 
 %STOP IGNORING WORDS
