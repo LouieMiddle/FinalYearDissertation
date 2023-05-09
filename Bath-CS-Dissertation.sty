@@ -25,9 +25,13 @@
 \renewcommand{\familydefault}{\sfdefault} % sans-serif
 
 \usepackage{natbib}                       % Bibliography and citations
-\newcommand*{\urlprefix}{Available from: }% in the Harvard-Bath style
-\newcommand*{\urldateprefix}{Accessed }   %
-\bibliographystyle{bathx}                 %
+%\newcommand*{\urlprefix}{Available from: }% in the Harvard-Bath style
+%\newcommand*{\urldateprefix}{Accessed }   %
+%\bibliographystyle{bathx}                 %
+
+% Use a different referencing style at Adam's request
+\usepackage[nottoc]{tocbibind}
+\bibliographystyle{plainnat}
 
 \pagestyle{headings}
 
